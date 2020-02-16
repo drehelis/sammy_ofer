@@ -7,7 +7,7 @@ A small time scheduled (cron) _web-scraper_ to notify of upcoming game events ta
 Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notification_channel) and enjoy:
 
 * Single notification for the upcoming event
-* Matchup, average attendance and road block time
+* Matchup, average attendance and roadblock times
 * Spam free service
 
 ## Web-UI
