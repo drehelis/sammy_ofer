@@ -64,7 +64,7 @@ def update():
         SPECTATORS[(home_team, guest_team)] = d
         with open(spectators_file, 'w') as file:
             file.write(f'SPECTATORS = {SPECTATORS}')
-        return Markup("I went out of my way to make this work!")
+        return Markup("New entry created and saved!")
 
 if __name__ == "__main__":
     app.run

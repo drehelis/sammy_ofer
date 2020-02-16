@@ -14,9 +14,12 @@ RUN adduser -g "Sammy Ofer" -D $APP_NAME
 
 WORKDIR /usr/src/$APP_NAME/
 
+COPY html_templates ./html_templates
 COPY requirements.txt \
-    cron.py spectators.py \
-    web_scrape.py web.py html_templates ./
+    cron.py \
+    spectators.py \
+    web_scrape.py \
+    web.py ./
 
 RUN pip install --no-cache-dir -r requirements.txt
 
