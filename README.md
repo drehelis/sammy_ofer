@@ -1,6 +1,6 @@
 # Sammy Ofer Notification Bot 🤖
 
-### Description
+## Description
 
 A small time scheduled (cron) _web-scraper_ to notify of upcoming game events taking place in [Sammy Ofer Stadium](https://www.haifa-stadium.com/ "Sammy Ofer Stadium").
 
@@ -10,11 +10,11 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 * Matchup, average attendance and road block time
 * Spam free service
 
-### Web-UI
+## Web-UI
 
 ![Web-UI screenshot](screen.png)
 
-### TODO
+## TODO
 
 - [ ] Cron configuation (some sort of UI?)
 - [ ] **Delete** option currently does absolutely nothing
