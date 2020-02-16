@@ -1,0 +1,114 @@
+<!doctype html>
+<html dir="rtl" lang="he">
+
+<head>
+    <meta charset="utf-8">
+    <title>המשחקים הקרובים</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <style>
+        div.unstyledTable {
+            width: 1000px;
+            border-collapse: collapse;
+        }
+
+        .divTable.unstyledTable .divTableCell, .divTable.unstyledTable .divTableHead {}
+
+        .divTable.unstyledTable .divTableBody .divTableCell {
+            font-size: 12px;
+        }
+
+        .divTable.unstyledTable .divTableHeading {
+            background: #DDDDDD;
+        }
+
+        .divTable.unstyledTable .divTableHeading .divTableHead {
+            font-size: 15px;
+            font-weight: bold;
+            text-align: right;
+        }
+
+        /* DivTable.com */
+        .divTable {
+            display: table;
+        }
+
+        .divTableRow {
+            display: table-row;
+        }
+
+        .divTableHeading {
+            display: table-header-group;
+        }
+
+        .divTableCell,
+        .divTableHead {
+            display: table-cell;
+            width: 500px;
+        }
+
+        .divTableHeading {
+            display: table-header-group;
+        }
+
+        .divTableBody {
+            display: table-row-group;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="divTable unstyledTable">
+        <div class="divTableHeading">
+            <div class="divTableRow">
+                <div class="divTableHead">#</div>
+                <div class="divTableHead">תאריך</div>
+                <div class="divTableHead">יום</div>
+                <div class="divTableHead">שעה</div>
+                <div class="divTableHead">בית</div>
+                <div class="divTableHead">חוץ</div>
+                <div class="divTableHead">אוהדים</div>
+                <div class="divTableHead">מספר</div>
+                <div class="divTableHead">פעולה</div>
+            </div>
+        </div>
+        {% for key, value in mygames.items() %}
+        <div class="divTableRow">
+            <div class="divTableCell">{{ loop.index }}</div>
+            <div class="divTableCell">{{ value[0].strftime('%Y-%m-%d') }}</div>
+            <div class="divTableCell">{{ value[0].strftime('%A') }}</div>
+            <div class="divTableCell">{{ value[0].strftime('%H:%M') }}</div>
+            <div class="divTableCell">{{ value[1] }}</div>
+            <div class="divTableCell">{{ value[3] }}</div>
+            <div class="divTableCell">{{ value[6] }}</div>
+            <div class="divTableCell" {% if value[7] == 0 %}style="background: yellow;" {% endif %}>{{ value[7] }}</div>
+            <div class="divTableCell">
+                <form action="/action" method="post">
+                    <select id="action_{{ loop.index }}" name="action">
+                        <option option hidden selected>בחר</option>
+                        <option id="update"
+                            value='{"action":"update","home_team":"{{ value[1] }}","guest_team":"{{ value[3] }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}"}'>
+                            עדכן</option>
+                        <option id="delete"
+                            value='{"action":"delete","home_team":"{{ value[1] }}","guest_team":"{{ value[3] }}"}'>
+                            מחק
+                        </option>
+                    </select>
+                </form>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    <p>
+        <div id="result_action"></div>
+    </p>
+    <script>
+        $('select').on('change', function () {
+            let select_id = $(this).children(":selected").attr("id");
+            $.post("/action", { [select_id]: this.value })
+                .done(function (data) {
+                    $("#result_action").empty().append(data);
+                });
+        });
+    </script>
+</body>
+</html>
