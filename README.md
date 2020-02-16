@@ -9,7 +9,6 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 * Single notification for the upcoming event
 * Matchup, average attendance and road block time
 * Spam free service
-* ![Telegram message](telegram-msg.png)
 
 ### Web-UI
 
