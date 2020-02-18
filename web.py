@@ -13,8 +13,12 @@ import web_scrape
 
 try:
     locale.setlocale(locale.LC_TIME, "he_IL")       # MacOS
-except Exception as err:
-    locale.setlocale(locale.LC_TIME, "he_IL.utf-8") # Ubuntu
+except locale.Error:
+    try:
+        # apt-get install language-pack-he language-pack-he-base
+        locale.setlocale(locale.LC_TIME, "he_IL.utf-8") # Ubuntu
+    except locale.Error:
+        pass
 
 def b64encode(s):
     return base64.b64encode(s.encode())
