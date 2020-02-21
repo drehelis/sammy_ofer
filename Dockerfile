@@ -3,8 +3,6 @@ LABEL maintainer="Danny Rehelis <autogun@gmail.com>"
 
 ARG APP_NAME=sammy_ofer
 
-RUN adduser -g "Sammy Ofer" -D $APP_NAME
-
 WORKDIR /usr/src/$APP_NAME/
 
 RUN apk add --update \
@@ -28,4 +26,3 @@ COPY docker-entrypoint.sh ./
 EXPOSE 5000
 
 ENTRYPOINT ["./docker-entrypoint.sh"]
-# CMD [$APP_NAME]
