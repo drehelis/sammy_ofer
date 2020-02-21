@@ -11,7 +11,7 @@ import web_scrape
 logging.basicConfig(level=logging.INFO)
 
 if 'TELEGRAM_CHANNEL_ID' not in os.environ or 'TELEGRAM_TOKEN' not in os.environ:
-    logging.info('Both \'TELEGRAM_CHANNEL_ID\' and \'TELEGRAM_TOKEN\' needs to be set.')
+    logging.info('Both \'TELEGRAM_CHANNEL_ID\' and \'TELEGRAM_TOKEN\' env. variables must be set.')
     sys.exit(1)
     
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID')

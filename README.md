@@ -14,8 +14,25 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 
 ![Web-UI screenshot](screen.png)
 
+## Build it
+```
+git clone https://github.com/autogun/sammy_ofer.git
+cd sammy_ofer
+docker build . -t sammy_ofer
+```
+
+## Run it
+```
+docker run -d --name sammy_ofer \
+    --publish 5000:5000 \
+    --restart=on-failure \
+    --env TELEGRAM_CHANNEL_ID=<required> \
+    --env TELEGRAM_TOKEN=<required> \
+    sammy_ofer:latest
+```
+
 ## TODO
 
 - [ ] Cron configuation (some sort of UI?)
 - [ ] **Delete** option currently does absolutely nothing
-- [ ] Use SQLite instead of a dict. file
+- [ ] Use SQLite instead of a dictionary file
