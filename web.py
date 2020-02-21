@@ -13,8 +13,12 @@ import web_scrape
 
 try:
     locale.setlocale(locale.LC_TIME, "he_IL")       # MacOS
-except Exception as err:
-    locale.setlocale(locale.LC_TIME, "he_IL.utf-8") # Ubuntu
+except locale.Error:
+    try:
+        # apt-get install language-pack-he language-pack-he-base
+        locale.setlocale(locale.LC_TIME, "he_IL.utf-8") # Ubuntu
+    except locale.Error:
+        pass
 
 def b64encode(s):
     return base64.b64encode(s.encode())
@@ -39,7 +43,7 @@ def nextGame():
 @app.route('/action', methods=['POST'])
 def action():
     for key, val in request.form.items():
-        # Dirty hack to fix team names that have " in them. I.E: מכבי ת"א
+        # Dirty hack to make a valid JSON for team names with double-quote, i.e מכבי ת"א
         fixed_val = re.sub(r'("[^:,]*)"([^:,]*")', r"\1\"\2", val)
         return render_template('action.html', myval=json.loads(fixed_val))
 
@@ -64,7 +68,7 @@ def update():
         SPECTATORS[(home_team, guest_team)] = d
         with open(spectators_file, 'w') as file:
             file.write(f'SPECTATORS = {SPECTATORS}')
-        return Markup("I went out of my way to make this work!")
+        return Markup("New entry created and saved!")
 
 if __name__ == "__main__":
     app.run

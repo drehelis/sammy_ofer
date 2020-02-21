@@ -1,3 +1,4 @@
+ipython
 beautifulsoup4
 flask
 html5lib
