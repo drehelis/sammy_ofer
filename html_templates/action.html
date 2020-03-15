@@ -39,12 +39,11 @@
         <div class="block_container">
             <label class="block1 block2" for="specs_word">אוהדים:</label>
             <select id="specs_word" name="specs_word">
+                <option {% if myval['specs_word'] == "ללא" %}selected="selected" {% endif %} value="ללא">ללא</option>
                 <option {% if myval['specs_word'] == "קטן" %}selected="selected" {% endif %} value="קטן">קטן</option>
-                <option {% if myval['specs_word'] == "בינוני" %}selected="selected" {% endif %} value="בינוני">בינוני
-                </option>
+                <option {% if myval['specs_word'] == "בינוני" %}selected="selected" {% endif %} value="בינוני">בינוני</option>
                 <option {% if myval['specs_word'] == "גדול" %}selected="selected" {% endif %} value="גדול">גדול</option>
-                <option {% if myval['specs_word'] == "גדול מאוד" %}selected="selected" {% endif %} value="גדול מאוד">
-                    גדול מאוד</option>
+                <option {% if myval['specs_word'] == "גדול מאוד" %}selected="selected" {% endif %} value="גדול מאוד">גדול מאוד</option>
             </select>
         </div>
         <div class="block_container">
