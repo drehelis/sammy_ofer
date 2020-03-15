@@ -59,6 +59,8 @@ class WebScrape():
             return scraped
         deco_games = {}
         for key, value in scraped.items():
+            if not value[1]: # Skip entries with empty dates
+                continue
             scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%Y%H:%M')
             home_team = value[0]
             game_hour = scraped_date_time.time().strftime("%H:%M")
