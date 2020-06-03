@@ -41,7 +41,7 @@ def createMessage(*args):
 צפי חסימת כבישים: החל מ-*{game_hour_delta}*
 צפי אוהדים משוער: *{specs_word}* ({sepcs_number:,})
 
-_(מקור: מנהלת הליגות בכדורגל, עונה 2018/19)_
+_השירות מובא ב-❤️ לתושבי חיפה_
     """
 
 def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
