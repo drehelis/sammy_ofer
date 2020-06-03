@@ -43,9 +43,7 @@ def nextGame():
 @app.route('/action', methods=['POST'])
 def action():
     for key, val in request.form.items():
-        # Dirty hack to make a valid JSON for team names with double-quote, i.e מכבי ת"א
-        fixed_val = re.sub(r'("[^:,]*)"([^:,]*")', r"\1\"\2", val)
-        return render_template('action.html', myval=json.loads(fixed_val))
+        return render_template('action.html', myval=json.loads(val))
 
 @app.route('/update', methods=['POST'])
 def update():
