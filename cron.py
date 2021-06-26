@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import os
+from random import choice
 import datetime
 import logging
+import os
 import sys
 import telegram
 import web_scrape
+
 
 logging.basicConfig(level=logging.INFO)
 
@@ -18,43 +20,56 @@ TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID')
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
 def checkForGamesToday(games):
+    # Set today to datetime.date(YEAR, M, D) when debugging specific date
     today = datetime.date.today()
     for key, value in games.items():
         if today == value[0].date():
             logging.info("Yesh mishak!")
-            return value
+            yield value
     return False
 
 def createMessage(*args):
-    m = args[0]
-    scraped_date_time = m[0]
-    home_team = m[1]
-    game_hour = m[2]
-    guest_team = m[3]
-    game_time_delta = m[4]
-    game_hour_delta = m[5]
-    specs_word = m[6]
-    sepcs_number = m[7]
-    return f"""
+    for item in args[0]:
+        scraped_date_time = item[0]
+        home_team = item[1]
+        game_hour = item[2]
+        guest_team = item[3]
+        game_time_delta = item[4]
+        road_block_time = item[5]
+        specs_word = item[6]
+        sepcs_number = item[7]
+
+        custom_road_block_time = f"החל מ-{road_block_time}"
+        if specs_word == "ללא":
+            custom_road_block_time = "אין"
+        elif specs_word == "גדול מאוד":
+            custom_road_block_time = f"החל מ-{(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
+
+        yield f"""
 משחק ⚽ *היום* בשעה *{game_hour}*
 משחקים: `{home_team} | {guest_team}`
-צפי חסימת כבישים: החל מ-*{game_hour_delta}*
+צפי חסימת כבישים: *{custom_road_block_time}*
 צפי אוהדים משוער: *{specs_word}* ({sepcs_number:,})
 
-_השירות מובא ב-❤️ לתושבי חיפה_
-    """
+"""
+emoji_hearts = ['💖','💞','💚','💜','💓','💙','💘','🤍','💗',
+                '💕','💛','🧡','💝','🤎']
+def random_emoji():
+    return choice(emoji_hearts)
 
 def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     bot = telegram.Bot(token=token)
-    bot.sendMessage(chat_id, text=msg, parse_mode=telegram.ParseMode.MARKDOWN)
+    msgToSend = list(msg)
+    msgToSend.append(f"_השירות מובא ב-{random_emoji()} לתושבי חיפה_")
+    bot.sendMessage(chat_id, text=''.join(msgToSend), parse_mode=telegram.ParseMode.MARKDOWN)
     logging.info('Telegram message sent!')
 
 if __name__ == "__main__":
     web = web_scrape.WebScrape()
     scrape = web.scrape()
     games = web.decoratored_games(scrape)
-
-    gameIsOnToday = checkForGamesToday(games)
+    generatedData = checkForGamesToday(games)
+    gameIsOnToday = list(generatedData)
     if gameIsOnToday:
         message = createMessage(gameIsOnToday)
         send(message)

@@ -30,7 +30,7 @@ def random_ua():
 class WebScrape():
     def __init__(self):
         self.url = 'https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון'
-        self.time_delta = 3
+        self.time_delta = 2
 
     def scrape(self):
         try:
@@ -61,7 +61,22 @@ class WebScrape():
         for key, value in scraped.items():
             if not value[1]: # Skip entries with empty dates
                 continue
-            scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%Y%H:%M')
+            try:
+              scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%Y%H:%M')
+            except ValueError as err:
+              try:
+                scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%y%H:%M')
+              except ValueError as err:
+                try:
+                  scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%Y%H:%M')
+                except ValueError as err:
+                  try:
+                    scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%y%H:%M')
+                  except ValueError as err:
+                    try:
+                      scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%y')
+                    except ValueError as err:
+                      raise
             home_team = value[0]
             game_hour = scraped_date_time.time().strftime("%H:%M")
             guest_team = value[2]
