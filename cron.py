@@ -61,7 +61,9 @@ def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     bot = telegram.Bot(token=token)
     msgToSend = list(msg)
     msgToSend.append(f"_השירות מובא ב-{random_emoji()} לתושבי חיפה_")
-    bot.sendMessage(chat_id, text=''.join(msgToSend), parse_mode=telegram.ParseMode.MARKDOWN)
+    msgToSend.append(f"\n\n")
+    msgToSend.append(f"[https://t.me/sammy_ofer_notification_channel](https://t.me/sammy_ofer_notification_channel)")
+    bot.sendMessage(chat_id, text=''.join(msgToSend), parse_mode=telegram.ParseMode.MARKDOWN, disable_web_page_preview=True)
     logging.info('Telegram message sent!')
 
 if __name__ == "__main__":
