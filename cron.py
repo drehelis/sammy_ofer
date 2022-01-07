@@ -39,8 +39,11 @@ def createMessage(*args):
         specs_word = item[6]
         sepcs_number = item[7]
 
+        custom_sepcs_number = f"({sepcs_number:,})"
         custom_road_block_time = f"החל מ-{road_block_time}"
-        if specs_word == "ללא":
+        if int(sepcs_number) >= 28000:
+            custom_sepcs_number = f"({sepcs_number:,}) 😱"
+        if specs_word == "ללא" or int(sepcs_number) < 5000:
             custom_road_block_time = "אין"
         elif specs_word == "גדול מאוד":
             custom_road_block_time = f"החל מ-{(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
@@ -49,7 +52,7 @@ def createMessage(*args):
 משחק ⚽ *היום* בשעה *{game_hour}*
 משחקים: `{home_team} | {guest_team}`
 צפי חסימת כבישים: *{custom_road_block_time}*
-צפי אוהדים משוער: *{specs_word}* ({sepcs_number:,})
+צפי אוהדים משוער: *{specs_word}* {custom_sepcs_number}
 
 """
 emoji_hearts = ['💖','💞','💚','💜','💓','💙','💘','🤍','💗',
