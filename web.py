@@ -49,7 +49,7 @@ def action():
 def update():
     home_team = request.form['home_team']
     guest_team = request.form['guest_team']
-    d = {"number": int(request.form['sepcs_number']), "word": request.form['specs_word']}
+    d = {"number": int(request.form['specs_number']), "word": request.form['specs_word']}
     
     # Backup the file before editing it
     spectators_file = './spectators.py'
@@ -66,7 +66,7 @@ def update():
         SPECTATORS[(home_team, guest_team)] = d
         with open(spectators_file, 'w') as file:
             file.write(f'SPECTATORS = {SPECTATORS}')
-        return Markup("New entry created and saved!")
+        return Markup("New entry saved!")
 
 if __name__ == "__main__":
     app.run

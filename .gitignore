@@ -3,3 +3,4 @@ __pycache__
 .notes
 .vscode/*
 spectators.py.orig
+spectators.py.backup*

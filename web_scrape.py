@@ -83,7 +83,7 @@ class WebScrape():
             game_time_delta = scraped_date_time - datetime.timedelta(hours=self.time_delta)
             game_hour_delta = game_time_delta.time().strftime("%H:%M")
             specs_word = SPECTATORS.get((home_team, guest_team), {}).get('word', 'לא ידוע')
-            sepcs_number = round(SPECTATORS.get((home_team, guest_team), {}).get('number', 0), -3)
+            specs_number = round(SPECTATORS.get((home_team, guest_team), {}).get('number', 0), -3)
             deco_games.update(
                 {
                     key:(
@@ -94,7 +94,7 @@ class WebScrape():
                         game_time_delta,
                         game_hour_delta,
                         specs_word,
-                        sepcs_number
+                        specs_number
                     )
                 }
             )

@@ -86,7 +86,7 @@
                     <select id="action_{{ loop.index }}" name="action">
                         <option option hidden selected>בחר</option>
                         <option id="update"
-                            value='{"action":"update","home_team":"{{ value[1] }}","guest_team":"{{ value[3] | replace('"', '\\"') }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}"}'>
+                            value='{"action":"update","home_team":"{{ value[1] | replace('"', '\\"') }}","guest_team":"{{ value[3] | replace('"', '\\"') }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}"}'>
                             עדכן</option>
                         <option id="delete"
                             value='{"action":"delete","home_team":"{{ value[1] }}","guest_team":"{{ value[3] }}"}'>
