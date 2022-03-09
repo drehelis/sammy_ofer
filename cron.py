@@ -39,6 +39,7 @@ def createMessage(*args):
         specs_word = item[6]
         specs_number = item[7]
 
+        custom_sepcs_number = f"({specs_number:,})"
         custom_road_block_time = f"החל מ-{road_block_time}"
         if int(specs_number) >= 28000:
             custom_sepcs_number = f"({specs_number:,}) 😱"
