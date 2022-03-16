@@ -76,7 +76,12 @@ class WebScrape():
                     try:
                       scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%y')
                     except ValueError as err:
-                      raise
+                      try:
+                        scraped_date_time = datetime.datetime.strptime(value[1], '%A %d/%m %H:%M')
+                        current_year = datetime.datetime.now().year
+                        scraped_date_time = scraped_date_time.replace(year=current_year)
+                      except ValueError as err:
+                        raise
             home_team = value[0]
             game_hour = scraped_date_time.time().strftime("%H:%M")
             guest_team = value[2]

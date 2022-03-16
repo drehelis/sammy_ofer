@@ -2,5 +2,4 @@ __pycache__
 .DS_Store
 .notes
 .vscode/*
-spectators.py.orig
-spectators.py.backup*
+spectators.py*
