@@ -7,7 +7,6 @@ from spectators import SPECTATORS
 import base64
 import json
 import locale
-import re
 import shutil
 import web_scrape
 
