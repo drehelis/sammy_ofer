@@ -89,7 +89,6 @@ class WebScrape():
                           scraped_date_time = scraped_date_time.replace(year=current_year)
                         except:
                           pass
-                          # raise
                     except ValueError as err:
                       raise
           if type(scraped_date_time) is not datetime.datetime:
