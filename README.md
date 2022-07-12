@@ -1,5 +1,5 @@
 # Sammy Ofer Notification Bot 🤖
-
+![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel)
 ## Description
 
 A small time scheduled (cron) _web-scraper_ to notify of upcoming game events taking place in [Sammy Ofer Stadium](https://www.haifa-stadium.com/ "Sammy Ofer Stadium").
@@ -29,6 +29,14 @@ docker run -d --name sammy_ofer \
     --env TELEGRAM_CHANNEL_ID=<required> \
     --env TELEGRAM_TOKEN=<required> \
     sammy_ofer:latest
+```
+
+## Debug
+```
+pip install -r requirements.txt
+export FLASK_APP=web.py
+export FLASK_ENV=development
+flask run --port=5001
 ```
 
 ## TODO
