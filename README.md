@@ -31,6 +31,14 @@ docker run -d --name sammy_ofer \
     sammy_ofer:latest
 ```
 
+## Debug
+```
+pip install -r requirements.txt
+export FLASK_APP=web.py
+export FLASK_ENV=development
+flask run --port=5001
+```
+
 ## TODO
 
 - [ ] Cron configuation (some sort of UI?)
