@@ -100,18 +100,20 @@ class WebScrape():
           game_hour_delta = game_time_delta.time().strftime("%H:%M")
           specs_word = SPECTATORS.get((home_team, guest_team), {}).get('word', 'לא ידוע')
           specs_number = round(SPECTATORS.get((home_team, guest_team), {}).get('number', 0), -3)
+          poll = SPECTATORS.get((home_team, guest_team), {}).get('poll')
           deco_games.update(
-              {
-                  key:(
-                      scraped_date_time,
-                      home_team,
-                      game_hour,
-                      guest_team,
-                      game_time_delta,
-                      game_hour_delta,
-                      specs_word,
-                      specs_number
-                  )
-              }
+            {
+              key:(
+                scraped_date_time,
+                home_team,
+                game_hour,
+                guest_team,
+                game_time_delta,
+                game_hour_delta,
+                specs_word,
+                specs_number,
+                poll
+              )
+            }
           )
         return deco_games

@@ -48,7 +48,11 @@ def action():
 def update():
     home_team = request.form['home_team']
     guest_team = request.form['guest_team']
-    d = {"number": int(request.form['specs_number']), "word": request.form['specs_word']}
+    d = {
+        "number": int(request.form['specs_number']),
+        "word": request.form['specs_word'],
+        "poll": request.form.get('poll', 'off'),
+    }
     
     # Backup the file before editing it
     spectators_file = './spectators.py'
@@ -69,5 +73,3 @@ def update():
 
 if __name__ == "__main__":
     app.run
-
-    
