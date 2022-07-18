@@ -58,7 +58,7 @@ def createMessage(*args):
         custom_road_block_time = f"החל מ-{road_block_time}"
         if int(specs_number) >= 28000:
             custom_sepcs_number = f"({specs_number:,}) 😱"
-        if specs_word == "ללא" or int(specs_number) < 5000:
+        if specs_word == "ללא" or int(specs_number) =< 6000:
             custom_road_block_time = "אין"
         elif specs_word == "גדול מאוד":
             custom_road_block_time = f"החל מ-{(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
