@@ -69,6 +69,7 @@
                 <div class="divTableHead">אוהדים</div>
                 <div class="divTableHead">מספר</div>
                 <div class="divTableHead">פעולה</div>
+                <div class="divTableHead">סקר</div>
             </div>
         </div>
         {% for key, value in mygames.items() %}
@@ -86,7 +87,7 @@
                     <select id="action_{{ loop.index }}" name="action">
                         <option option hidden selected>בחר</option>
                         <option id="update"
-                            value='{"action":"update","home_team":"{{ value[1] | replace('"', '\\"') }}","guest_team":"{{ value[3] | replace('"', '\\"') }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}"}'>
+                            value='{"action":"update","home_team":"{{ value[1] | replace('"', '\\"') }}","guest_team":"{{ value[3] | replace('"', '\\"') }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}", "poll": "{{ value[8] }}"}'>
                             עדכן</option>
                         <option id="delete"
                             value='{"action":"delete","home_team":"{{ value[1] }}","guest_team":"{{ value[3] }}"}'>
@@ -95,6 +96,7 @@
                     </select>
                 </form>
             </div>
+            <div class="divTableCell"><input type="checkbox" id="poll" disabled="disabled" {% if value[8] == 'on' %}checked{% endif %}></div>
         </div>
         {% endfor %}
     </div>
