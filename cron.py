@@ -8,6 +8,7 @@ import os
 import sys
 import telegram
 import web_scrape
+import json
 
 
 logging.basicConfig(level=logging.INFO)
@@ -27,7 +28,8 @@ poll_sentences = [
     'סקר: מי תנצח במפגש בין שתי הקבוצות?',
     'סקר: מי תיקח הפעם?',
     'סקר: מי האחת שתנצח ותפתח ברגל ימין?',
-    'סקר: מי הקבוצה הטובה יותר?'
+    'סקר: מי הקבוצה הטובה יותר?',
+    'סקר: אילו אוהדים יחגגו היום?'
 ]
 
 def random_choice(rand):
