@@ -42,7 +42,7 @@ class WebScrape():
             response = requests.get(self.url, headers=random_ua())
             soup = BeautifulSoup(response.text, 'html5lib')
         except requests.exceptions.RequestException as err:
-            logging.info(ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, err.args[0].reason))
+            logging.error(ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, err.args[0].reason))
             return ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, err.args[0].reason)
 
         games_list = []
@@ -51,7 +51,7 @@ class WebScrape():
             games_list.append(text)
 
         if len(games_list) < 2:
-            logging.info(ERROR_MESSAGE['NO_GAMES_MSG'])
+            logging.warn(ERROR_MESSAGE['NO_GAMES_MSG'])
             return ERROR_MESSAGE['NO_GAMES_MSG']
         
         # https://stackoverflow.com/a/44104805/3399402
@@ -63,6 +63,7 @@ class WebScrape():
     def decoratored_games(self, scraped):
         if isinstance(scraped, str):
             return scraped
+
         deco_games = {}
         for key, value in scraped.items():
           scraped_date_time = ''
@@ -91,19 +92,22 @@ class WebScrape():
                           pass
                     except ValueError as err:
                       raise
+
           if type(scraped_date_time) is not datetime.datetime:
             continue
+
           home_team = value[0]
           game_hour = scraped_date_time.time().strftime("%H:%M")
           guest_team = value[2]
           game_time_delta = scraped_date_time - datetime.timedelta(hours=self.time_delta)
           game_hour_delta = game_time_delta.time().strftime("%H:%M")
           specs_word = SPECTATORS.get((home_team, guest_team), {}).get('word', 'לא ידוע')
-          specs_number = round(SPECTATORS.get((home_team, guest_team), {}).get('number', 0), -3)
+          specs_number = round(SPECTATORS.get((home_team, guest_team), {}).get('number', 0), -2)
           poll = SPECTATORS.get((home_team, guest_team), {}).get('poll')
+          notes = SPECTATORS.get((home_team, guest_team), {}).get('notes', '')
           deco_games.update(
             {
-              key:(
+              key: (
                 scraped_date_time,
                 home_team,
                 game_hour,
@@ -112,7 +116,8 @@ class WebScrape():
                 game_hour_delta,
                 specs_word,
                 specs_number,
-                poll
+                poll,
+                notes
               )
             }
           )

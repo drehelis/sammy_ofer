@@ -56,6 +56,7 @@ def createMessage(*args):
         specs_word = item[6]
         specs_number = item[7]
         poll = item[8]
+        notes = item[9]
 
         custom_sepcs_number = f"({specs_number:,})"
         custom_road_block_time = f"החל מ-{road_block_time}"
@@ -72,14 +73,23 @@ def createMessage(*args):
 צפי חסימת כבישים: *{custom_road_block_time}*
 צפי אוהדים משוער: *{specs_word}* {custom_sepcs_number}
 
-""", (scraped_date_time, home_team, guest_team, poll)
+""", (scraped_date_time, home_team, guest_team, poll, notes)
 
 def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     bot = telegram.Bot(token=token)
     iterator = next(msg)
 
     msgToSend = list(iterator[:-1])
-    pollOptions = iterator[-1]
+    iterated_data = iterator[-1]
+
+    scraped_date_time = iterated_data[0]
+    home_team = iterated_data[1]
+    guest_team = iterated_data[2]
+    poll = iterated_data[3]
+    notes = iterated_data[4]
+
+    if notes:
+        msgToSend.append(f"📣: {notes}\n\n")
 
     msgToSend.append(f"_השירות מובא ב-{random_choice(emoji_hearts)} לתושבי חיפה_")
     msgToSend.append(f"\n\n")
@@ -91,11 +101,6 @@ def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
         disable_web_page_preview=True,
     )
     logging.info('Telegram message sent!')
-
-    scraped_date_time = pollOptions[0]
-    home_team = pollOptions[1]
-    guest_team = pollOptions[2]
-    poll = pollOptions[3]
 
     if poll == 'on':
         bot.sendPoll(

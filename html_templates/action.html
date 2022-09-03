@@ -14,7 +14,7 @@
         }
 
         .block2 {
-            width: 80px;
+            width: 86px;
         }
     </style>
 </head>
@@ -23,7 +23,7 @@
     {% if myval['action'] == 'delete' %}
     <h1>{{ myval['action'] | upper}}</h1>
     <div>
-        <p><input type="submit" value="Click to {{ myval['action'] | upper}}" /></p>
+        <p><input type="submit" value="{{ myval['action'] | upper}}" /></p>
     </div>
     {% else %}
     <h1>{{ myval['action'] | upper}}</h1>
@@ -37,8 +37,12 @@
             <input type="text" id="guest_team" name="guest_team" value="{{ myval['guest_team'] }}" readonly>
         </div>
         <div class="block_container">
-            <label class="block1 block2" for="specs_word">אוהדים:</label>
-            <select id="specs_word" name="specs_word">
+            <label class="block1 block2" for="specs_number">מס. אוהדים:</label>
+            <input type="number" name="specs_number" value="{{ myval['specs_number'] }}" id="specNumber">
+        </div>
+        <div class="block_container">
+            <label class="block1 block2" for="specs_word">כמות:</label>
+            <select id="specWord" name="specs_word">
                 <option {% if myval['specs_word'] == "ללא" %}selected="selected" {% endif %} value="ללא">ללא</option>
                 <option {% if myval['specs_word'] == "קטן" %}selected="selected" {% endif %} value="קטן">קטן</option>
                 <option {% if myval['specs_word'] == "בינוני" %}selected="selected" {% endif %} value="בינוני">בינוני</option>
@@ -47,12 +51,12 @@
             </select>
         </div>
         <div class="block_container">
-            <label class="block1 block2" for="specs_number">מספר:</label>
-            <div class="block1"><input type="text" name="specs_number" value="{{ myval['specs_number'] }}"></div>
+            <label class="block1 block2" for="poll">סקר:</label>
+            <div class="block1"><input type="checkbox" name="poll" {% if myval['poll'] == 'on' %}checked=true{% endif %}></div>
         </div>
         <div class="block_container">
-            <label class="block1 block2" for="poll">סקר:</label>
-            <div class="block1"><input type="checkbox" name="poll" {% if myval['poll'] == 'on' %}checked=true{% endif %}</div>
+            <label class="block1 block2" for="notes">הערות:</label>
+            <textarea id="notes" name="notes" rows="2">{{ myval['notes'] }}</textarea>
         </div>
         <p><input type="submit" value="{{ myval['action'] | upper}}" /></p>
     </form>
