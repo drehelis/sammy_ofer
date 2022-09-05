@@ -1,6 +1,1 @@
-ipython
-beautifulsoup4
-flask
-html5lib
-python-telegram-bot
-requests
+./.devcontainer/requirements.prod.txt

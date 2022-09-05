@@ -70,6 +70,7 @@
                 <div class="divTableHead">מספר</div>
                 <div class="divTableHead">פעולה</div>
                 <div class="divTableHead">סקר</div>
+                <div class="divTableHead">הערות</div>
             </div>
         </div>
         {% for key, value in mygames.items() %}
@@ -86,17 +87,28 @@
                 <form action="/action" method="post">
                     <select id="action_{{ loop.index }}" name="action">
                         <option option hidden selected>בחר</option>
-                        <option id="update"
-                            value='{"action":"update","home_team":"{{ value[1] | replace('"', '\\"') }}","guest_team":"{{ value[3] | replace('"', '\\"') }}", "specs_word": "{{ value[6] }}", "specs_number": "{{ value[7] }}", "poll": "{{ value[8] }}"}'>
+                        <option id="update" value='{
+                                "action":"update",
+                                "home_team":"{{ value[1] | replace('"', '\\"') }}",
+                                "guest_team":"{{ value[3] | replace('"', '\\"') }}",
+                                "specs_word": "{{ value[6] }}",
+                                "specs_number": "{{ value[7] }}",
+                                "poll": "{{ value[8] }}",
+                                "notes": "{{ value[9] }}"}'
+                            >
                             עדכן</option>
-                        <option id="delete"
-                            value='{"action":"delete","home_team":"{{ value[1] }}","guest_team":"{{ value[3] }}"}'>
+                        <option id="delete" value='{
+                            "action":"delete",
+                            "home_team":"{{ value[1] }}",
+                            "guest_team":"{{ value[3] }}"}'
+                            >
                             מחק
                         </option>
                     </select>
                 </form>
             </div>
             <div class="divTableCell"><input type="checkbox" id="poll" disabled="disabled" {% if value[8] == 'on' %}checked{% endif %}></div>
+            <div class="divTableCell">{{ value[9] }}</div>
         </div>
         {% endfor %}
     </div>

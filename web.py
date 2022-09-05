@@ -37,6 +37,7 @@ def nextGame():
     games = web.decoratored_games(scrape)
     if isinstance(games, str):
         return Markup(scrape)
+
     return render_template('next.html', mygames=games)
 
 @app.route('/action', methods=['POST'])
@@ -52,6 +53,7 @@ def update():
         "number": int(request.form['specs_number']),
         "word": request.form['specs_word'],
         "poll": request.form.get('poll', 'off'),
+        "notes": request.form.get('notes', '')
     }
     
     # Backup the file before editing it
