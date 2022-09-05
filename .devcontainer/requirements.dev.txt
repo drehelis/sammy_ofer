@@ -1,3 +1,4 @@
-pylint
 autopep8
 black
+ipython
+pylint
