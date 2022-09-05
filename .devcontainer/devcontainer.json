@@ -1,10 +1,10 @@
 {
    "dockerFile": "Dockerfile",
    "extensions": [
-       "ms-python.python",
-       "ms-python.vscode-pylance",
-       "eamodio.gitlens",
-       "ms-azuretools.vscode-docker",
+      "ms-python.python",
+      "ms-python.vscode-pylance",
+      "eamodio.gitlens",
+      "ms-azuretools.vscode-docker",
       "vscode-icons-team.vscode-icons"
    ],
    "containerUser": "user"
