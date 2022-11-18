@@ -56,7 +56,7 @@ class WebScrape():
         
         # https://stackoverflow.com/a/44104805/3399402
         games = {
-            'game_{}'.format(count): element for count, element in enumerate(zip(*[iter(games_list)]*3), 1)
+            'game_{}'.format(count): element for count, element in enumerate(zip(*[iter(games_list)]*4), 1)
         }
         return games
 
@@ -66,26 +66,27 @@ class WebScrape():
 
         deco_games = {}
         for key, value in scraped.items():
+          league, home_team, str_time, guest_team = value
           scraped_date_time = ''
           try:
-            scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%Y%H:%M')
+            scraped_date_time = datetime.datetime.strptime(str_time, '%d-%m-%Y%H:%M')
           except ValueError as err:
             try:
-              scraped_date_time = datetime.datetime.strptime(value[1], '%d-%m-%y%H:%M')
+              scraped_date_time = datetime.datetime.strptime(str_time, '%d-%m-%y%H:%M')
             except ValueError as err:
               try:
-                scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%Y%H:%M')
+                scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%Y%H:%M')
               except ValueError as err:
                 try:
-                  scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%y%H:%M')
+                  scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%y%H:%M')
                 except ValueError as err:
                   try:
-                    scraped_date_time = datetime.datetime.strptime(value[1], '%d/%m/%y')
+                    scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%y')
                   except ValueError as err:
                     try:
                       for d in ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']:
                         try:
-                          scraped_date_time = datetime.datetime.strptime(value[1], f'{d} %d/%m %H:%M')
+                          scraped_date_time = datetime.datetime.strptime(str_time, f'{d} %d/%m %H:%M')
                           current_year = datetime.datetime.now().year
                           scraped_date_time = scraped_date_time.replace(year=current_year)
                         except:
@@ -96,9 +97,7 @@ class WebScrape():
           if type(scraped_date_time) is not datetime.datetime:
             continue
 
-          home_team = value[0]
           game_hour = scraped_date_time.time().strftime("%H:%M")
-          guest_team = value[2]
           game_time_delta = scraped_date_time - datetime.timedelta(hours=self.time_delta)
           game_hour_delta = game_time_delta.time().strftime("%H:%M")
           specs_word = SPECTATORS.get((home_team, guest_team), {}).get('word', 'לא ידוע')
@@ -109,6 +108,7 @@ class WebScrape():
             {
               key: (
                 scraped_date_time,
+                league,
                 home_team,
                 game_hour,
                 guest_team,
