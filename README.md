@@ -35,7 +35,7 @@ docker run -d --name sammy_ofer \
 ```
 pip install -r requirements.txt
 export FLASK_APP=web.py
-export FLASK_ENV=development
+export FLASK_DEBUG=true
 flask run --port=5001
 ```
 

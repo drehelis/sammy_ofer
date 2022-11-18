@@ -47,16 +47,7 @@ def checkForGamesToday(games):
 
 def createMessage(*args):
     for item in args[0]:
-        scraped_date_time = item[0]
-        home_team = item[1]
-        game_hour = item[2]
-        guest_team = item[3]
-        game_time_delta = item[4]
-        road_block_time = item[5]
-        specs_word = item[6]
-        specs_number = item[7]
-        poll = item[8]
-        notes = item[9]
+        scraped_date_time, league, home_team, game_hour, guest_team, game_time_delta, road_block_time, specs_word, specs_number, poll, notes = item
 
         custom_sepcs_number = f"({specs_number:,})"
         custom_road_block_time = f"החל מ-{road_block_time}"
@@ -69,7 +60,7 @@ def createMessage(*args):
 
         yield f"""
 משחק ⚽ *היום* בשעה *{game_hour}*
-משחקים: `{home_team} | {guest_team}`
+*{league}*: `{home_team} | {guest_team}`
 צפי חסימת כבישים: *{custom_road_block_time}*
 צפי אוהדים משוער: *{specs_word}* {custom_sepcs_number}
 

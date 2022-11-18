@@ -7,14 +7,14 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <style>
         div.unstyledTable {
-            width: 1000px;
+            width: 800px;
             border-collapse: collapse;
         }
 
         .divTable.unstyledTable .divTableCell, .divTable.unstyledTable .divTableHead {}
 
         .divTable.unstyledTable .divTableBody .divTableCell {
-            font-size: 12px;
+            font-size: 10px;
         }
 
         .divTable.unstyledTable .divTableHeading {
@@ -43,7 +43,7 @@
         .divTableCell,
         .divTableHead {
             display: table-cell;
-            width: 500px;
+            font-size: 15px;
         }
 
         .divTableHeading {
@@ -64,6 +64,7 @@
                 <div class="divTableHead">תאריך</div>
                 <div class="divTableHead">יום</div>
                 <div class="divTableHead">שעה</div>
+                <div class="divTableHead">ליגה</div>
                 <div class="divTableHead">בית</div>
                 <div class="divTableHead">חוץ</div>
                 <div class="divTableHead">אוהדים</div>
@@ -74,41 +75,43 @@
             </div>
         </div>
         {% for key, value in mygames.items() %}
+        {% set scraped_date_time, league, home_team, game_hour, guest_team, game_time_delta, game_hour_delta, specs_word, specs_number, poll, notes = value %}
         <div class="divTableRow">
             <div class="divTableCell">{{ loop.index }}</div>
-            <div class="divTableCell">{{ value[0].strftime('%Y-%m-%d') }}</div>
-            <div class="divTableCell">{{ value[0].strftime('%A') }}</div>
-            <div class="divTableCell">{{ value[0].strftime('%H:%M') }}</div>
-            <div class="divTableCell">{{ value[1] }}</div>
-            <div class="divTableCell">{{ value[3] }}</div>
-            <div class="divTableCell">{{ value[6] }}</div>
-            <div class="divTableCell" {% if value[7] == 0 %}style="background: yellow;" {% endif %}>{{ value[7] }}</div>
+            <div class="divTableCell">{{ scraped_date_time.strftime('%Y-%m-%d') }}</div>
+            <div class="divTableCell">{{ scraped_date_time.strftime('%A') }}</div>
+            <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
+            <div class="divTableCell">{{ league }}</div>
+            <div class="divTableCell">{{ home_team }}</div>
+            <div class="divTableCell">{{ guest_team }}</div>
+            <div class="divTableCell">{{ specs_word }}</div>
+            <div class="divTableCell" {% if specs_number == 0 %}style="background: yellow;" {% endif %}>{{ specs_number }}</div>
             <div class="divTableCell">
                 <form action="/action" method="post">
                     <select id="action_{{ loop.index }}" name="action">
                         <option option hidden selected>בחר</option>
                         <option id="update" value='{
                                 "action":"update",
-                                "home_team":"{{ value[1] | replace('"', '\\"') }}",
-                                "guest_team":"{{ value[3] | replace('"', '\\"') }}",
-                                "specs_word": "{{ value[6] }}",
-                                "specs_number": "{{ value[7] }}",
-                                "poll": "{{ value[8] }}",
-                                "notes": "{{ value[9] }}"}'
+                                "home_team":"{{ home_team | replace('"', '\\"') }}",
+                                "guest_team":"{{ guest_team | replace('"', '\\"') }}",
+                                "specs_word": "{{ specs_word }}",
+                                "specs_number": "{{ specs_number }}",
+                                "poll": "{{ poll }}",
+                                "notes": "{{ notes }}"}'
                             >
                             עדכן</option>
                         <option id="delete" value='{
                             "action":"delete",
-                            "home_team":"{{ value[1] }}",
-                            "guest_team":"{{ value[3] }}"}'
+                            "home_team":"{{ home_team }}",
+                            "guest_team":"{{ guest_team }}"}'
                             >
                             מחק
                         </option>
                     </select>
                 </form>
             </div>
-            <div class="divTableCell"><input type="checkbox" id="poll" disabled="disabled" {% if value[8] == 'on' %}checked{% endif %}></div>
-            <div class="divTableCell">{{ value[9] }}</div>
+            <div class="divTableCell"><input type="checkbox" id="poll" disabled="disabled" {% if poll == 'on' %}checked{% endif %}></div>
+            <div class="divTableCell">{{ notes }}</div>
         </div>
         {% endfor %}
     </div>
