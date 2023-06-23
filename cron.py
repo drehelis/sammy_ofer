@@ -1,27 +1,31 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
 
 from random import choice
+import asyncio
 import datetime
+import json
 import logging
 import os
 import sys
-import telegram
 import web_scrape
-import json
+
+from dotenv import load_dotenv
+from telegram import Bot, constants
 
 
 logging.basicConfig(level=logging.INFO)
+load_dotenv()
 
 if 'TELEGRAM_CHANNEL_ID' not in os.environ or 'TELEGRAM_TOKEN' not in os.environ:
-    logging.info('Both \'TELEGRAM_CHANNEL_ID\' and \'TELEGRAM_TOKEN\' env. variables must be set.')
+    logging.info(
+        'Both \'TELEGRAM_CHANNEL_ID\' and \'TELEGRAM_TOKEN\' env. variables must be set.')
     sys.exit(1)
-    
+
 TELEGRAM_CHANNEL_ID = os.environ.get('TELEGRAM_CHANNEL_ID')
 TELEGRAM_TOKEN = os.environ.get('TELEGRAM_TOKEN')
 
-emoji_hearts = ['💖','💞','💚','💜','💓','💙','💘','🤍','💗',
-                '💕','💛','🧡','💝','🤎','❤️','❤️‍🔥','💟','❣️','🖤']
+emoji_hearts = ['💖', '💞', '💚', '💜', '💓', '💙', '💘', '🤍', '💗',
+                '💕', '💛', '🧡', '💝', '🤎', '❤️', '❤️‍🔥', '💟', '❣️', '🖤']
 
 poll_sentences = [
     'סקר: מי תנצח?',
@@ -32,8 +36,10 @@ poll_sentences = [
     'סקר: אילו אוהדים יחגגו היום?'
 ]
 
+
 def random_choice(rand):
     return choice(rand)
+
 
 def checkForGamesToday(games):
     # Set today to datetime.date(YEAR, M, D) when debugging specific date
@@ -44,6 +50,7 @@ def checkForGamesToday(games):
             yield value
 
     return False
+
 
 def createMessage(*args):
     for item in args[0]:
@@ -66,43 +73,48 @@ def createMessage(*args):
 
 """, (scraped_date_time, home_team, guest_team, poll, notes)
 
-def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
-    bot = telegram.Bot(token=token)
-    iterator = next(msg)
 
-    msgToSend = list(iterator[:-1])
-    iterated_data = iterator[-1]
+async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
+    async with Bot(token) as bot:
 
-    scraped_date_time = iterated_data[0]
-    home_team = iterated_data[1]
-    guest_team = iterated_data[2]
-    poll = iterated_data[3]
-    notes = iterated_data[4]
+        iterator = next(msg)
 
-    if notes:
-        msgToSend.append(f"📣: {notes}\n\n")
+        msgToSend = list(iterator[:-1])
+        iterated_data = iterator[-1]
 
-    msgToSend.append(f"_השירות מובא ב-{random_choice(emoji_hearts)} לתושבי חיפה_")
-    msgToSend.append(f"\n\n")
-    msgToSend.append(f"[https://t.me/sammy_ofer_notification_channel](https://t.me/sammy_ofer_notification_channel)")
-    bot.sendMessage(
-        chat_id,
-        text=''.join(msgToSend),
-        parse_mode=telegram.ParseMode.MARKDOWN,
-        disable_web_page_preview=True,
-    )
-    logging.info('Telegram message sent!')
+        scraped_date_time = iterated_data[0]
+        home_team = iterated_data[1]
+        guest_team = iterated_data[2]
+        poll = iterated_data[3]
+        notes = iterated_data[4]
 
-    if poll == 'on':
-        bot.sendPoll(
+        if notes:
+            msgToSend.append(f"📣: {notes}\n\n")
+
+        msgToSend.append(
+            f"_השירות מובא ב-{random_choice(emoji_hearts)} לתושבי חיפה_")
+        msgToSend.append(f"\n\n")
+        msgToSend.append(
+            f"[https://t.me/sammy_ofer_notification_channel](https://t.me/sammy_ofer_notification_channel)")
+        await bot.send_message(
             chat_id,
-            random_choice(poll_sentences),
-            json.dumps([home_team, guest_team]),
-            disable_notification=True,
-            protect_content=True,
-            close_date=datetime.datetime.timestamp(scraped_date_time)
+            text=''.join(msgToSend),
+            parse_mode=constants.ParseMode.MARKDOWN,
+            disable_web_page_preview=True,
         )
-        logging.info('Telegram poll sent!')
+        logging.info('Telegram message sent!')
+
+        if poll == 'on':
+            await bot.sendPoll(
+                chat_id,
+                random_choice(poll_sentences),
+                json.dumps([home_team, guest_team]),
+                disable_notification=True,
+                protect_content=True,
+                close_date=datetime.datetime.timestamp(scraped_date_time)
+            )
+            logging.info('Telegram poll sent!')
+
 
 if __name__ == "__main__":
     web = web_scrape.WebScrape()
@@ -112,7 +124,7 @@ if __name__ == "__main__":
     gameIsOnToday = list(generatedData)
     if gameIsOnToday:
         message = createMessage(gameIsOnToday)
-        send(message)
+        asyncio.run(send(message))
     else:
         logging.info('There is only one thing we say to death - Not today!')
         sys.exit(1)

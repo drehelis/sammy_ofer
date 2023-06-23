@@ -5,6 +5,7 @@ from bs4 import BeautifulSoup
 from random import choice
 from spectators import SPECTATORS
 import datetime
+from dateutil import parser
 import logging
 import requests
 
@@ -13,20 +14,16 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
     level=logging.INFO)
 
 DESKTOP_AGENTS = [
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.0.0 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:101.0) Gecko/20100101 Firefox/101.0',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Safari/605.1.15',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.88 Safari/537.36',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:71.0) Gecko/20100101 Firefox/71.0',
-  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/12.1.1 Safari/605.1.15',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36',
-  'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:65.0) Gecko/20100101 Firefox/65.0'
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
+  'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/114.0',
+  'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36'
 ]
 
 ERROR_MESSAGE = {
     'NO_GAMES_MSG': "List returned empty, no games today?",
-    'CONNECT_ERROR': "Couldn't connect to {}{}"
+    'CONNECT_ERROR': "Couldn't connect to {}. Error: {}"
 }
 
 def random_ua():
@@ -42,8 +39,8 @@ class WebScrape():
             response = requests.get(self.url, headers=random_ua())
             soup = BeautifulSoup(response.text, 'html5lib')
         except requests.exceptions.RequestException as err:
-            logging.error(ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, err.args[0].reason))
-            return ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, err.args[0].reason)
+            logging.error(ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, str(err)))
+            return ERROR_MESSAGE['CONNECT_ERROR'].format(self.url, str(err))
 
         games_list = []
         for div in soup.find_all("div", {"class": "elementor-text-editor elementor-clearfix"}):
@@ -67,33 +64,9 @@ class WebScrape():
         deco_games = {}
         for key, value in scraped.items():
           league, home_team, str_time, guest_team = value
-          scraped_date_time = ''
-          try:
-            scraped_date_time = datetime.datetime.strptime(str_time, '%d-%m-%Y%H:%M')
-          except ValueError as err:
-            try:
-              scraped_date_time = datetime.datetime.strptime(str_time, '%d-%m-%y%H:%M')
-            except ValueError as err:
-              try:
-                scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%Y%H:%M')
-              except ValueError as err:
-                try:
-                  scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%y%H:%M')
-                except ValueError as err:
-                  try:
-                    scraped_date_time = datetime.datetime.strptime(str_time, '%d/%m/%y')
-                  except ValueError as err:
-                    try:
-                      for d in ['ראשון', 'שני', 'שלישי', 'רביעי', 'חמישי', 'שישי', 'שבת']:
-                        try:
-                          scraped_date_time = datetime.datetime.strptime(str_time, f'{d} %d/%m %H:%M')
-                          current_year = datetime.datetime.now().year
-                          scraped_date_time = scraped_date_time.replace(year=current_year)
-                        except:
-                          pass
-                    except ValueError as err:
-                      raise
-
+          tidy_str_time = ''.join(char for char in str_time if not char.isalpha())
+          scraped_date_time = parser.parse(tidy_str_time)
+                   
           if type(scraped_date_time) is not datetime.datetime:
             continue
 
