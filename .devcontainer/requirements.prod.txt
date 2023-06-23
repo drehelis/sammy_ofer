@@ -1,5 +1,7 @@
 beautifulsoup4
 flask
 html5lib
+python-dotenv
 python-telegram-bot
 requests
+python-dateutil

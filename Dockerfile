@@ -10,6 +10,7 @@ RUN apk add --update \
     libc-dev \
     libffi-dev \
     openssl-dev \
+    musl-locales \
     && rm -rf /var/cache/apk/*
 
 COPY html_templates ./html_templates

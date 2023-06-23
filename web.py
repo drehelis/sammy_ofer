@@ -15,7 +15,7 @@ try:
 except locale.Error:
     try:
         # apt-get install language-pack-he language-pack-he-base
-        locale.setlocale(locale.LC_TIME, "he_IL.utf-8") # Ubuntu
+        locale.setlocale(locale.LC_TIME, "he_IL.UTF-8") # Ubuntu
     except locale.Error:
         pass
 
