@@ -7,8 +7,10 @@ export FLASK_ENV=development
 CRON_PATH="/var/spool/cron/crontabs"
 CRON_FILE="$CRON_PATH/root"
 
-echo "0 9 * * * python $(readlink -f cron.py)" >> $CRON_FILE
-chmod 0600 "$CRON_FILE"
+if ! grep -q "cron.py" $CRON_FILE; then
+  echo "0 6 * * * python $(readlink -f cron.py)" >> $CRON_FILE
+  chmod 0600 "$CRON_FILE"
+fi
 
 crond -L /var/log/crond -c $CRON_PATH
 
