@@ -64,10 +64,14 @@ class WebScrape():
         deco_games = {}
         for key, value in scraped.items():
           league, home_team, str_time, guest_team = value
-          tidy_str_time = ''.join(char for char in str_time if not char.isalpha())
+          
+          if len(list(filter(None, value))) != 4: # skip if tuple is not whole
+              continue
+
+          tidy_str_time = ''.join(char for char in str_time if not char.isalpha()).strip()
           scraped_date_time = parser.parse(tidy_str_time)
-                   
-          if type(scraped_date_time) is not datetime.datetime:
+
+          if type(scraped_date_time) is not datetime.datetime: # skip if date is in bad format
             continue
 
           game_hour = scraped_date_time.time().strftime("%H:%M")
