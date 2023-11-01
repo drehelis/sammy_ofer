@@ -50,7 +50,7 @@ class WebScrape():
         if len(games_list) < 2:
             logging.warn(ERROR_MESSAGE['NO_GAMES_MSG'])
             return ERROR_MESSAGE['NO_GAMES_MSG']
-        
+
         # https://stackoverflow.com/a/44104805/3399402
         games = {
             'game_{}'.format(count): element for count, element in enumerate(zip(*[iter(games_list)]*4), 1)
@@ -64,11 +64,15 @@ class WebScrape():
         deco_games = {}
         for key, value in scraped.items():
           league, home_team, str_time, guest_team = value
-          
+
           if len(list(filter(None, value))) != 4: # skip if tuple is not whole
               continue
 
           tidy_str_time = ''.join(char for char in str_time if not char.isalpha()).strip()
+
+          if not tidy_str_time: # skip entry if returns nothing (usually when there's hebrew input instead of date)
+              continue
+
           scraped_date_time = parser.parse(tidy_str_time)
 
           if type(scraped_date_time) is not datetime.datetime: # skip if date is in bad format

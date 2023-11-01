@@ -42,9 +42,9 @@ def random_choice(rand):
 
 
 def checkForGamesToday(games):
-    # Set today to datetime.date(YEAR, M, D) when debugging specific date
+    # Set today to datetime.date(YEAR, D, M) when debugging specific date
     today = datetime.date.today()
-    today = datetime.date(today.year, today.month, today.day)
+    today = datetime.date(today.year, today.day % 12 or 12, today.month % 31 or 31)
     for key, value in games.items():
         if today == value[0].date():
             logging.info("Yesh mishak!")
