@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-from flask import Flask, render_template, Markup, request
+from flask import Flask, render_template, request
+from markupsafe import Markup
 from spectators import SPECTATORS
 import base64
 import json
