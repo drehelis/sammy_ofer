@@ -82,7 +82,7 @@ class WebScrape:
                 not tidy_str_time
             ):  # skip entry if returns nothing (usually when there's hebrew input instead of date)
                 continue
-            
+
             scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
 
             if (
