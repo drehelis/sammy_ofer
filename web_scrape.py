@@ -46,7 +46,7 @@ class WebScrape:
             return f"<pre>{str(err)}</pre>"
 
         games_list = []
-        class_regex = re.compile("elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
+        class_regex = re.compile("1elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
 
         if self.soup:
             result = self.soup.find_all("div", {"class": class_regex})
@@ -60,7 +60,9 @@ class WebScrape:
                         games_list.append(text)
 
         if len(games_list) < 2:
-            return f"<pre>List returned empty, no games today? Scrape result: {result}</pre>"
+            msg = f"List returned empty, no games today? Scrape result: {result}"
+            logging.warning(msg)
+            return f"<pre>{msg}</pre>"
 
         # https://stackoverflow.com/a/44104805/3399402
         games = {
