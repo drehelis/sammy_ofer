@@ -1,4 +1,4 @@
-FROM python:3
+FROM python:3-slim
 
 ARG USER_NAME="user"
 ARG USER_UID=1000

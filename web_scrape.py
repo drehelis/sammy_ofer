@@ -8,7 +8,7 @@ import datetime
 from dateutil import parser
 import logging
 import requests
-
+import re
 
 logging.basicConfig(
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
@@ -22,12 +22,6 @@ DESKTOP_AGENTS = [
     "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
 ]
 
-ERROR_MESSAGE = {
-    "NO_GAMES_MSG": "List returned empty, no games today?",
-    "CONNECT_ERROR": "Couldn't connect to {}. Error: {}",
-}
-
-
 def random_ua():
     return {"User-Agent": choice(DESKTOP_AGENTS)}
 
@@ -36,26 +30,39 @@ class WebScrape:
     def __init__(self):
         self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
         self.time_delta = 2
+        self.soup = None
 
     def scrape(self):
         try:
-            response = requests.get(self.url, headers=random_ua())
-            soup = BeautifulSoup(response.text, "html5lib")
-        except requests.exceptions.RequestException as err:
-            logging.error(ERROR_MESSAGE["CONNECT_ERROR"].format(self.url, str(err)))
-            return ERROR_MESSAGE["CONNECT_ERROR"].format(self.url, str(err))
+            response = requests.get(self.url, headers=random_ua(), timeout=10)
+            response.raise_for_status()
+
+            self.soup = BeautifulSoup(response.text, "html5lib")
+        except requests.exceptions.HTTPError as err:
+            logging.error(f"HTTPError: {err}")
+            return f"<pre>{str(err)}</pre>"
+        except requests.exceptions.ConnectionError as err:
+            logging.error(f"ConnectionError: {err}")
+            return f"<pre>{str(err)}</pre>"
 
         games_list = []
-        for div in soup.find_all(
-            "div", {"class": "elementor-text-editor elementor-clearfix"}
-        ):
-            text = div.get_text(separator=" ")  # treat </br> as space
-            text = text.strip("\t\r\n")  # strip tabs, newlines, spaces from the edges
-            games_list.append(text)
+        class_regex = re.compile("1elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
+
+        if self.soup:
+            result = self.soup.find_all("div", {"class": class_regex})
+            for div in result:
+                inner_divs = div.find_all('div')
+                for inner_div in inner_divs:
+                    paragraph = inner_div.find_all('p')
+                    for p in paragraph:
+                        text = p.get_text(separator=" ")  # treat </br> as space
+                        text = text.strip("\t\r\n")  # strip tabs, newlines, spaces from the edges
+                        games_list.append(text)
 
         if len(games_list) < 2:
-            logging.warn(ERROR_MESSAGE["NO_GAMES_MSG"])
-            return ERROR_MESSAGE["NO_GAMES_MSG"]
+            msg = f"List returned empty, no games today? Scrape result: {result}"
+            logging.warning(msg)
+            return f"<pre>{msg}</pre>"
 
         # https://stackoverflow.com/a/44104805/3399402
         games = {
