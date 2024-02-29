@@ -46,7 +46,7 @@ class WebScrape:
             return f"<pre>{str(err)}</pre>"
 
         games_list = []
-        class_regex = re.compile("1elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
+        class_regex = re.compile("elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
 
         if self.soup:
             result = self.soup.find_all("div", {"class": class_regex})
