@@ -3,12 +3,14 @@
 
 from datetime import datetime
 from flask import Flask, render_template, request
+from flask.helpers import send_file
 from markupsafe import Markup
 from spectators import SPECTATORS
 import base64
 import json
 import locale
 import shutil
+
 import web_scrape
 
 try:
@@ -73,6 +75,10 @@ def update():
         with open(spectators_file, 'w') as file:
             file.write(f'SPECTATORS = {SPECTATORS}')
         return Markup("New entry saved!")
+
+@app.route("/assets/teams/<file_name>")
+def get_image(file_name):
+    return send_file(f"./assets/teams/{file_name}", mimetype='image/png')
 
 if __name__ == "__main__":
     app.run

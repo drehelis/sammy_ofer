@@ -4,7 +4,7 @@ from random import choice
 import asyncio
 import datetime
 import json
-import logging
+from logger import logger
 import os
 import sys
 import web_scrape
@@ -19,11 +19,11 @@ from metadata import (
     POLL_SENTENCES
 )
 
-logging.basicConfig(level=logging.INFO)
 load_dotenv()
 
+
 if 'TELEGRAM_CHANNEL_ID' not in os.environ or 'TELEGRAM_TOKEN' not in os.environ:
-    logging.info(
+    logger.info(
         'Both \'TELEGRAM_CHANNEL_ID\' and \'TELEGRAM_TOKEN\' env. variables must be set.')
     sys.exit(1)
 
@@ -40,7 +40,7 @@ def checkForGamesToday(games):
     today = datetime.date.today()
     for key, value in games.items():
         if today == value[0].date():
-            logging.info("Yesh mishak!")
+            logger.info("Yesh mishak!")
             yield value
 
     return False
@@ -48,7 +48,7 @@ def checkForGamesToday(games):
 
 def createMessage(*args):
     for item in args[0]:
-        scraped_date_time, league, home_team, game_hour, guest_team, game_time_delta, road_block_time, specs_word, specs_number, poll, notes = item
+        scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes = item
 
         custom_sepcs_number = f"\\({specs_number:,}\\)"
         custom_road_block_time = f"החל מ {road_block_time}"
@@ -89,13 +89,15 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
         msgToSend.append("\n\n")
         msgToSend.append("[https://t\\.me/sammy\\_ofer\\_notification\\_channel](https://t.me/sammy_ofer_notification_channel)")
         
-        await bot.send_message(
+        web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()
+
+        await bot.send_photo(
             chat_id,
-            text=''.join(msgToSend),
+            photo="./banner.png",
+            caption=''.join(msgToSend),
             parse_mode=constants.ParseMode.MARKDOWN_V2,
-            disable_web_page_preview=True,
         )
-        logging.info('Telegram message sent!')
+        logger.info('Telegram message sent!')
 
         if poll == 'on':
             await bot.sendPoll(
@@ -106,7 +108,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
                 protect_content=True,
                 close_date=datetime.datetime.timestamp(scraped_date_time)
             )
-            logging.info('Telegram poll sent!')
+            logger.info('Telegram poll sent!')
 
 
 if __name__ == "__main__":
@@ -119,5 +121,5 @@ if __name__ == "__main__":
         message = createMessage(gameIsOnToday)
         asyncio.run(send(message))
     else:
-        logging.info('There is only one thing we say to death - Not today!')
+        logger.info('There is only one thing we say to death - Not today!')
         sys.exit(1)

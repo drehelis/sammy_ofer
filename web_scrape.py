@@ -6,21 +6,20 @@ from random import choice
 from spectators import SPECTATORS
 import datetime
 from dateutil import parser
-import logging
+from pathlib import Path
+from logger import logger
 import requests
 import re
 
-logging.basicConfig(
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s", level=logging.INFO
-)
+import numpy as np
+import PIL
+from PIL import Image
 
-DESKTOP_AGENTS = [
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-    "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:109.0) Gecko/20100101 Firefox/114.0",
-    "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
-]
+
+from metadata import (
+    TEAMS_METADATA,
+    DESKTOP_AGENTS
+)
 
 def random_ua():
     return {"User-Agent": choice(DESKTOP_AGENTS)}
@@ -39,10 +38,10 @@ class WebScrape:
 
             self.soup = BeautifulSoup(response.text, "html5lib")
         except requests.exceptions.HTTPError as err:
-            logging.error(f"HTTPError: {err}")
+            logger.error(f"HTTPError: {err}")
             return f"<pre>{str(err)}</pre>"
         except requests.exceptions.ConnectionError as err:
-            logging.error(f"ConnectionError: {err}")
+            logger.error(f"ConnectionError: {err}")
             return f"<pre>{str(err)}</pre>"
 
         games_list = []
@@ -61,7 +60,7 @@ class WebScrape:
 
         if len(games_list) < 2:
             msg = f"List returned empty, no games today? Scrape result: {result}"
-            logging.warning(msg)
+            logger.warning(msg)
             return f"<pre>{msg}</pre>"
 
         # https://stackoverflow.com/a/44104805/3399402
@@ -97,6 +96,13 @@ class WebScrape:
             ):  # skip if date is in bad format
                 continue
 
+            GenerateTeamsPNG(home_team, guest_team).fetch_logo()
+
+            home_team_en = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable")).get("name")
+            home_team_url = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable")).get("url")
+            guest_team_en = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable")).get("name")
+            guest_team_url = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable")).get("url")
+
             game_hour = scraped_date_time.time().strftime("%H:%M")
             game_time_delta = scraped_date_time - datetime.timedelta(
                 hours=self.time_delta
@@ -116,8 +122,12 @@ class WebScrape:
                         scraped_date_time,
                         league,
                         home_team,
+                        home_team_en,
+                        home_team_url,
                         game_hour,
                         guest_team,
+                        guest_team_en,
+                        guest_team_url,
                         game_time_delta,
                         game_hour_delta,
                         specs_word,
@@ -128,3 +138,51 @@ class WebScrape:
                 }
             )
         return deco_games
+
+class GenerateTeamsPNG:
+    def __init__(self, home_team, guest_team):
+        self.home_team = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable"))
+        self.guest_team = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable"))
+
+        Path("./assets/teams").mkdir(parents=True, exist_ok=True)
+
+    def fetch_logo(self):
+        teams = (self.home_team, self.guest_team)
+
+        for team in teams:
+            fname = f"{team.get('name')}.png"
+            logo_url = team.get('logo')
+
+            full_path = Path("./assets/teams") / fname
+            if full_path.is_file():
+                if full_path.stat().st_size != 0:
+                    logger.info(f"File '{full_path}' exists, fetching is skipped")
+                    continue
+
+            r = requests.get(logo_url)
+
+            with open(full_path, 'wb') as f:
+                logger.info(f"Writing new file '{full_path}'")
+                f.write(r.content)
+
+    def banner(self):
+        guest_team_fname = Path("./assets/teams") / f"{self.guest_team.get('name')}.png"
+        versus_image_fname = choice(list(Path("./assets/versus").glob('**/*')))
+        home_team_fname  = Path("./assets/teams") / f"{self.home_team.get('name')}.png"
+
+        banner_list = [
+            guest_team_fname,
+            versus_image_fname,
+            home_team_fname
+        ]
+        images = [ Image.open(i) for i in banner_list ]
+
+        # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
+        min_shape = sorted([(np.sum(i.size), i.size) for i in images])[0][1]
+        images_combine = np.hstack([i.resize(min_shape) for i in images])
+
+        images_combine = Image.fromarray(images_combine)
+        final_size = (770,300) # best found to fit telegram photo on mobile
+
+        images_combine = images_combine.resize(final_size)
+        images_combine.save('banner.png')
