@@ -19,10 +19,6 @@ from metadata import (
     POLL_SENTENCES
 )
 
-<<<<<<< HEAD
-=======
-logging.basicConfig(level=logging.INFO)
->>>>>>> master
 load_dotenv()
 
 
