@@ -179,10 +179,10 @@ class GenerateTeamsPNG:
 
         # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
         min_shape = sorted([(np.sum(i.size), i.size) for i in images])[0][1]
-        images_combine = np.hstack([i.resize(min_shape) for i in images])
+        hstack = np.hstack([i.resize(min_shape) for i in images])
 
-        images_combine = Image.fromarray(images_combine)
+        images_combine = Image.fromarray(hstack)
         final_size = (770,300) # best found to fit telegram photo on mobile
 
-        images_combine = images_combine.resize(final_size)
-        images_combine.save('banner.png')
+        banner = images_combine.resize(final_size)
+        banner.save('banner.png')
