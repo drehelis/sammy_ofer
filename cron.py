@@ -34,7 +34,6 @@ def random_choice(rand):
 def check_games_today(games):
     # Set today to datetime.date(YEAR, M, D) when debugging specific date
     today = datetime.date.today()
-    today = datetime.date(2024, 3, 11)
     for _, value in games.items():
         if today == value[0].date():
             logger.info("Yesh mishak!")
@@ -138,10 +137,10 @@ if __name__ == "__main__":
     web = web_scrape.WebScrape()
     scrape = web.scrape()
     scraped_games = web.decoratored_games(scrape)
-    generatedData = check_games_today(scraped_games)
-    gameIsOnToday = list(generatedData)
-    if gameIsOnToday:
-        message = create_message(gameIsOnToday)
+    generated_data = check_games_today(scraped_games)
+    detected_games_today = list(generated_data)
+    if detected_games_today:
+        message = create_message(detected_games_today)
         asyncio.run(send(message))
     else:
         logger.info("There is only one thing we say to death - Not today!")
