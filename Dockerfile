@@ -13,16 +13,14 @@ RUN apk add --update \
     musl-locales \
     && rm -rf /var/cache/apk/*
 
+COPY assets ./assets
 COPY html_templates ./html_templates
+
 COPY requirements.txt \
-    cron.py \
-    spectators.py \
-    web_scrape.py \
-    web.py ./
+    docker-entrypoint.sh \
+    *.py ./
 
 RUN pip install --no-cache-dir -r requirements.txt
-
-COPY docker-entrypoint.sh ./
 
 EXPOSE 5000
 
