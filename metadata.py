@@ -22,7 +22,7 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/hapoel-hadera",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/22998.png",
     },
-    "1הפועל חיפה": {
+    "הפועל חיפה": {
         "name": "Hapoel Haifa",
         "url": "https://www.football.co.il/hapoel-haifa",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/14316.png",

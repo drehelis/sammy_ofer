@@ -5,3 +5,5 @@ python-dotenv
 python-telegram-bot
 requests
 python-dateutil
+numpy
+Pillow
