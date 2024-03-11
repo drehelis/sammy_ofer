@@ -9,7 +9,7 @@ DESKTOP_AGENTS = [
 TEAMS_METADATA = {
     "Unavailable": {
         "name": "Unavailable",
-        "url": "https://404-not-found.com",
+        "url": "",
         "logo": "",
     },
     "מכבי חיפה": {
@@ -41,6 +41,11 @@ TEAMS_METADATA = {
         "name": "Hapoel Beer Sheva",
         "url": "https://www.football.co.il/hapoel-beer-sheva",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4554.png",
+    },
+    "הפועל תל אביב": {
+        "name": "Hapoel Tel Aviv",
+        "url": "https://www.football.co.il/hapoel-tel-aviv",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4530.png",
     },
 }
 

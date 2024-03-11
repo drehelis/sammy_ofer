@@ -13,7 +13,7 @@ RUN apk add --update \
     musl-locales \
     && rm -rf /var/cache/apk/*
 
-COPY assets ./assets
+COPY assets/. ./assets
 COPY html_templates ./html_templates
 
 COPY requirements.txt \
