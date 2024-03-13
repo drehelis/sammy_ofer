@@ -77,7 +77,9 @@
         {% for key, value in mygames.items() %}
         {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, game_hour_delta, specs_word, specs_number, poll, notes = value %}
         {% if guest_team_url != '' %}
-        {% set guest_team = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
+        {% set guest_team_alter = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
+        {% else %}
+        {% set guest_team_alter = guest_team %}
         {% endif %}
         <div class="divTableRow">
             <div class="divTableCell">{{ loop.index }}</div>
@@ -86,7 +88,7 @@
             <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
             <div class="divTableCell">{{ league }}</div>
             <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ home_team_en }}.png">&nbsp;<a href="{{ home_team_url }}" target="_blank">{{ home_team }}</a></div>
-            <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ guest_team_en }}.png">&nbsp;{{ guest_team | safe }}</div>
+            <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ guest_team_en }}.png">&nbsp;{{ guest_team_alter | safe }}</div>
             <div class="divTableCell">{{ specs_word }}</div>
             <div class="divTableCell" {% if specs_number == 0 %}style="background: yellow;" {% endif %}>{{ specs_number }}</div>
             <div class="divTableCell">
@@ -100,16 +102,11 @@
                                 "specs_word": "{{ specs_word }}",
                                 "specs_number": "{{ specs_number }}",
                                 "poll": "{{ poll }}",
-                                "notes": "{{ notes }}"}'
-                            >
-                            עדכן</option>
+                                "notes": "{{ notes }}"}'>עדכן</option>
                         <option id="delete" value='{
                             "action":"delete",
                             "home_team":"{{ home_team }}",
-                            "guest_team":"{{ guest_team }}"}'
-                            >
-                            מחק
-                        </option>
+                            "guest_team":"{{ guest_team }}"}'>מחק</option>
                     </select>
                 </form>
             </div>

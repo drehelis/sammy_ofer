@@ -1,11 +1,19 @@
 {
    "dockerFile": "Dockerfile",
-   "extensions": [
-      "ms-python.python",
-      "ms-python.vscode-pylance",
-      "eamodio.gitlens",
-      "ms-azuretools.vscode-docker",
-      "vscode-icons-team.vscode-icons"
-   ],
+   "customizations": {
+      "vscode": {
+         "extensions": [
+            "ms-python.python",
+            "ms-python.vscode-pylance",
+            "eamodio.gitlens",
+            "ms-azuretools.vscode-docker",
+            "vscode-icons-team.vscode-icons"
+         ]
+      }
+   },
+   "remoteEnv": {
+      "FLASK_APP": "web.py",
+      "FLASK_DEBUG": "true"
+   },
    "containerUser": "user"
 }
