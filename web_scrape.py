@@ -143,8 +143,9 @@ class GenerateTeamsPNG:
     def __init__(self, home_team, guest_team):
         self.home_team = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable"))
         self.guest_team = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable"))
+        self.absolute_path = Path(__file__).resolve().parent
 
-        Path("./assets/teams").mkdir(parents=True, exist_ok=True)
+        Path(self.absolute_path / "assets/teams").mkdir(parents=True, exist_ok=True)
 
     def fetch_logo(self):
         teams = (self.home_team, self.guest_team)
@@ -153,22 +154,24 @@ class GenerateTeamsPNG:
             fname = f"{team.get('name')}.png"
             logo_url = team.get('logo')
 
-            full_path = Path("./assets/teams") / fname
+            full_path = self.absolute_path / Path("assets/teams") / fname
             if full_path.is_file():
                 if full_path.stat().st_size != 0:
                     logger.info(f"File '{full_path}' exists, fetching is skipped")
                     continue
 
-            r = requests.get(logo_url)
-
-            with open(full_path, 'wb') as f:
-                logger.info(f"Writing new file '{full_path}'")
-                f.write(r.content)
+            try:
+                r = requests.get(logo_url)
+                with open(full_path, 'wb') as f:
+                    logger.info(f"Writing new file '{full_path}'")
+                    f.write(r.content)
+            except requests.exceptions.MissingSchema:
+                pass
 
     def banner(self):
-        guest_team_fname = Path("./assets/teams") / f"{self.guest_team.get('name')}.png"
-        versus_image_fname = choice(list(Path("./assets/versus").glob('**/*')))
-        home_team_fname  = Path("./assets/teams") / f"{self.home_team.get('name')}.png"
+        guest_team_fname = self.absolute_path / Path("assets/teams") / f"{self.guest_team.get('name')}.png"
+        versus_image_fname = choice(list(Path(f"{self.absolute_path}/assets/versus").glob('**/*')))
+        home_team_fname  = self.absolute_path / Path("assets/teams") / f"{self.home_team.get('name')}.png"
 
         banner_list = [
             guest_team_fname,
