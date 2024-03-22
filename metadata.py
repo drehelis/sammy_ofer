@@ -10,7 +10,7 @@ TEAMS_METADATA = {
     "Unavailable": {
         "name": "Unavailable",
         "url": "",
-        "logo": "",
+        "logo": ""
     },
     "מכבי חיפה": {
         "name": "Maccabi Haifa",
@@ -46,6 +46,21 @@ TEAMS_METADATA = {
         "name": "Hapoel Tel Aviv",
         "url": "https://www.football.co.il/hapoel-tel-aviv",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4530.png",
+    },
+    "מכבי בני ריינה": {
+        "name": "Bnei Reineh",
+        "url": "https://www.football.co.il/bnei-reineh",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/30249.png",
+    },
+    "מכבי נתניה": {
+        "name": "Maccabi Netanya",
+        "url": "https://www.football.co.il/maccabi-netanya",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4545.png",
+    },
+    "בני סכנין": {
+        "name": "Bnei Sakhnin",
+        "url": "https://www.football.co.il/bnei-sakhnin",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15960.png",
     },
 }
 
