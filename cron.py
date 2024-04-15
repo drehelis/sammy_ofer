@@ -61,18 +61,9 @@ def create_message(*args):
             specs_number,
             poll,
             notes,
+            custom_sepcs_number,
+            custom_road_block_time,
         ) = item
-
-        custom_sepcs_number = f"\\({specs_number:,}\\)"
-        custom_road_block_time = f"החל מ {road_block_time}"
-        if int(specs_number) >= 28000:
-            custom_sepcs_number = f"\\({specs_number:,}\\) 😱"
-        if 1 <= int(specs_number) <= 6000:
-            custom_sepcs_number = f"\\({specs_number:,}\\) 🤏"
-        if specs_word == "ללא" or int(specs_number) <= 6000:
-            custom_road_block_time = "אין"
-        elif specs_word == "גדול מאוד":
-            custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
         yield f"""
 משחק ⚽ *היום* בשעה *{game_hour}*
@@ -141,9 +132,10 @@ if __name__ == "__main__":
     scraped_games = web.decoratored_games(scrape)
     generated_data = check_games_today(scraped_games)
     detected_games_today = list(generated_data)
-    if detected_games_today:
-        message = create_message(detected_games_today)
-        asyncio.run(send(message))
-    else:
+    message = create_message(detected_games_today)
+
+    if not detected_games_today:
         logger.info("There is only one thing we say to death - Not today!")
-        sys.exit(1)
+        sys.exit(0)
+
+    asyncio.run(send(message))
