@@ -15,11 +15,9 @@ import numpy as np
 import PIL
 from PIL import Image
 
+from static_html_page import gen_static_page
+from metadata import TEAMS_METADATA, DESKTOP_AGENTS
 
-from metadata import (
-    TEAMS_METADATA,
-    DESKTOP_AGENTS
-)
 
 def random_ua():
     return {"User-Agent": choice(DESKTOP_AGENTS)}
@@ -33,7 +31,7 @@ class WebScrape:
 
     def scrape(self):
         try:
-            response = requests.get(self.url, headers=random_ua(), timeout=10)
+            response = requests.get(self.url, headers=random_ua(), timeout=30)
             response.raise_for_status()
 
             self.soup = BeautifulSoup(response.text, "html5lib")
@@ -45,17 +43,21 @@ class WebScrape:
             return f"<pre>{str(err)}</pre>"
 
         games_list = []
-        class_regex = re.compile("elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor")
+        class_regex = re.compile(
+            "elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor"
+        )
 
         if self.soup:
             result = self.soup.find_all("div", {"class": class_regex})
             for div in result:
-                inner_divs = div.find_all('div')
+                inner_divs = div.find_all("div")
                 for inner_div in inner_divs:
-                    paragraph = inner_div.find_all('p')
+                    paragraph = inner_div.find_all("p")
                     for p in paragraph:
                         text = p.get_text(separator=" ")  # treat </br> as space
-                        text = text.strip("\t\r\n")  # strip tabs, newlines, spaces from the edges
+                        text = text.strip(
+                            "\t\r\n"
+                        )  # strip tabs, newlines, spaces from the edges
                         games_list.append(text)
 
         if len(games_list) < 2:
@@ -98,16 +100,24 @@ class WebScrape:
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
-            home_team_en = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable")).get("name")
-            home_team_url = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable")).get("url")
-            guest_team_en = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable")).get("name")
-            guest_team_url = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable")).get("url")
+            home_team_en = TEAMS_METADATA.get(
+                home_team, TEAMS_METADATA.get("Unavailable")
+            ).get("name")
+            home_team_url = TEAMS_METADATA.get(
+                home_team, TEAMS_METADATA.get("Unavailable")
+            ).get("url")
+            guest_team_en = TEAMS_METADATA.get(
+                guest_team, TEAMS_METADATA.get("Unavailable")
+            ).get("name")
+            guest_team_url = TEAMS_METADATA.get(
+                guest_team, TEAMS_METADATA.get("Unavailable")
+            ).get("url")
 
             game_hour = scraped_date_time.time().strftime("%H:%M")
             game_time_delta = scraped_date_time - datetime.timedelta(
                 hours=self.time_delta
             )
-            game_hour_delta = game_time_delta.time().strftime("%H:%M")
+            road_block_time = game_time_delta.time().strftime("%H:%M")
             specs_word = SPECTATORS.get((home_team, guest_team), {}).get(
                 "word", "לא ידוע"
             )
@@ -116,6 +126,18 @@ class WebScrape:
             )
             poll = SPECTATORS.get((home_team, guest_team), {}).get("poll")
             notes = SPECTATORS.get((home_team, guest_team), {}).get("notes", "")
+
+            custom_sepcs_number = f"\\({specs_number:,}\\)"
+            custom_road_block_time = f"החל מ {road_block_time}"
+            if int(specs_number) >= 28000:
+                custom_sepcs_number = f"\\({specs_number:,}\\) 😱"
+            if 1 <= int(specs_number) <= 6000:
+                custom_sepcs_number = f"\\({specs_number:,}\\) 🤏"
+            if specs_word == "ללא" or int(specs_number) <= 6000:
+                custom_road_block_time = "אין"
+            elif specs_word == "גדול מאוד":
+                custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
+
             deco_games.update(
                 {
                     key: (
@@ -129,20 +151,31 @@ class WebScrape:
                         guest_team_en,
                         guest_team_url,
                         game_time_delta,
-                        game_hour_delta,
+                        road_block_time,
                         specs_word,
                         specs_number,
                         poll,
                         notes,
+                        #
+                        custom_sepcs_number,
+                        custom_road_block_time,
                     )
                 }
             )
+
+        gen_static_page(deco_games)
+
         return deco_games
+
 
 class GenerateTeamsPNG:
     def __init__(self, home_team, guest_team):
-        self.home_team = TEAMS_METADATA.get(home_team, TEAMS_METADATA.get("Unavailable"))
-        self.guest_team = TEAMS_METADATA.get(guest_team, TEAMS_METADATA.get("Unavailable"))
+        self.home_team = TEAMS_METADATA.get(
+            home_team, TEAMS_METADATA.get("Unavailable")
+        )
+        self.guest_team = TEAMS_METADATA.get(
+            guest_team, TEAMS_METADATA.get("Unavailable")
+        )
         self.absolute_path = Path(__file__).resolve().parent
 
         Path(self.absolute_path / "assets/teams").mkdir(parents=True, exist_ok=True)
@@ -152,40 +185,46 @@ class GenerateTeamsPNG:
 
         for team in teams:
             fname = f"{team.get('name')}.png"
-            logo_url = team.get('logo')
+            logo_url = team.get("logo")
 
             full_path = self.absolute_path / Path("assets/teams") / fname
             if full_path.is_file():
                 if full_path.stat().st_size != 0:
-                    logger.info(f"File '{full_path}' exists, fetching is skipped")
+                    logger.debug(f"File '{full_path}' exists, fetching is skipped")
                     continue
 
             try:
                 r = requests.get(logo_url)
-                with open(full_path, 'wb') as f:
+                with open(full_path, "wb") as f:
                     logger.info(f"Writing new file '{full_path}'")
                     f.write(r.content)
             except requests.exceptions.MissingSchema:
                 pass
 
     def banner(self):
-        guest_team_fname = self.absolute_path / Path("assets/teams") / f"{self.guest_team.get('name')}.png"
-        versus_image_fname = choice(list(Path(f"{self.absolute_path}/assets/versus").glob('**/*')))
-        home_team_fname  = self.absolute_path / Path("assets/teams") / f"{self.home_team.get('name')}.png"
+        guest_team_fname = (
+            self.absolute_path
+            / Path("assets/teams")
+            / f"{self.guest_team.get('name')}.png"
+        )
+        versus_image_fname = choice(
+            list(Path(f"{self.absolute_path}/assets/versus").glob("**/*"))
+        )
+        home_team_fname = (
+            self.absolute_path
+            / Path("assets/teams")
+            / f"{self.home_team.get('name')}.png"
+        )
 
-        banner_list = [
-            guest_team_fname,
-            versus_image_fname,
-            home_team_fname
-        ]
-        images = [ Image.open(i) for i in banner_list ]
+        banner_list = [guest_team_fname, versus_image_fname, home_team_fname]
+        images = [Image.open(i) for i in banner_list]
 
         # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
         min_shape = sorted([(np.sum(i.size), i.size) for i in images])[0][1]
         hstack = np.hstack([i.resize(min_shape) for i in images])
 
         images_combine = Image.fromarray(hstack)
-        final_size = (770,300) # best found to fit telegram photo on mobile
+        final_size = (770, 300)  # best found to fit telegram photo on mobile
 
         banner = images_combine.resize(final_size)
-        banner.save('banner.png')
+        banner.save("banner.png")

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="60">
+  <title>Sammy Ofer Notification</title>
+  <link href="templates/style.css" rel="stylesheet" type="text/css">
+  <script>
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    const year = currentDate.getFullYear();
+    const todayDate = `${year}-${month}-${day}`;
+  </script>
+</head>
+<body>
+{% for key, value in games.items() %}
+{% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value %}
+  <header id="header-{{loop.index}}" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>{{ game_hour }}</i></div>
+    <div>צפי חסימת כבישים: <i>{{ custom_road_block_time }}</i></div>
+    <div>צפי אוהדים משוער: <i>{{ specs_word }} {{ custom_sepcs_number | replace("\\", "") }}</i></div>
+    {% if notes %}
+    <div>📣: <i>{{ notes }}</i></div>
+    {% endif %}
+  </header>
+
+  <div id="match-container-{{loop.index}}" class="match-container">
+    <div class="team">
+        <img src="assets/teams/{{ home_team_en }}.png" class="team-logo">
+        <div class="team-name">{{ home_team }}</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/{{ guest_team_en }}.png" class="team-logo">
+      <div class="team-name">{{ guest_team }}</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_{{loop.index}} = "{{ scraped_date_time.strftime('%Y-%m-%d') }}";
+    if (todayDate !== gameDate_{{loop.index}}) {
+      document.getElementById('header-{{loop.index}}').style.display = 'none';
+      document.getElementById('match-container-{{loop.index}}').style.display = 'none';
+    }
+  </script>
+{% endfor %}
+
+  <div class="footer">
+    <div class="column left" id="last-modified"><script>var x = document.getElementById("last-modified"); x.innerHTML = new Date(document.lastModified);</script></div>
+    <div class="column center"><img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel"></div>
+    <div class="column right" id="resolution"><script>var w = window.innerWidth; var h = window.innerHeight; var x = document.getElementById("resolution"); x.innerHTML = "Browser resolution: " + w + "x" + h;</script></div>
+  </div>
+
+</body>
+</html>

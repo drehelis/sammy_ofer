@@ -75,7 +75,7 @@
             </div>
         </div>
         {% for key, value in mygames.items() %}
-        {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, game_hour_delta, specs_word, specs_number, poll, notes = value %}
+        {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value %}
         {% if guest_team_url != '' %}
         {% set guest_team_alter = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
         {% else %}
