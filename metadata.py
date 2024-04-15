@@ -7,11 +7,7 @@ DESKTOP_AGENTS = [
 ]
 
 TEAMS_METADATA = {
-    "Unavailable": {
-        "name": "Unavailable",
-        "url": "",
-        "logo": ""
-    },
+    "Unavailable": {"name": "Unavailable", "url": "", "logo": ""},
     "מכבי חיפה": {
         "name": "Maccabi Haifa",
         "url": "https://www.football.co.il/maccabi-haifa",
@@ -61,6 +57,11 @@ TEAMS_METADATA = {
         "name": "Bnei Sakhnin",
         "url": "https://www.football.co.il/bnei-sakhnin",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15960.png",
+    },
+    'מכבי ת"א': {
+        "name": "Maccabi Tel Aviv",
+        "url": "https://www.football.co.il/maccabi-tel-aviv",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
     },
 }
 
