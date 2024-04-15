@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="refresh" content="60">
+  <title>Sammy Ofer Notification</title>
+  <style>
+    /* Reset some default styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      font-size: 16px;
+      color: #333;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      background-color: #1a3e67;
+      padding: 15px;
+      text-align: center;
+    }
+
+    /* Match details styles */
+    .match-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+
+    .team {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .team-logo {
+      /* width: 50px;
+      height: 50px; */
+      margin-right: 20px;
+    }
+
+    .vs-logo {
+      width: 128px;
+      height: 128px;
+    }
+
+    .team-name {
+      font-size: 48px;
+      font-weight: bold;
+      color: #1a3e67;
+    }
+
+    .footer {
+      font-family: Arial, sans-serif;
+      display: flex;
+      padding: 10px;
+      position: fixed;
+      left: 0;
+      bottom: 0;
+      width: 100%;
+      background-color: #e0e0e0;
+      color: #1a3e67;
+    }
+
+    .header {
+        color: #fff;
+        font-size: 60px;
+        font-weight: bold;
+    }
+
+    .column {
+        flex-basis: 100%; /* Adjust width as needed */
+    }
+
+    .left {
+        text-align: left;
+    }
+
+    .center {
+        text-align: center;
+    }
+
+    .right {
+        text-align: right;
+    }
+
+    .top-right { 
+      position: absolute; 
+      right: 5; 
+      top: 5; 
+    } 
+    hr.style-two {
+        border: 0;
+        height: 1px;
+        background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.75), rgba(0, 0, 0, 0));
+    }
+  </style>
+  <script>
+    const currentDate = new Date();
+    const day = currentDate.getDate();
+    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
+    const year = currentDate.getFullYear();
+    const todayDate = `${year}-${month}-${day}`;
+  </script>
+</head>
+<body>
+
+
+  <header id="header-1" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>20:00</i></div>
+    <div>צפי חסימת כבישים: <i>החל מ 17:00</i></div>
+    <div>צפי אוהדים משוער: <i>גדול מאוד (26,000)</i></div>
+    
+  </header>
+
+  <div id="match-container-1" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Maccabi Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">מכבי חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Hapoel Beer Sheva.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">הפועל ב"ש</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_1 = "2024-04-20";
+    if (todayDate !== gameDate_1) {
+      document.getElementById('header-1').style.display = 'none';
+      document.getElementById('match-container-1').style.display = 'none';
+    }
+  </script>
+
+
+  <header id="header-2" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>20:30</i></div>
+    <div>צפי חסימת כבישים: <i>החל מ 17:30</i></div>
+    <div>צפי אוהדים משוער: <i>גדול מאוד (25,100)</i></div>
+    
+  </header>
+
+  <div id="match-container-2" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Hapoel Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">הפועל חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Maccabi Haifa.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">מכבי חיפה</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_2 = "2024-04-29";
+    if (todayDate !== gameDate_2) {
+      document.getElementById('header-2').style.display = 'none';
+      document.getElementById('match-container-2').style.display = 'none';
+    }
+  </script>
+
+
+  <header id="header-3" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>18:00</i></div>
+    <div>צפי חסימת כבישים: <i>אין</i></div>
+    <div>צפי אוהדים משוער: <i>קטן (3,800) 🤏</i></div>
+    
+  </header>
+
+  <div id="match-container-3" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Hapoel Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">הפועל חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Hapoel Beer Sheva.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">הפועל ב"ש</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_3 = "2024-05-04";
+    if (todayDate !== gameDate_3) {
+      document.getElementById('header-3').style.display = 'none';
+      document.getElementById('match-container-3').style.display = 'none';
+    }
+  </script>
+
+
+  <header id="header-4" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>19:30</i></div>
+    <div>צפי חסימת כבישים: <i>אין</i></div>
+    <div>צפי אוהדים משוער: <i>קטן (3,700) 🤏</i></div>
+    
+  </header>
+
+  <div id="match-container-4" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Hapoel Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">הפועל חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Bnei Sakhnin.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">בני סכנין</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_4 = "2024-05-09";
+    if (todayDate !== gameDate_4) {
+      document.getElementById('header-4').style.display = 'none';
+      document.getElementById('match-container-4').style.display = 'none';
+    }
+  </script>
+
+
+  <header id="header-5" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>20:30</i></div>
+    <div>צפי חסימת כבישים: <i>החל מ 17:30</i></div>
+    <div>צפי אוהדים משוער: <i>גדול מאוד (19,400)</i></div>
+    
+  </header>
+
+  <div id="match-container-5" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Maccabi Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">מכבי חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Unavailable.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">מכבי ת"א</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_5 = "2024-05-11";
+    if (todayDate !== gameDate_5) {
+      document.getElementById('header-5').style.display = 'none';
+      document.getElementById('match-container-5').style.display = 'none';
+    }
+  </script>
+
+
+  <header id="header-6" class="header" dir="rtl">
+    <div class="top-right"><img src="assets/qrcode/qrcode.png" width="192" height="192"></div>
+    <div>משחק ⚽ היום בשעה: <i>00:00</i></div>
+    <div>צפי חסימת כבישים: <i>החל מ 22:00</i></div>
+    <div>צפי אוהדים משוער: <i>בינוני (9,900)</i></div>
+    
+  </header>
+
+  <div id="match-container-6" class="match-container">
+    <div class="team">
+        <img src="assets/teams/Hapoel Haifa.png" alt="Team 2 Logo" class="team-logo">
+        <div class="team-name">הפועל חיפה</div>
+      </div>
+
+      <div class="vs-logo">
+        <hr class="style-two"></hr>
+        <img class="vs-logo" src="assets/versus/vs9.png" alt="VS Logo">
+        <hr class="style-two"></hr>
+    </div>
+
+    <div class="team">
+      <img src="assets/teams/Unavailable.png" alt="Team 1 Logo" class="team-logo">
+      <div class="team-name">מכבי ת"א</div>
+
+    </div>
+  </div>
+  <script>
+    const gameDate_6 = "2024-05-21";
+    if (todayDate !== gameDate_6) {
+      document.getElementById('header-6').style.display = 'none';
+      document.getElementById('match-container-6').style.display = 'none';
+    }
+  </script>
+
+
+  <div class="footer">
+    <div class="column left" id="last-modified"><script>var x = document.getElementById("last-modified"); x.innerHTML = new Date(document.lastModified);</script></div>
+    <div class="column center"><img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel"></div>
+    <div class="column right" id="resolution"><script>var w = window.innerWidth; var h = window.innerHeight; var x = document.getElementById("resolution"); x.innerHTML = "Browser resolution: " + w + "x" + h;</script></div>
+  </div>
+
+</body>
+</html>
