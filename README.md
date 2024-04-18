@@ -9,10 +9,15 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 * Single notification for the upcoming event
 * Matchup, average attendance and roadblock times
 * Spam free service
+* Static landing page to be shown on big screen/TV
 
 ## Web-UI
 
-![Web-UI screenshot](screen.png)
+![Web-UI screenshot](screen.png)****
+
+## Static landing page ([link](https://drehelis.github.io/sammy_ofer/static.html))
+
+![Static screenshot](static.jpeg)
 
 ## Build it
 ```
