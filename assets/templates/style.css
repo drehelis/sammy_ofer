@@ -13,6 +13,7 @@
     /* Dimmed white */
     --color-team-bg: #fff;
     --color-text: #333;
+    caret-color: transparent;
 }
 
 @media (max-height: 768px) {
