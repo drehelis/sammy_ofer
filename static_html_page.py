@@ -10,6 +10,7 @@ from logger import logger
 REPO_URL = "https://github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
+GH_PAGES_BRANCH = "static_page"
 
 
 def gen_static_page(obj):
@@ -31,19 +32,20 @@ def gen_static_page(obj):
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
-        git_commit()
+    git_commit()
 
 
 def git_commit():
     try:
         repo = Repo(TMP_REPO_DIR)
-        repo.remotes.origin.pull("master")
+        repo.remotes.origin.pull(GH_PAGES_BRANCH)
     except:
         repo = Repo.clone_from(REPO_URL, TMP_REPO_DIR)
+
     try:
-        repo.git.checkout("static_page")
+        repo.git.checkout(GH_PAGES_BRANCH)
     except:
-        repo.git.checkout(b="static_page")
+        repo.git.checkout(b=GH_PAGES_BRANCH)
 
     src = Path(__file__).resolve().parent / STATIC_HTML_FILENAME
     copy(src, f"{TMP_REPO_DIR}/{STATIC_HTML_FILENAME}")
@@ -55,5 +57,4 @@ def git_commit():
 
     logger.info(f"{STATIC_HTML_FILENAME} pushed to repo")
     repo.index.commit(str(datetime.datetime.now()))
-    repo.git.push("--force")
-    repo.git.reset("--hard", "origin/master")
+    repo.git.push()
