@@ -8,6 +8,7 @@ import datetime
 from dateutil import parser
 from pathlib import Path
 from logger import logger
+import locale
 import requests
 import re
 
@@ -17,6 +18,15 @@ from PIL import Image
 
 from static_html_page import gen_static_page
 from metadata import TEAMS_METADATA, DESKTOP_AGENTS
+
+try:
+    locale.setlocale(locale.LC_TIME, "he_IL")  # MacOS
+except locale.Error:
+    try:
+        # apt-get install language-pack-he language-pack-he-base
+        locale.setlocale(locale.LC_TIME, "he_IL.UTF-8")  # Ubuntu
+    except locale.Error:
+        pass
 
 
 def random_ua():
