@@ -3,11 +3,12 @@ from random import choice
 from pathlib import Path
 from shutil import copy
 import datetime
+import os
 
 from git import Repo
 from logger import logger
 
-REPO_URL = "https://github.com/drehelis/sammy_ofer"
+REPO_URL = f"https://{os.getenv("GH_PAT")}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
 GH_PAGES_BRANCH = "static_page"
@@ -41,6 +42,9 @@ def git_commit():
         repo.remotes.origin.pull(GH_PAGES_BRANCH)
     except:
         repo = Repo.clone_from(REPO_URL, TMP_REPO_DIR)
+
+    repo.config_writer().set_value("user", "name", "sammy-ofer-bot").release()
+    repo.config_writer().set_value("user", "email", "sammy-ofer-bot@mail.com").release()
 
     try:
         repo.git.checkout(GH_PAGES_BRANCH)

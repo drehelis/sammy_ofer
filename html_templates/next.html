@@ -84,7 +84,7 @@
         <div class="divTableRow">
             <div class="divTableCell">{{ loop.index }}</div>
             <div class="divTableCell">{{ scraped_date_time.strftime('%Y-%m-%d') }}</div>
-            <div class="divTableCell">{{ scraped_date_time.strftime('%A') }}</div>
+            <div class="divTableCell">{{ scraped_date_time | babel_format_day_heb }}</div>
             <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
             <div class="divTableCell">{{ league }}</div>
             <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ home_team_en }}.png">&nbsp;<a href="{{ home_team_url }}" target="_blank">{{ home_team }}</a></div>

@@ -9,23 +9,19 @@ import shutil
 from flask import Flask, render_template, request
 from flask.helpers import send_file
 from markupsafe import Markup
-from spectators import SPECTATORS
 
+from spectators import SPECTATORS
 import web_scrape
 
 
-def b64encode(s):
-    return base64.b64encode(s.encode())
+def babel_format_day_heb(s):
+    from babel.dates import format_date
 
-
-def b64decode(s):
-    data = base64.b64decode(s)
-    return data.decode()
+    return format_date(s, "EEEE", locale="he")
 
 
 app = Flask(__name__, template_folder="html_templates")
-app.jinja_env.filters["b64encode"] = b64encode
-app.jinja_env.filters["b64decode"] = b64decode
+app.jinja_env.filters["babel_format_day_heb"] = babel_format_day_heb
 
 
 @app.route("/next", methods=["GET"])
