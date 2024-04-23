@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from datetime import datetime
-import base64
 import json
 import shutil
 
@@ -12,13 +11,7 @@ from markupsafe import Markup
 
 from spectators import SPECTATORS
 import web_scrape
-
-
-def babel_format_day_heb(s):
-    from babel.dates import format_date
-
-    return format_date(s, "EEEE", locale="he")
-
+from jinja_filters import *
 
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = babel_format_day_heb
