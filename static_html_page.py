@@ -8,6 +8,9 @@ import os
 from git import Repo
 from logger import logger
 
+from jinja_filters import *
+
+
 REPO_URL = f"https://{os.getenv("GH_PAT")}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
@@ -16,6 +19,7 @@ GH_PAGES_BRANCH = "static_page"
 
 def gen_static_page(obj):
     environment = Environment(loader=FileSystemLoader("assets/templates"))
+    environment.filters["babel_format_full_heb"] = babel_format_full_heb
     template = environment.get_template("static_page.jinja2")
 
     content = template.render(games=obj)
