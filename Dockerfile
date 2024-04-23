@@ -10,7 +10,7 @@ RUN apk add --update \
     libc-dev \
     libffi-dev \
     openssl-dev \
-    musl-locales \
+    git \
     && rm -rf /var/cache/apk/*
 
 COPY assets/. ./assets

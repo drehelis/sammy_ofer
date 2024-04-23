@@ -13,7 +13,7 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 
 ## Web-UI
 
-![Web-UI screenshot](screen.png)****
+![Web-UI screenshot](screen.png)
 
 ## Static landing page ([link](https://drehelis.github.io/sammy_ofer/static.html))
 
@@ -33,6 +33,7 @@ docker run -d --name sammy_ofer \
     --restart=on-failure \
     --env TELEGRAM_CHANNEL_ID=<required> \
     --env TELEGRAM_TOKEN=<required> \
+    --env GH_PAT (optional) \
     sammy_ofer:latest
 ```
 
