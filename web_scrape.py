@@ -227,4 +227,4 @@ class GenerateTeamsPNG:
         final_size = (770, 300)  # best found to fit telegram photo on mobile
 
         banner = images_combine.resize(final_size)
-        banner.save("banner.png")
+        banner.save(self.absolute_path / "banner.png")
