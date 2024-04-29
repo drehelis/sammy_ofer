@@ -3,6 +3,7 @@
 from random import choice
 import asyncio
 import datetime
+from pathlib import Path
 import json
 import os
 import sys
@@ -25,6 +26,8 @@ if "TELEGRAM_CHANNEL_ID" not in os.environ or "TELEGRAM_TOKEN" not in os.environ
 
 TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+
+absolute_path = Path(__file__).resolve().parent
 
 
 def random_choice(rand):
@@ -108,7 +111,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
 
         await bot.send_photo(
             chat_id,
-            photo="./banner.png",
+            photo=absolute_path / "banner.png",
             caption="".join(send_message),
             parse_mode=constants.ParseMode.MARKDOWN_V2,
         )

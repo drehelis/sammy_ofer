@@ -16,16 +16,17 @@ TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
 GH_PAGES_BRANCH = "static_page"
 
+absolute_path = Path(__file__).resolve().parent
 
 def gen_static_page(obj):
-    environment = Environment(loader=FileSystemLoader("assets/templates"))
+    environment = Environment(loader=FileSystemLoader(absolute_path / "assets/templates/"))
     environment.filters["babel_format_full_heb"] = babel_format_full_heb
     template = environment.get_template("static_page.jinja2")
 
     content = template.render(games=obj)
 
     try:
-        with open(STATIC_HTML_FILENAME, mode="r", encoding="utf-8") as f:
+        with open(absolute_path / STATIC_HTML_FILENAME, mode="r", encoding="utf-8") as f:
             existing_content = f.read()
     except FileNotFoundError:
         existing_content = None
@@ -33,11 +34,11 @@ def gen_static_page(obj):
     if existing_content == content:
         return
 
-    with open(STATIC_HTML_FILENAME, mode="w", encoding="utf-8") as f:
+    with open(absolute_path / STATIC_HTML_FILENAME, mode="w", encoding="utf-8") as f:
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
-    git_commit()
+    # git_commit()
 
 
 def git_commit():
@@ -55,7 +56,7 @@ def git_commit():
     except:
         repo.git.checkout(b=GH_PAGES_BRANCH)
 
-    src = Path(__file__).resolve().parent / STATIC_HTML_FILENAME
+    src = absolute_path / STATIC_HTML_FILENAME
     copy(src, f"{TMP_REPO_DIR}/{STATIC_HTML_FILENAME}")
 
     repo.index.add([STATIC_HTML_FILENAME])
