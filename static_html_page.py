@@ -38,7 +38,7 @@ def gen_static_page(obj):
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
-    # git_commit()
+    git_commit()
 
 
 def git_commit():
