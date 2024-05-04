@@ -1,3 +1,10 @@
+{% macro notification_channel() %}
+<!-- https://github.com/badges/shields/issues/10109 -->
+<a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+  <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+</a>
+{% endmacro %}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,11 +47,8 @@
       <div class="metadata-item">📣: {{ notes }}</div>
       {% endif %}
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
-      <!-- https://github.com/badges/shields/issues/10109 -->
       <div>
-        <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
-          <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
-        </a>
+        {{ notification_channel() | indent(8) }}
       </div>
     </div>
   </div>
@@ -60,10 +64,7 @@
     <div class="metadata">
       <div class="metadata-item">המשחק ⚽ הבא: {{ games['game_1'][0] | babel_format_full_heb }}</div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
-      <!-- https://github.com/badges/shields/issues/10109 -->
-      <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
-        <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
-      </a>
+      {{ notification_channel() | indent(6) }}
     </div>
   </div>
   
