@@ -38,6 +38,10 @@ def gen_static_page(obj):
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
+    if os.getenv("SKIP_COMMIT"):
+        logger.info("SKIP_COMMIT is set, skipping git commit")
+        return
+
     git_commit()
 
 

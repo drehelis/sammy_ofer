@@ -1,3 +1,9 @@
+{% macro notification_channel() %}
+<!-- https://github.com/badges/shields/issues/10109 -->
+<a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+  <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+</a>
+{% endmacro -%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,15 +18,15 @@
   <link href="assets/templates/style.css" rel="stylesheet" type="text/css">
   <script>
     const currentDate = new Date();
-    const day = currentDate.getDate();
-    const month = ("0" + (currentDate.getMonth() + 1)).slice(-2);
-    const year = currentDate.getFullYear();
+    const day = currentDate.toLocaleString('en-US', { day: '2-digit' });
+    const month = currentDate.toLocaleString('en-US', { month: '2-digit' });
+    const year = currentDate.toLocaleString('en-US', { year: "numeric" });
     const todayDate = `${year}-${month}-${day}`;
   </script>
 </head>
 <body>
-  {% for key, value in games.items() %}
-  {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value %}
+  {% for key, value in games.items() -%}
+  {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value -%}
   <div id="container-{{loop.index}}" class="container">
     <div class="metadata">
       <div class="metadata-item">משחק ⚽ היום בשעה: {{ game_hour }}</div>
@@ -40,11 +46,8 @@
       <div class="metadata-item">📣: {{ notes }}</div>
       {% endif %}
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
-      <!-- https://github.com/badges/shields/issues/10109 -->
       <div>
-        <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
-          <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
-        </a>
+        {{ notification_channel() | indent(8) }}
       </div>
     </div>
   </div>
@@ -55,15 +58,11 @@
     }
   </script>
   {% endfor %}
-
   <div id="default-container" class="container" style="display: none;">
     <div class="metadata">
       <div class="metadata-item">המשחק ⚽ הבא: {{ games['game_1'][0] | babel_format_full_heb }}</div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
-      <!-- https://github.com/badges/shields/issues/10109 -->
-      <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
-        <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
-      </a>
+      {{ notification_channel() | indent(6) }}
     </div>
   </div>
   

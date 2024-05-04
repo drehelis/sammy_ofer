@@ -12,7 +12,6 @@ import requests
 import re
 
 import numpy as np
-import PIL
 from PIL import Image
 
 from static_html_page import gen_static_page

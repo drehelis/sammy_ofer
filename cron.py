@@ -132,7 +132,9 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
 if __name__ == "__main__":
     web = web_scrape.WebScrape()
     scrape = web.scrape()
-    scraped_games = web.decoratored_games(scrape)
+    scraped_games = web.decoratored_games(
+        scrape
+    )  # also fetches teams logos and generates static page
     generated_data = check_games_today(scraped_games)
     detected_games_today = list(generated_data)
     message = create_message(detected_games_today)
