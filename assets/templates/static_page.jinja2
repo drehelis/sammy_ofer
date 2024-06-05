@@ -65,7 +65,7 @@
   {% endfor %}
   <div id="default-container" class="container" style="display: none;">
     <div class="metadata">
-      <div class="metadata-item">המשחק ⚽ הבא: {{ games.get('game_1', ['אין משחקים קרבים'])[0] }}</div>
+      <div class="metadata-item">המשחק ⚽ הבא: {{ games.get('game_1', ['אין משחקים קרבים'])[0] | babel_format_full_heb }}</div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
       {{ notification_channel() | indent(6) }}
     </div>

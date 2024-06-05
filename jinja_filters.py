@@ -6,4 +6,7 @@ def babel_format_day_heb(s):
 
 
 def babel_format_full_heb(s):
-    return format_date(s, format="full", locale="he")
+    try:
+        return format_date(s, format="full", locale="he")
+    except Exception:
+        return s
