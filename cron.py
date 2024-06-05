@@ -37,10 +37,12 @@ def random_choice(rand):
 def check_games_today(games):
     # Set today to datetime.date(YEAR, M, D) when debugging specific date
     today = datetime.date.today()
-    for _, value in games.items():
-        if today == value[0].date():
-            logger.info("Yesh mishak!")
-            yield value
+
+    if not isinstance(games, str):
+        for _, value in games.items():
+            if today == value[0].date():
+                logger.info("Yesh mishak!")
+                yield value
 
     return False
 

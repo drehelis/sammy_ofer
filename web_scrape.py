@@ -60,7 +60,7 @@ class WebScrape:
                         games_list.append(text)
 
         if len(games_list) < 2:
-            msg = f"List returned empty, no games today? Scrape result: {result}"
+            msg = f"List returned empty, no games today?"
             logger.warning(msg)
             return f"<pre>{msg}</pre>"
 
@@ -73,6 +73,7 @@ class WebScrape:
 
     def decoratored_games(self, scraped):
         if isinstance(scraped, str):
+            gen_static_page({})
             return scraped
 
         deco_games = {}
