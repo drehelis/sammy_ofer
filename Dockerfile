@@ -13,6 +13,8 @@ RUN apk add --update \
     git \
     && rm -rf /var/cache/apk/*
 
+VOLUME ./assets
+
 COPY assets/. ./assets
 COPY html_templates ./html_templates
 

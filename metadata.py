@@ -67,6 +67,11 @@ TEAMS_METADATA = {
         "name": "Ironi Tveria",
         "url": "https://www.football.co.il/ironi-tveria/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/12039.png",
+    },
+    'הפועל ק"ש': {
+        "name": "Hapoel Kiryat Shmona",
+        "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4563.png",
     }
 }
 
