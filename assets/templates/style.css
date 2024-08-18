@@ -16,7 +16,7 @@
     caret-color: transparent;
 }
 
-@media (max-height: 768px) {
+@media (max-height: 900px) {
     :root {
         --font-size-base: 14px;
         --font-size-team-name: 1.8rem;

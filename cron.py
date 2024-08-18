@@ -1,14 +1,17 @@
 #!/usr/bin/env python3
 
+from pathlib import Path
 from random import choice
 import asyncio
 import datetime
-from pathlib import Path
 import json
 import os
 import sys
+
 from dotenv import load_dotenv
+
 from telegram import Bot, constants
+from telegram.helpers import escape_markdown
 
 from logger import logger
 import web_scrape
@@ -46,6 +49,8 @@ def check_games_today(games):
 
     return False
 
+def escape_markdown_v2(text):
+    return escape_markdown(text, version=2)
 
 def create_message(*args):
     # pylint: disable=unused-variable,too-many-locals
@@ -72,7 +77,7 @@ def create_message(*args):
 
         yield f"""
 משחק ⚽ *היום* בשעה *{game_hour}*
-*{league}*: [{home_team}]({home_team_url}) \\|\\| [{guest_team}]({guest_team_url})
+*{league}*: [{escape_markdown_v2(home_team)}]({home_team_url}) \\|\\| [{escape_markdown_v2(guest_team)}]({guest_team_url})
 צפי חסימת כבישים: *{custom_road_block_time}*
 צפי אוהדים משוער: *{specs_word}* {custom_sepcs_number}
 
