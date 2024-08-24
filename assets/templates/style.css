@@ -16,7 +16,7 @@
     caret-color: transparent;
 }
 
-@media (max-height: 768px) {
+@media (max-height: 900px) {
     :root {
         --font-size-base: 14px;
         --font-size-team-name: 1.8rem;
@@ -55,6 +55,10 @@ body {
     background-color: var(--color-background);
     border-radius: var(--border-radius);
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.container-dumb {
+    text-align: center;
 }
 
 .team {
