@@ -68,6 +68,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/ironi-tveria/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/12039.png",
     },
+    'עירוני דורות טבריה': {
+        "name": "Ironi Tveria",
+        "url": "https://www.football.co.il/ironi-tveria/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/12039.png",
+    },
     'הפועל ק"ש': {
         "name": "Hapoel Kiryat Shmona",
         "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
@@ -77,6 +82,16 @@ TEAMS_METADATA = {
         "name": "Football Club Ashdod",
         "url": "https://www.football.co.il/football-club-ashdod/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4548.png",
+    },
+    'הפועל ירושלים': {
+        "name": "Hapoel Jerusalem",
+        "url": "https://www.football.co.il/hapoel-jerusalem/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/7020.png",
+    },
+    'בית"ר ירושלים': {
+        "name": "Beitar Jerusalem",
+        "url": "https://www.football.co.il/beitar-jerusalem/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4524.png",
     }
 }
 
