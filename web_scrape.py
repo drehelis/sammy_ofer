@@ -13,10 +13,12 @@ import re
 
 import numpy as np
 from PIL import Image
+from dotenv import load_dotenv
 
 from static_html_page import gen_static_page
 from metadata import TEAMS_METADATA, DESKTOP_AGENTS
 
+load_dotenv()
 
 def random_ua():
     return {"User-Agent": choice(DESKTOP_AGENTS)}
