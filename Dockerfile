@@ -16,6 +16,7 @@ RUN apk add --update \
 VOLUME ./assets
 
 COPY assets/. ./assets
+COPY static/. ./static
 COPY html_templates ./html_templates
 
 COPY requirements.txt \
