@@ -75,5 +75,4 @@ def get_image(file_name):
 
 if __name__ == "__main__":
     app_access_logs = TransLogger(app)
-    serve(app_access_logs, host="0.0.0.0", port=5001)
-    # app.run
+    serve(app_access_logs, host="0.0.0.0", port=5000)

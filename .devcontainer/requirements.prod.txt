@@ -9,3 +9,5 @@ numpy
 Pillow
 gitpython
 babel
+waitress
+paste
