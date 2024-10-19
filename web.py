@@ -8,6 +8,9 @@ import shutil
 from flask import Flask, render_template, request
 from flask.helpers import send_file
 from markupsafe import Markup
+from waitress import serve
+from paste.translogger import TransLogger
+
 
 from spectators import SPECTATORS
 import web_scrape
@@ -57,7 +60,7 @@ def update():
         SPECTATORS[home_team, guest_team].update(d)
         with open(spectators_file, "w", encoding="utf-8") as file:
             file.write(f"SPECTATORS = {SPECTATORS}")
-        return Markup("Saved!")
+        return Markup("השינויים נשמרו!")
 
     SPECTATORS[(home_team, guest_team)] = d
     with open(spectators_file, "w", encoding="utf-8") as file:
@@ -71,4 +74,6 @@ def get_image(file_name):
 
 
 if __name__ == "__main__":
-    app.run
+    app_access_logs = TransLogger(app)
+    serve(app_access_logs, host="0.0.0.0", port=5001)
+    # app.run
