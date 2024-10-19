@@ -15,6 +15,6 @@ fi
 
 crond -L /var/log/crond -c $CRON_PATH
 
-flask run --host=0.0.0.0 --port=5000
+python3 web.py
 
 exec "$@"

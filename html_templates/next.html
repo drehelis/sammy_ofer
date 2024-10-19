@@ -5,127 +5,124 @@
     <meta charset="utf-8">
     <title>המשחקים הקרובים</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <style>
-        div.unstyledTable {
-            width: 1024px;
-            border-collapse: collapse;
-        }
-
-        .divTable.unstyledTable .divTableCell, .divTable.unstyledTable .divTableHead {}
-
-        .divTable.unstyledTable .divTableBody .divTableCell {
-            font-size: 10px;
-        }
-
-        .divTable.unstyledTable .divTableHeading {
-            background: #DDDDDD;
-        }
-
-        .divTable.unstyledTable .divTableHeading .divTableHead {
-            font-size: 15px;
-            font-weight: bold;
-            text-align: right;
-        }
-
-        /* DivTable.com */
-        .divTable {
-            display: table;
-        }
-
-        .divTableRow {
-            display: table-row;
-        }
-
-        .divTableHeading {
-            display: table-header-group;
-        }
-
-        .divTableCell,
-        .divTableHead {
-            display: table-cell;
-            font-size: 15px;
-        }
-
-        .divTableHeading {
-            display: table-header-group;
-        }
-
-        .divTableBody {
-            display: table-row-group;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
-    <div class="divTable unstyledTable">
-        <div class="divTableHeading">
+    <div class="container">
+        <div class="divTable unstyledTable">
+            <div class="divTableHeading">
+                <div class="divTableRow">
+                    <div class="divTableHead">#</div>
+                    <div class="divTableHead">תאריך</div>
+                    <div class="divTableHead">יום</div>
+                    <div class="divTableHead">שעה</div>
+                    <div class="divTableHead">ליגה</div>
+                    <div class="divTableHead">בית</div>
+                    <div class="divTableHead">חוץ</div>
+                    <div class="divTableHead">אוהדים</div>
+                    <div class="divTableHead">מספר</div>
+                    <div class="divTableHead">פעולה</div>
+                    <div class="divTableHead">סקר</div>
+                    <div class="divTableHead">הערות</div>
+                    <div class="divTableHead">שלח</div>
+                </div>
+            </div>
+            {% for key, value in mygames.items() %}
+            {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team,
+            guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes,
+            custom_sepcs_number, custom_road_block_time = value %}
+            {% if guest_team_url != '' %}
+            {% set guest_team_alter = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
+            {% else %}
+            {% set guest_team_alter = guest_team %}
+            {% endif %}
             <div class="divTableRow">
-                <div class="divTableHead">#</div>
-                <div class="divTableHead">תאריך</div>
-                <div class="divTableHead">יום</div>
-                <div class="divTableHead">שעה</div>
-                <div class="divTableHead">ליגה</div>
-                <div class="divTableHead">בית</div>
-                <div class="divTableHead">חוץ</div>
-                <div class="divTableHead">אוהדים</div>
-                <div class="divTableHead">מספר</div>
-                <div class="divTableHead">פעולה</div>
-                <div class="divTableHead">סקר</div>
-                <div class="divTableHead">הערות</div>
+                <div class="divTableCell">{{ loop.index }}</div>
+                <div class="divTableCell">{{ scraped_date_time.strftime('%Y-%m-%d') }}</div>
+                <div class="divTableCell">{{ scraped_date_time | babel_format_day_heb }}</div>
+                <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
+                <div class="divTableCell">{{ league }}</div>
+                <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ home_team_en }}.png">&nbsp;<a
+                        href="{{ home_team_url }}" target="_blank">{{ home_team }}</a></div>
+                <div class="divTableCell"><img width="18" height="18"
+                        src="assets/teams/{{ guest_team_en }}.png">&nbsp;{{ guest_team_alter | safe }}</div>
+                <div class="divTableCell">{{ specs_word }}</div>
+                <div class="divTableCell" {% if specs_number==0 %}style="background: yellow;" {% endif %}>{{
+                    specs_number }}</div>
+                <div class="divTableCell">
+                    <form action="/action" method="post">
+                        <select id="action_{{ loop.index }}" name="action">
+                            <option option hidden selected>בחר</option>
+                            <option id="update" value='{
+                                    "action":"update",
+                                    "home_team":"{{ home_team | replace('"', '\\"') }}",
+                                    "guest_team":"{{ guest_team | replace('"', '\\"') }}",
+                                    "specs_word": "{{ specs_word }}",
+                                    "specs_number": "{{ specs_number }}",
+                                    "poll": "{{ poll }}",
+                                    "notes": "{{ notes }}"}'>עדכן</option>
+                            <option id="delete" value='{
+                                "action":"delete",
+                                "home_team":"{{ home_team }}",
+                                "guest_team":"{{ guest_team }}"}'>מחק</option>
+                        </select>
+                    </form>
+                </div>
+                <div class="divTableCell">
+                    <input type="checkbox" id="poll" disabled="disabled" {% if poll=='on' %}checked{% endif %}>
+                </div>
+                <div class="divTableCell">{{ notes }}</div>
+                <div class="divTableCell">
+                    <button onclick="send(this)">שלח</button>
+                </div>
             </div>
+            {% endfor %}
         </div>
-        {% for key, value in mygames.items() %}
-        {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value %}
-        {% if guest_team_url != '' %}
-        {% set guest_team_alter = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
-        {% else %}
-        {% set guest_team_alter = guest_team %}
-        {% endif %}
-        <div class="divTableRow">
-            <div class="divTableCell">{{ loop.index }}</div>
-            <div class="divTableCell">{{ scraped_date_time.strftime('%Y-%m-%d') }}</div>
-            <div class="divTableCell">{{ scraped_date_time | babel_format_day_heb }}</div>
-            <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
-            <div class="divTableCell">{{ league }}</div>
-            <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ home_team_en }}.png">&nbsp;<a href="{{ home_team_url }}" target="_blank">{{ home_team }}</a></div>
-            <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ guest_team_en }}.png">&nbsp;{{ guest_team_alter | safe }}</div>
-            <div class="divTableCell">{{ specs_word }}</div>
-            <div class="divTableCell" {% if specs_number == 0 %}style="background: yellow;" {% endif %}>{{ specs_number }}</div>
-            <div class="divTableCell">
-                <form action="/action" method="post">
-                    <select id="action_{{ loop.index }}" name="action">
-                        <option option hidden selected>בחר</option>
-                        <option id="update" value='{
-                                "action":"update",
-                                "home_team":"{{ home_team | replace('"', '\\"') }}",
-                                "guest_team":"{{ guest_team | replace('"', '\\"') }}",
-                                "specs_word": "{{ specs_word }}",
-                                "specs_number": "{{ specs_number }}",
-                                "poll": "{{ poll }}",
-                                "notes": "{{ notes }}"}'>עדכן</option>
-                        <option id="delete" value='{
-                            "action":"delete",
-                            "home_team":"{{ home_team }}",
-                            "guest_team":"{{ guest_team }}"}'>מחק</option>
-                    </select>
-                </form>
-            </div>
-            <div class="divTableCell"><input type="checkbox" id="poll" disabled="disabled" {% if poll == 'on' %}checked{% endif %}></div>
-            <div class="divTableCell">{{ notes }}</div>
-        </div>
-        {% endfor %}
-    </div>
-    <p>
+        <p>
         <div id="result_action"></div>
-    </p>
+        </p>
+    </div>
     <script>
         $('select').on('change', function () {
             let select_id = $(this).children(":selected").attr("id");
+            let row = $(this).closest('.divTableRow');
+
+            // Remove highlight from all rows
+            $('.divTableRow').removeClass('highlight');
+
+            // Add highlight to the selected row
+            row.addClass('highlight');
+
             $.post("/action", { [select_id]: this.value })
                 .done(function (data) {
                     $("#result_action").empty().append(data);
                 });
         });
+
+        function send(button) {
+            const row = button.closest('.divTableRow');
+            const cells = row.querySelectorAll('.divTableCell');
+            const keys = [
+                'index', 'date', 'day', 'time', 'league', 'home_team', 'guest_team',
+                'fans', 'number', 'action', 'poll', 'notes', 'send'
+            ];
+            const values = {};
+
+            cells.forEach((cell, index) => {
+                values[keys[index]] = cell.innerText.trim();
+            });
+
+            // Send the values using $.post
+            $.post('/your-endpoint', values)
+                .done(function (data) {
+                    console.log('Success:', data);
+                })
+                .fail(function (error) {
+                    console.error('Error:', error);
+                });
+        }
     </script>
 </body>
+
 </html>
