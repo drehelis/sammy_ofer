@@ -26,7 +26,7 @@ def random_ua():
 
 class WebScrape:
     def __init__(self):
-        self.url = "https://1www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
+        self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
         self.time_delta = 2
         self.soup = None
 
