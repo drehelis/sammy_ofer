@@ -26,13 +26,13 @@ def random_ua():
 
 class WebScrape:
     def __init__(self):
-        self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
+        self.url = "https://1www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
         self.time_delta = 2
         self.soup = None
 
     def scrape(self):
         try:
-            response = requests.get(self.url, headers=random_ua(), timeout=30)
+            response = requests.get(self.url, headers=random_ua(), timeout=60)
             response.raise_for_status()
 
             self.soup = BeautifulSoup(response.text, "html5lib")
@@ -40,6 +40,7 @@ class WebScrape:
             logger.error(f"HTTPError: {err}")
             return f"<pre>{str(err)}</pre>"
         except requests.exceptions.ConnectionError as err:
+            self.conn_err = True
             logger.error(f"ConnectionError: {err}")
             return f"<pre>{str(err)}</pre>"
 
@@ -75,7 +76,8 @@ class WebScrape:
 
     def decoratored_games(self, scraped):
         if isinstance(scraped, str):
-            gen_static_page({})
+            if not self.conn_err:
+                gen_static_page({})
             return scraped
 
         deco_games = {}
@@ -196,7 +198,7 @@ class GenerateTeamsPNG:
                     continue
 
             try:
-                r = requests.get(logo_url)
+                r = requests.get(logo_url, timeout=60)
                 with open(full_path, "wb") as f:
                     logger.info(f"Writing new file '{full_path}'")
                     f.write(r.content)

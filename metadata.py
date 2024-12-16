@@ -92,6 +92,21 @@ TEAMS_METADATA = {
         "name": "Beitar Jerusalem",
         "url": "https://www.football.co.il/beitar-jerusalem/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4524.png",
+    },
+    'הפועל פ"ת': {
+        "name": "Hapoel Petah Tikva",
+        "url": "https://www.football.co.il/hapoel-petah-tikva/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4542.png",
+    },
+    'עירוני אשקלון': {
+        "name": "Ironi Ashkelon",
+        "url": "https://www.football.co.il/hapoel-ironi-ashkelon/",
+        "logo": "https://upload.wikimedia.org/wikipedia/he/9/90/Logo_hapoel_ashkelon.png",
+    },
+    'מכבי פ"ת': {
+        "name": "Maccabi Petah Tikva",
+        "url": "https://www.football.co.il/maccabi-petah-tikva/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15006.png",
     }
 }
 
