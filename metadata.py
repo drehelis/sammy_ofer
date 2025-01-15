@@ -43,6 +43,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/hapoel-tel-aviv",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4530.png",
     },
+    'הפועל ת"א': {
+        "name": "Hapoel Tel Aviv",
+        "url": "https://www.football.co.il/hapoel-tel-aviv",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4530.png",
+    },
     "מכבי בני ריינה": {
         "name": "Bnei Reineh",
         "url": "https://www.football.co.il/bnei-reineh",
