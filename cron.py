@@ -86,7 +86,7 @@ def create_message(*args):
             home_team,
             guest_team,
             poll,
-            notes,
+            escape_markdown_v2(notes),
         )
 
 
