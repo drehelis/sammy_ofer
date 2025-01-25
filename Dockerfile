@@ -25,6 +25,12 @@ COPY requirements.txt \
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install tzdata to handle time zones
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Jerusalem /etc/localtime && \
+    echo "Asia/Jerusalem" > /etc/timezone && \
+    apk del tzdata
+
 EXPOSE 5000
 
 ENTRYPOINT ["./docker-entrypoint.sh"]

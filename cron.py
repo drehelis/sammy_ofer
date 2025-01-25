@@ -7,6 +7,7 @@ import datetime
 import json
 import os
 import sys
+import argparse  # ADDED: Argument parser for early/standard bot distinction
 
 from dotenv import load_dotenv
 
@@ -27,9 +28,10 @@ if "TELEGRAM_CHANNEL_ID" not in os.environ or "TELEGRAM_TOKEN" not in os.environ
     )
     sys.exit(1)
 
-TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")
-TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
-
+TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")  # Standard bot channel
+TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")  # Standard bot token
+EARLY_BOT_CHANNEL_ID = os.getenv("TELEGRAM_EARLY_CHANNEL_ID")  # ADDED: Early bot channel ID
+EARLY_BOT_TOKEN = os.getenv("TELEGRAM_EARLY_BOT_TOKEN")  # ADDED: Early bot token
 absolute_path = Path(__file__).resolve().parent
 
 
@@ -90,7 +92,8 @@ def create_message(*args):
         )
 
 
-async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
+async def send(msg, token, chat_id, bot_type):  # CHANGED: Added bot_type for logging
+    """Send a message using the Telegram bot."""
     async with Bot(token) as bot:
 
         iterator = next(msg)
@@ -122,7 +125,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
             caption="".join(send_message),
             parse_mode=constants.ParseMode.MARKDOWN_V2,
         )
-        logger.info("Telegram message sent!")
+        logger.info(f"Telegram message sent to {bot_type} bot!")  # CHANGED: Log bot type
 
         if poll == "on":
             await bot.sendPoll(
@@ -133,16 +136,45 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
                 protect_content=True,
                 close_date=datetime.datetime.timestamp(scraped_date_time),
             )
-            logger.info("Telegram poll sent!")
+            logger.info(f"Telegram poll sent to {bot_type} bot!")  # CHANGED: Log bot type
 
 
 if __name__ == "__main__":
+    # ADDED: Argument parsing to distinguish between early and standard bots
+    parser = argparse.ArgumentParser(description="Run Telegram bot notifier.")
+    parser.add_argument(
+        "--early", action="store_true", help="Run the early bot (e.g., 4 AM local time)"
+    )
+    parser.add_argument(
+        "--standard", action="store_true", help="Run the standard bot (e.g., 7 AM local time)"
+    )
+    args = parser.parse_args()
+
+    # Determine bot type and configuration
+    if args.standard:
+        logger.info("Running standard bot...")
+        bot_type = "standard"
+        token = TELEGRAM_TOKEN
+        channel_id = TELEGRAM_CHANNEL_ID
+    elif args.early:
+        logger.info("Running early bot...")
+        bot_type = "early"
+        token = EARLY_BOT_TOKEN
+        channel_id = EARLY_BOT_CHANNEL_ID
+
+    else:
+        logger.error("No bot type specified. Use --early or --standard.")
+        sys.exit(1)
+
+
     web = web_scrape.WebScrape()
     scrape = web.scrape()
     scraped_games = web.decoratored_games(
         scrape
     )  # also fetches teams logos and generates static page
     generated_data = check_games_today(scraped_games)
+
+    # Standard bot logic
     detected_games_today = list(generated_data)
     message = create_message(detected_games_today)
 
@@ -150,4 +182,28 @@ if __name__ == "__main__":
         logger.info("There is only one thing we say to death - Not today!")
         sys.exit(0)
 
-    asyncio.run(send(message))
+
+    # Standard bot: Notify for all detected games
+    if bot_type=="standard":
+        message = create_message(detected_games_today)
+        asyncio.run(send(message, token, channel_id, bot_type))
+
+    # Early bot: Notify only for games with >10,000 spectators
+    elif bot_type == "early":
+        filtered_games = [
+            game
+            for game in detected_games_today
+            if int(
+                game[-2]
+                .replace("\\", "")
+                .replace("(", "")
+                .replace(")", "")
+                .replace(",", "")
+            )
+               > 10000 # alert only for 10K or more, which implies a parking problem
+        ]
+        if filtered_games:
+            message = create_message(filtered_games)
+            asyncio.run(send(message, token, channel_id, bot_type))
+        else:
+            logger.info("No games above the 10,000 spectators threshold for early bot.")
