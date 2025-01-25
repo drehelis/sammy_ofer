@@ -19,6 +19,8 @@ import web_scrape
 
 from metadata import EMOJI_HEARTS, POLL_SENTENCES
 
+BIG_GAME_TH = 10000
+
 load_dotenv()
 
 
@@ -200,7 +202,7 @@ if __name__ == "__main__":
                 .replace(")", "")
                 .replace(",", "")
             )
-               > 10000 # alert only for 10K or more, which implies a parking problem
+               > BIG_GAME_TH # alert only for 10K or more, which implies a parking problem
         ]
         if filtered_games:
             message = create_message(filtered_games)
