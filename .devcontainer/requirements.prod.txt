@@ -11,3 +11,4 @@ python-dotenv
 python-telegram-bot
 requests
 waitress
+google-api-python-client
