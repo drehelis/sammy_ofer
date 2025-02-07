@@ -1,8 +1,8 @@
 # Sammy Ofer Notification Bot 🤖
 
 [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=plastic)](https://www.buymeacoffee.com/drehelis)
-![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel)
-![Calendar](https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70)
+[![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel)](https://t.me/sammy_ofer_notification_channel)
+[![Calendar](https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70)](https://calendar.google.com/calendar/embed?src=sammyofernotification%40gmail.com&ctz=Asia%2FJerusalem)
 
 ## Description
 
