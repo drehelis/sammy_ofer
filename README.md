@@ -24,6 +24,10 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 
 ![Static screenshot](static.jpeg)
 
+## Google Calendar
+
+![Google Calendar](google_calendar.png)
+
 ## Build it
 ```
 git clone https://github.com/autogun/sammy_ofer.git
