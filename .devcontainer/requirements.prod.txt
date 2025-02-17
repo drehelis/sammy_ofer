@@ -2,6 +2,7 @@ babel
 beautifulsoup4
 flask
 gitpython
+google-api-python-client
 html5lib
 numpy
 paste

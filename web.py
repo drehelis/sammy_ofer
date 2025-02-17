@@ -25,8 +25,11 @@ def next_game():
     web = web_scrape.WebScrape()
     scrape = web.scrape()
     games = web.decoratored_games(scrape)
+
     if isinstance(games, str):
         return Markup(scrape)
+
+    web.create_calendar_event(games)
 
     return render_template("next.html", mygames=games)
 

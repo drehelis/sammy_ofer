@@ -15,6 +15,7 @@ from telegram.helpers import escape_markdown
 
 from logger import logger
 import web_scrape
+from models import unpack_game_data
 
 from metadata import EMOJI_HEARTS, POLL_SENTENCES
 
@@ -53,40 +54,21 @@ def escape_markdown_v2(text):
     return escape_markdown(text, version=2)
 
 def create_message(*args):
-    # pylint: disable=unused-variable,too-many-locals
     for item in args[0]:
-        (
-            scraped_date_time,
-            league,
-            home_team,
-            home_team_en,
-            home_team_url,
-            game_hour,
-            guest_team,
-            guest_team_en,
-            guest_team_url,
-            game_time_delta,
-            road_block_time,
-            specs_word,
-            specs_number,
-            poll,
-            notes,
-            custom_sepcs_number,
-            custom_road_block_time,
-        ) = item
+        row = unpack_game_data(item)
 
         yield f"""
-משחק ⚽ *היום* בשעה *{game_hour}*
-*{league}*: [{escape_markdown_v2(home_team)}]({home_team_url}) \\|\\| [{escape_markdown_v2(guest_team)}]({guest_team_url})
-צפי חסימת כבישים: *{custom_road_block_time}*
-צפי אוהדים משוער: *{specs_word}* {custom_sepcs_number}
+משחק ⚽ *היום* בשעה *{row.game_hour}*
+*{row.league}*: [{escape_markdown_v2(row.home_team)}]({row.home_team_url}) \\|\\| [{escape_markdown_v2(row.guest_team)}]({row.guest_team_url})
+צפי חסימת כבישים: *{row.custom_road_block_time}*
+צפי אוהדים משוער: *{row.specs_word}* {row.custom_sepcs_number}
 
 """, (
-            scraped_date_time,
-            home_team,
-            guest_team,
-            poll,
-            escape_markdown_v2(notes),
+            row.scraped_date_time,
+            row.home_team,
+            row.guest_team,
+            row.poll,
+            escape_markdown_v2(row.notes),
         )
 
 

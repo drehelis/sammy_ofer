@@ -6,3 +6,4 @@ spectators.py*
 .env
 banner.png
 static.html
+service_account.json

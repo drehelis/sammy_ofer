@@ -15,8 +15,9 @@ import numpy as np
 from PIL import Image
 from dotenv import load_dotenv
 
-from static_html_page import gen_static_page
+from google_calendar import GoogleCalendarManager
 from metadata import TEAMS_METADATA, DESKTOP_AGENTS
+from static_html_page import gen_static_page
 
 load_dotenv()
 
@@ -80,7 +81,7 @@ class WebScrape:
                 gen_static_page({})
             return scraped
 
-        deco_games = {}
+        deco_games_obj = {}
         for key, value in scraped.items():
             league, home_team, str_time, guest_team = value
             if len(list(filter(None, value))) != 4:  # skip if tuple is not whole
@@ -142,7 +143,7 @@ class WebScrape:
             elif specs_word == "גדול מאוד":
                 custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
-            deco_games.update(
+            deco_games_obj.update(
                 {
                     key: (
                         scraped_date_time,
@@ -167,10 +168,14 @@ class WebScrape:
                 }
             )
 
-        gen_static_page(deco_games)
+        gen_static_page(deco_games_obj)
 
-        return deco_games
+        return deco_games_obj
 
+    def create_calendar_event(self, games):
+        calendar_manager = GoogleCalendarManager()
+        calendar_manager.authenticate()
+        created_events = calendar_manager.create_events(games)
 
 class GenerateTeamsPNG:
     def __init__(self, home_team, guest_team):

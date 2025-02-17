@@ -83,6 +83,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4563.png",
     },
+    'הפועל קריית שמונה': {
+        "name": "Hapoel Kiryat Shmona",
+        "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4563.png",
+    },
     'מ.ס. אשדוד': {
         "name": "Football Club Ashdod",
         "url": "https://www.football.co.il/football-club-ashdod/",

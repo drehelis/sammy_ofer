@@ -1,7 +1,8 @@
 # Sammy Ofer Notification Bot 🤖
 
 [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=plastic)](https://www.buymeacoffee.com/drehelis)
-![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel)
+[![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel)](https://t.me/sammy_ofer_notification_channel)
+[![Calendar](https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70)](https://calendar.google.com/calendar/embed?src=sammyofernotification%40gmail.com&ctz=Asia%2FJerusalem)
 
 ## Description
 
@@ -9,10 +10,11 @@ A small time scheduled (cron) _web-scraper_ to notify of upcoming game events ta
 
 Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notification_channel) and enjoy:
 
-* Single notification for the upcoming event
-* Matchup, average attendance and roadblock times
-* Spam free service
-* Static landing page to be shown on big screen/TV
+* ☝️ Single notification for the upcoming event
+* 🚦 Matchup, average attendance and roadblock times
+* ⛔ Spam free service
+* 🌎 Static landing page to be shown on big screen/TV
+* 🗓️ Public Google Calendar
 
 ## Web-UI
 
@@ -21,6 +23,10 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 ## Static landing page ([link](https://drehelis.github.io/sammy_ofer/static.html))
 
 ![Static screenshot](static.jpeg)
+
+## Google Calendar
+
+![Google Calendar](google_calendar.png)
 
 ## Build it
 ```
