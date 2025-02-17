@@ -27,7 +27,7 @@ class GoogleCalendarManager:
                 creds_dict,
                 scopes=self.SCOPES
             )
-            self.service = build('calendar', 'v3', credentials=credentials)
+            self.service = build('calendar', 'v3', credentials=credentials, cache_discovery=False)
             self.authenticated = True
 
         except FileNotFoundError as notfound_error:
