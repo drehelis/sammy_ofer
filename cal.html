@@ -15,21 +15,80 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="refresh" content="120">
-  <title>התראות משחקים בסמי עופר</title>
+  <title>יומן משחקים בסמי עופר</title>
   <link rel="icon"
     href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏟️</text></svg>">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Alef:wght@400;700&display=swap" rel="stylesheet">
   <link href="assets/templates/style.css" rel="stylesheet" type="text/css">
+
+  <style>
+    @media (max-width: 550px) {
+      .big-container {
+        display: none;
+      }
+    }
+
+    @media (min-width: 550px) {
+      .small-container {
+        display: none;
+      }
+    }
+
+    .responsive-iframe-container {
+      position: relative;
+      padding-bottom: 90vh;
+      padding-top: 0;
+      height: 0;
+      overflow: hidden;
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .responsive-iframe-container iframe,
+    .responsive-iframe-container object,
+    .responsive-iframe-container embed {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 90vh;
+      display: block;
+      z-index: 1;
+    }
+
+    #container-1 {
+      width: 100%;
+      height: 95vh;
+      margin: 0;
+      overflow: hidden;
+
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+    }
+  </style>
 
 </head>
 
 <body>
   <div id="container-1" class="container">
-    <iframe <iframe
-      src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FJerusalem&mode=AGENDA&hl=iw&showTitle=0&showTz=0&showCalendars=0&showNav=0&src=c2FtbXlvZmVybm90aWZpY2F0aW9uQGdtYWlsLmNvbQ&color=%23F6BF26"
-      style="border-width:0" width="800" height="600" frameborder="0" scrolling="no"></iframe>
+    <div class="responsive-iframe-container big-container">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FJerusalem&mode=AGENDA&hl=iw&showTitle=0&showTz=0&showCalendars=0&showNav=0&src=c2FtbXlvZmVybm90aWZpY2F0aW9uQGdtYWlsLmNvbQ&color=%23F6BF26"
+        style="border-width:0" width="100%" height="650" frameborder="0" scrolling="no">
+      </iframe>
+    </div>
+    <div class=" responsive-iframe-container small-container">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?height=600&wkst=1&ctz=Asia%2FJerusalem&mode=AGENDA&hl=iw&showTitle=0&showTz=0&showCalendars=0&showNav=0&src=c2FtbXlvZmVybm90aWZpY2F0aW9uQGdtYWlsLmNvbQ&color=%23F6BF26"
+        style="border-width:0" height="600" frameborder="0" scrolling="no">
+      </iframe>
+    </div>
   </div>
 </body>
 
