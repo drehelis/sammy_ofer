@@ -2,7 +2,7 @@
 
 [!["Buy Me A Coffee"](https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=plastic)](https://www.buymeacoffee.com/drehelis)
 [![Telegram](https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel)](https://t.me/sammy_ofer_notification_channel)
-[![Calendar](https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70)](https://calendar.google.com/calendar/embed?src=sammyofernotification%40gmail.com&ctz=Asia%2FJerusalem)
+[![Calendar](https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70)](https://yeshmishak.top/cal.html)
 
 ## Description
 
@@ -37,12 +37,17 @@ docker build . -t sammy_ofer
 
 ## Run it
 ```
+cat << EOF > .env
+TELEGRAM_CHANNEL_ID=<required>
+TELEGRAM_TOKEN=<required>
+GH_PAT (optional)
+EOF
+
 docker run -d --name sammy_ofer \
     --publish 5000:5000 \
     --restart=on-failure \
-    --env TELEGRAM_CHANNEL_ID=<required> \
-    --env TELEGRAM_TOKEN=<required> \
-    --env GH_PAT (optional) \
+    --env-file ./.env \
+    --volume $(PWD)/service_account.json:/usr/src/sammy_ofer/service_account.json \
     sammy_ofer:latest
 ```
 
