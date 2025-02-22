@@ -96,12 +96,11 @@ class WebScrape:
             ):  # skip entry if returns nothing (usually when there's hebrew input instead of date)
                 continue
 
-            scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
-
-            if (
-                type(scraped_date_time) is not datetime.datetime
-            ):  # skip if date is in bad format
-                continue
+            try:
+                scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
+            except parser.ParserError as err:
+                logger.error(f"Failed to parse date in {value}': {err}")
+                continue  # skip if date is in bad format
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
