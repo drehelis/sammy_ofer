@@ -5,3 +5,4 @@ __pycache__
 spectators.py*
 .env
 banner.png
+service_account.json
