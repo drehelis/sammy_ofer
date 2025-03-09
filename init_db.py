@@ -35,7 +35,8 @@ def init_db():
             notes TEXT,
             specs_emoji TEXT,
             custom_road_block_time TEXT,
-            created_at TEXT
+            created_at TEXT,
+            updated_at TEXT
         )
     """)
 

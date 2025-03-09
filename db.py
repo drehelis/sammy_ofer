@@ -20,7 +20,7 @@ def db_transaction():
         conn.close()
 
 
-def update_db_record(id, number, post_number, word, poll, notes):
+def update_db_record(id, number, post_number, word, poll, notes, updated_at):
     with db_transaction() as (conn, cursor):
         cursor.execute(
             """
@@ -29,10 +29,11 @@ def update_db_record(id, number, post_number, word, poll, notes):
                 post_specs_number = ?,
                 specs_word = ?,
                 poll = ?,
-                notes = ?
+                notes = ?,
+                updated_at = ?
             WHERE game_id = ?
         """,
-            (number, post_number, word, poll, notes, id),
+            (number, post_number, word, poll, notes, updated_at, id),
         )
 
     return cursor.rowcount > 0  # Return True if a row was updated
@@ -125,6 +126,7 @@ def store_scraped_games_in_db(games):
                         specs_emoji = ?,
                         custom_road_block_time = ?,
                         created_at = ?
+                        updated_at = ?
                     WHERE game_id = ?
                 """,
                     (
@@ -151,6 +153,7 @@ def store_scraped_games_in_db(games):
                         game_data.specs_emoji,
                         game_data.custom_road_block_time,
                         datetime.now().isoformat(),
+                        game_data.updated_at,
                         game_data.game_id,
                     ),
                 )

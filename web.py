@@ -49,6 +49,7 @@ def update():
         request.form["specs_word"],
         request.form.get("poll", "off"),
         request.form["notes"],
+        datetime.now().isoformat()
     )
     if ok:
         return Markup("עידכון בוצע בהצלחה")
