@@ -39,9 +39,9 @@ def random_choice(rand):
 
 
 def check_games_today(games):
-    # Set today to datetime.date(YEAR, M, D) when debugging specific date
-    # today = datetime.date.today()
-    today = datetime.date(2025, 3, 9)
+    # Set today to datetime.date(YEAR, M, D) when debugging specific date, i.e.:
+    # today = datetime.date(2025, 3, 9)
+    today = datetime.date.today()
 
     if not isinstance(games, str):
         for _, value in games.items():
