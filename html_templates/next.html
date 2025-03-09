@@ -56,7 +56,7 @@
                 <div class="divTableCell" {% if obj.specs_number==0 %}style="background: yellow;" {% endif %}>
                     {{ "{:,}".format(obj.specs_number) }}
                 </div>
-                <div class="divTableCell">{{ obj.post_specs_number}}</div>
+                <div class="divTableCell">{{ "{:,}".format(obj.post_specs_number) }}</div>
                 <div class="divTableCell">
                     <form action="/action" method="post">
                         <select id="action_{{ section_id }}_{{ loop.index }}" name="action">
