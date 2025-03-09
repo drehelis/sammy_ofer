@@ -3,18 +3,21 @@
 
 from bs4 import BeautifulSoup
 from random import choice
-from spectators import SPECTATORS
 import datetime
 from dateutil import parser
 from pathlib import Path
 from logger import logger
-import requests
+import hashlib
+import os
 import re
+import requests
+
 
 import numpy as np
 from PIL import Image
 from dotenv import load_dotenv
 
+import db
 from google_calendar import GoogleCalendarManager
 from metadata import TEAMS_METADATA, DESKTOP_AGENTS
 from static_html_page import gen_static_page
@@ -104,6 +107,7 @@ class WebScrape:
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
+            game_id = hashlib.sha1(scraped_date_time.isoformat().encode()).hexdigest()
             home_team_en = TEAMS_METADATA.get(
                 home_team, TEAMS_METADATA.get("Unavailable")
             ).get("name")
@@ -122,21 +126,15 @@ class WebScrape:
                 hours=self.time_delta
             )
             road_block_time = game_time_delta.time().strftime("%H:%M")
-            specs_word = SPECTATORS.get((home_team, guest_team), {}).get(
-                "word", "לא ידוע"
-            )
-            specs_number = round(
-                SPECTATORS.get((home_team, guest_team), {}).get("number", 0), -2
-            )
-            poll = SPECTATORS.get((home_team, guest_team), {}).get("poll")
-            notes = SPECTATORS.get((home_team, guest_team), {}).get("notes", "")
 
-            custom_sepcs_number = f"\\({specs_number:,}\\)"
+            specs_word, specs_number, post_specs_number, poll, notes = db.get_game_details(game_id)
+
+            specs_emoji = ""
             custom_road_block_time = f"החל מ {road_block_time}"
             if int(specs_number) >= 28000:
-                custom_sepcs_number = f"\\({specs_number:,}\\) 😱"
+                specs_emoji = "😱"
             if 1 <= int(specs_number) <= 6000:
-                custom_sepcs_number = f"\\({specs_number:,}\\) 🤏"
+                specs_emoji = "🤏"
             if specs_word == "ללא" or int(specs_number) <= 6000:
                 custom_road_block_time = "אין"
             elif specs_word == "גדול מאוד":
@@ -145,6 +143,7 @@ class WebScrape:
             deco_games_obj.update(
                 {
                     key: (
+                        game_id,
                         scraped_date_time,
                         league,
                         home_team,
@@ -158,10 +157,11 @@ class WebScrape:
                         road_block_time,
                         specs_word,
                         specs_number,
+                        post_specs_number,
                         poll,
                         notes,
                         #
-                        custom_sepcs_number,
+                        specs_emoji,
                         custom_road_block_time,
                     )
                 }
@@ -169,9 +169,15 @@ class WebScrape:
 
         gen_static_page(deco_games_obj)
 
+        db.store_scraped_games_in_db(deco_games_obj)
+
         return deco_games_obj
 
     def create_calendar_event(self, games):
+        if os.getenv("SKIP_CALENDAR"):
+            logger.info("SKIP_CALENDAR is set, skipping calendar update")
+            return
+
         calendar_manager = GoogleCalendarManager()
         calendar_manager.authenticate()
         created_events = calendar_manager.create_events(games)

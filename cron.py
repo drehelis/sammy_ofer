@@ -40,11 +40,12 @@ def random_choice(rand):
 
 def check_games_today(games):
     # Set today to datetime.date(YEAR, M, D) when debugging specific date
-    today = datetime.date.today()
+    # today = datetime.date.today()
+    today = datetime.date(2025, 3, 9)
 
     if not isinstance(games, str):
         for _, value in games.items():
-            if today == value[0].date():
+            if today == value[1].date(): # scraped_date_time is at index 1
                 logger.info("Yesh mishak!")
                 yield value
 
@@ -61,7 +62,7 @@ def create_message(*args):
 משחק ⚽ *היום* בשעה *{row.game_hour}*
 *{row.league}*: [{escape_markdown_v2(row.home_team)}]({row.home_team_url}) \\|\\| [{escape_markdown_v2(row.guest_team)}]({row.guest_team_url})
 צפי חסימת כבישים: *{row.custom_road_block_time}*
-צפי אוהדים משוער: *{row.specs_word}* {row.custom_sepcs_number}
+צפי אוהדים משוער: *{row.specs_word}* {escape_markdown_v2(f"({row.specs_number:,})")} {row.specs_emoji}
 
 """, (
             row.scraped_date_time,
@@ -79,11 +80,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
         send_message = list(iterator[:-1])
         iterated_data = iterator[-1]
 
-        scraped_date_time = iterated_data[0]
-        home_team = iterated_data[1]
-        guest_team = iterated_data[2]
-        poll = iterated_data[3]
-        notes = iterated_data[4]
+        scraped_date_time, home_team, guest_team, poll, notes = iterated_data
 
         if notes:
             send_message.append(f"📣: {notes}\n\n")
@@ -93,7 +90,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
         )
         send_message.append("\n\n")
         send_message.append(
-            "[https://t\\.me/sammy\\_ofer\\_notification\\_channel](https://t.me/sammy_ofer_notification_channel)"
+            escape_markdown_v2(f"https://t.me/sammy_ofer_notification_channel")
         )
 
         web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()
@@ -110,7 +107,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
             await bot.sendPoll(
                 chat_id,
                 random_choice(POLL_SENTENCES),
-                json.dumps([home_team, guest_team]),
+                [home_team, guest_team],
                 disable_notification=True,
                 protect_content=True,
                 close_date=datetime.datetime.timestamp(scraped_date_time),
@@ -123,7 +120,7 @@ if __name__ == "__main__":
     scrape = web.scrape()
     scraped_games = web.decoratored_games(
         scrape
-    )  # also fetches teams logos and generates static page
+    )  # also fetches teams logos, generates static page and update calendar
     generated_data = check_games_today(scraped_games)
     detected_games_today = list(generated_data)
     message = create_message(detected_games_today)

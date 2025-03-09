@@ -11,10 +11,10 @@ from markupsafe import Markup
 from waitress import serve
 from paste.translogger import TransLogger
 
-
-from spectators import SPECTATORS
 import web_scrape
 from jinja_filters import *
+import db
+
 
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = babel_format_day_heb
@@ -30,8 +30,9 @@ def next_game():
         return Markup(scrape)
 
     web.create_calendar_event(games)
-
-    return render_template("next.html", mygames=games)
+    
+    all_games = db.get_all_db_entries()
+    return render_template("next.html", mygames=all_games, datetime=datetime)
 
 
 @app.route("/action", methods=["POST"])
@@ -42,34 +43,24 @@ def action():
 
 @app.route("/update", methods=["POST"])
 def update():
-    home_team = request.form["home_team"]
-    guest_team = request.form["guest_team"]
-    d = {
-        "number": int(request.form["specs_number"]),
-        "word": request.form["specs_word"],
-        "poll": request.form.get("poll", "off"),
-        "notes": request.form.get("notes", ""),
-    }
-
-    # Backup the file before editing it
-    spectators_file = "./spectators.py"
-    backup_file = (
-        f'{spectators_file}.backup-{datetime.now().strftime("%Y-%m-%d_%H%M%S")}'
+    ok = db.update_db_record(
+        request.form["game_id"],
+        request.form["specs_number"],
+        request.form["post_specs_number"],
+        request.form["specs_word"],
+        request.form.get("poll", "off"),
+        request.form["notes"]
     )
-    shutil.copy(spectators_file, backup_file)
+    if ok:
+        return Markup("עידכון בוצע בהצלחה")
 
-    key_exist = SPECTATORS.get((home_team, guest_team))
-    if key_exist:
-        SPECTATORS[home_team, guest_team].update(d)
-        with open(spectators_file, "w", encoding="utf-8") as file:
-            file.write(f"SPECTATORS = {SPECTATORS}")
-        return Markup("השינויים נשמרו!")
+@app.route('/delete', methods=['POST'])
+def delete():
+    game_id = request.form.get('game_id')
 
-    SPECTATORS[(home_team, guest_team)] = d
-    with open(spectators_file, "w", encoding="utf-8") as file:
-        file.write(f"SPECTATORS = {SPECTATORS}")
-    return Markup("New entry saved!")
-
+    ok = db.delete_db_record(game_id)
+    if ok:
+        return Markup("הרשומה נמחקה בהצלחה")
 
 @app.route("/assets/teams/<file_name>")
 def get_image(file_name):

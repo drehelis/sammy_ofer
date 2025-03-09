@@ -17,7 +17,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta http-equiv="refresh" content="120">
+  <meta http-equiv="refresh" content="300">
   <title>התראות משחקים בסמי עופר</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🏟️</text></svg>">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,7 +34,7 @@
 </head>
 <body>
   {% for key, value in games.items() -%}
-  {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes, custom_sepcs_number, custom_road_block_time = value -%}
+  {% set game_id, scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, post_specs_number, poll, notes, specs_emoji, custom_road_block_time = value -%}
   <div id="container-{{loop.index}}" class="container">
     <div class="metadata">
       <div class="metadata-item">משחק ⚽ היום בשעה: {{ game_hour }}</div>
@@ -49,7 +49,7 @@
     </div>
     <div class="metadata">
       <div class="metadata-item">צפי חסימת כבישים: {{ custom_road_block_time }}</div>
-      <div class="metadata-item">צפי אוהדים משוער: {{ specs_word }} {{ custom_sepcs_number | replace("\\", "") }}</div>
+      <div class="metadata-item">צפי אוהדים משוער: {{ specs_word }} ({{ "{:,}".format(specs_number) }}) {{ specs_emoji }}</div>
       {% if notes %}
       <div class="metadata-item">📣: {{ notes }}</div>
       {% endif %}
@@ -68,7 +68,7 @@
   {% endfor %}
   <div id="default-container" class="container" style="display: none;">
     <div class="metadata">
-      <div class="metadata-item">המשחק ⚽ הבא: {{ games.get('game_1', ['אין משחקים קרבים'])[0] | babel_format_full_heb }}</div>
+      <div class="metadata-item">המשחק ⚽ הבא: {{ games.get('game_1', ['אין משחקים קרבים'])[1] | babel_format_full_heb }}</div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
       {{ notification_channel() | indent(6) }}
     </div>

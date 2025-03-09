@@ -4,6 +4,7 @@ from typing import Optional
 
 @dataclass
 class GameData:
+    game_id: str
     scraped_date_time: datetime
     league: str
     home_team: str
@@ -17,9 +18,10 @@ class GameData:
     road_block_time: str
     specs_word: str
     specs_number: int
+    post_specs_number: int
     poll: Optional[str]
     notes: str
-    custom_sepcs_number: str
+    specs_emoji: str
     custom_road_block_time: str
 
 def unpack_game_data(item_tuple: tuple) -> GameData:

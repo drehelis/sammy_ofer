@@ -73,6 +73,11 @@ h1 {
     text-align: center;
 }
 
+#result_delete {
+    margin-top: 20px;
+    text-align: center;
+}
+
 .divTable {
     display: table;
     width: 100%;
@@ -167,4 +172,34 @@ input[type="checkbox"] {
 
 .highlight {
     background-color: #ADD8E6;
+}
+
+.table-separator {
+    background-color: #f0f0f0;
+    padding: 10px;
+    margin: 20px 0;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.table-separator .toggle-icon {
+    margin-right: 10px;
+    display: inline-block;
+    transition: transform 0.3s;
+}
+
+.table-separator.collapsed .toggle-icon {
+    transform: rotate(-90deg);
+}
+
+.collapsible-content {
+    overflow: hidden;
+    transition: max-height 0.3s ease-out;
+}
+
+.collapsed+.collapsible-content {
+    max-height: 0;
 }

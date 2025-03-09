@@ -2,7 +2,7 @@ __pycache__
 .DS_Store
 .notes
 .vscode/*
-spectators.py*
+sammy_ofer.db
 .env
 banner.png
 static.html
