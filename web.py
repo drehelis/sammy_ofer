@@ -3,7 +3,6 @@
 
 from datetime import datetime
 import json
-import shutil
 
 from flask import Flask, render_template, request
 from flask.helpers import send_file
@@ -12,12 +11,12 @@ from waitress import serve
 from paste.translogger import TransLogger
 
 import web_scrape
-from jinja_filters import *
+import jinja_filters as jf
 import db
 
 
 app = Flask(__name__, template_folder="html_templates")
-app.jinja_env.filters["babel_format_day_heb"] = babel_format_day_heb
+app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
 
 
 @app.route("/next", methods=["GET"])
@@ -30,7 +29,7 @@ def next_game():
         return Markup(scrape)
 
     web.create_calendar_event(games)
-    
+
     all_games = db.get_all_db_entries()
     return render_template("next.html", mygames=all_games, datetime=datetime)
 
@@ -49,18 +48,20 @@ def update():
         request.form["post_specs_number"],
         request.form["specs_word"],
         request.form.get("poll", "off"),
-        request.form["notes"]
+        request.form["notes"],
     )
     if ok:
         return Markup("עידכון בוצע בהצלחה")
 
-@app.route('/delete', methods=['POST'])
+
+@app.route("/delete", methods=["POST"])
 def delete():
-    game_id = request.form.get('game_id')
+    game_id = request.form.get("game_id")
 
     ok = db.delete_db_record(game_id)
     if ok:
         return Markup("הרשומה נמחקה בהצלחה")
+
 
 @app.route("/assets/teams/<file_name>")
 def get_image(file_name):

@@ -41,6 +41,8 @@ cat << EOF > .env
 TELEGRAM_CHANNEL_ID=<required>
 TELEGRAM_TOKEN=<required>
 GH_PAT (optional)
+SKIP_COMMIT=false
+SKIP_CALENDAR=false
 EOF
 
 docker run -d --name sammy_ofer \
@@ -48,6 +50,7 @@ docker run -d --name sammy_ofer \
     --restart=on-failure \
     --env-file ./.env \
     --volume $(PWD)/service_account.json:/usr/src/sammy_ofer/service_account.json \
+    --volume $(PWD)/sammy_ofer.db:/usr/src/sammy_ofer/sammy_ofer.db \
     sammy_ofer:latest
 ```
 

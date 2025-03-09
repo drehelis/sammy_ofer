@@ -1,13 +1,13 @@
 from contextlib import contextmanager
 from datetime import datetime
-import hashlib
 import sqlite3
 
-from models import GameData, unpack_game_data
+from models import unpack_game_data
+
 
 @contextmanager
 def db_transaction():
-    conn = sqlite3.connect('sammy_ofer.db')
+    conn = sqlite3.connect("sammy_ofer.db")
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     try:
@@ -19,9 +19,11 @@ def db_transaction():
     finally:
         conn.close()
 
+
 def update_db_record(id, number, post_number, word, poll, notes):
     with db_transaction() as (conn, cursor):
-        cursor.execute("""
+        cursor.execute(
+            """
             UPDATE games SET
                 specs_number = ?,
                 post_specs_number = ?,
@@ -29,15 +31,19 @@ def update_db_record(id, number, post_number, word, poll, notes):
                 poll = ?,
                 notes = ?
             WHERE game_id = ?
-        """, (number, post_number, word, poll, notes, id))
+        """,
+            (number, post_number, word, poll, notes, id),
+        )
 
     return cursor.rowcount > 0  # Return True if a row was updated
+
 
 def delete_db_record(id):
     with db_transaction() as (conn, cursor):
         cursor.execute("DELETE FROM games WHERE game_id = ?", (id,))
 
     return cursor.rowcount > 0  # Return True if a row was updated
+
 
 def check_for_field_update(games):
     fields_to_compare = [
@@ -49,7 +55,7 @@ def check_for_field_update(games):
         "specs_number",
         "post_specs_number",
         "poll",
-        "notes"
+        "notes",
     ]
     fields_str = ", ".join(fields_to_compare)
 
@@ -77,10 +83,7 @@ def check_for_field_update(games):
                 web_value = web_value.isoformat()
 
             if str(db_value) != str(web_value):
-                changes[field] = {
-                    'db': db_value,
-                    'web': web_value
-                }
+                changes[field] = {"db": db_value, "web": web_value}
 
         if changes:
             print(f"Changes detected for game {games.game_id}:")
@@ -89,6 +92,7 @@ def check_for_field_update(games):
 
             return True
         return False
+
 
 def store_scraped_games_in_db(games):
     with db_transaction() as (conn, cursor):
@@ -99,7 +103,8 @@ def store_scraped_games_in_db(games):
 
             if update_required:
                 print("Updating existing game record")
-                cursor.execute("""
+                cursor.execute(
+                    """
                     UPDATE games SET
                         scraped_date_time = ?,
                         league = ?,
@@ -121,8 +126,11 @@ def store_scraped_games_in_db(games):
                         custom_road_block_time = ?,
                         created_at = ?
                     WHERE game_id = ?
-                """, (
-                        game_data.scraped_date_time.isoformat() if isinstance(game_data.scraped_date_time, datetime) else str(game_data.scraped_date_time),
+                """,
+                    (
+                        game_data.scraped_date_time.isoformat()
+                        if isinstance(game_data.scraped_date_time, datetime)
+                        else str(game_data.scraped_date_time),
                         game_data.league,
                         game_data.home_team,
                         game_data.home_team_en,
@@ -131,7 +139,9 @@ def store_scraped_games_in_db(games):
                         game_data.guest_team,
                         game_data.guest_team_en,
                         game_data.guest_team_url,
-                        game_data.game_time_delta.isoformat() if isinstance(game_data.game_time_delta, datetime) else str(game_data.game_time_delta),
+                        game_data.game_time_delta.isoformat()
+                        if isinstance(game_data.game_time_delta, datetime)
+                        else str(game_data.game_time_delta),
                         game_data.road_block_time,
                         game_data.specs_word,
                         game_data.specs_number,
@@ -142,77 +152,96 @@ def store_scraped_games_in_db(games):
                         game_data.custom_road_block_time,
                         datetime.now().isoformat(),
                         game_data.game_id,
-                ))    
+                    ),
+                )
             elif update_required is None:
-                cursor.execute("""
+                cursor.execute(
+                    """
                 INSERT INTO games
                 (game_id, scraped_date_time, league, home_team, home_team_en, home_team_url,
                     game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta,
                     road_block_time, specs_word, specs_number, post_specs_number, poll, notes, specs_emoji,
                     custom_road_block_time, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    game_data.game_id,
-                    game_data.scraped_date_time.isoformat() if isinstance(game_data.scraped_date_time, datetime) else str(game_data.scraped_date_time),
-                    game_data.league,
-                    game_data.home_team,
-                    game_data.home_team_en,
-                    game_data.home_team_url,
-                    game_data.game_hour,
-                    game_data.guest_team,
-                    game_data.guest_team_en,
-                    game_data.guest_team_url,
-                    game_data.game_time_delta.isoformat() if isinstance(game_data.game_time_delta, datetime) else str(game_data.game_time_delta),
-                    game_data.road_block_time,
-                    game_data.specs_word,
-                    game_data.specs_number,
-                    game_data.post_specs_number,
-                    game_data.poll,
-                    game_data.notes,
-                    game_data.specs_emoji,
-                    game_data.custom_road_block_time,
-                    datetime.now().isoformat()
-                ))
+                """,
+                    (
+                        game_data.game_id,
+                        game_data.scraped_date_time.isoformat()
+                        if isinstance(game_data.scraped_date_time, datetime)
+                        else str(game_data.scraped_date_time),
+                        game_data.league,
+                        game_data.home_team,
+                        game_data.home_team_en,
+                        game_data.home_team_url,
+                        game_data.game_hour,
+                        game_data.guest_team,
+                        game_data.guest_team_en,
+                        game_data.guest_team_url,
+                        game_data.game_time_delta.isoformat()
+                        if isinstance(game_data.game_time_delta, datetime)
+                        else str(game_data.game_time_delta),
+                        game_data.road_block_time,
+                        game_data.specs_word,
+                        game_data.specs_number,
+                        game_data.post_specs_number,
+                        game_data.poll,
+                        game_data.notes,
+                        game_data.specs_emoji,
+                        game_data.custom_road_block_time,
+                        datetime.now().isoformat(),
+                    ),
+                )
+
 
 def get_all_db_entries():
     with db_transaction() as (conn, cursor):
         current_time = datetime.now().isoformat()
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM games 
             WHERE scraped_date_time >= ? 
             ORDER BY scraped_date_time ASC
-        """, (current_time,))
+        """,
+            (current_time,),
+        )
 
         upcoming_games = [dict(row) for row in cursor.fetchall()]
 
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT * FROM games 
             WHERE scraped_date_time < ? 
             ORDER BY scraped_date_time DESC
-        """, (current_time,))
-        
+        """,
+            (current_time,),
+        )
+
         passed_games = [dict(row) for row in cursor.fetchall()]
 
         return upcoming_games, passed_games
 
+
 def get_game_details(game_id):
     with db_transaction() as (conn, cursor):
-        cursor.execute("""
+        cursor.execute(
+            """
             SELECT notes, poll, specs_number, post_specs_number, specs_word
             FROM games
             WHERE game_id = ?
-        """, (game_id,))
-        
+        """,
+            (game_id,),
+        )
+
         result = cursor.fetchone()
-        
+
         if result:
             return (
-                result["specs_word"], 
+                result["specs_word"],
                 result["specs_number"],
                 result["post_specs_number"],
-                result["poll"], 
-                result["notes"]
+                result["poll"],
+                result["notes"],
             )
-        
+
         return "לא ידוע", 0, 0, "off", ""

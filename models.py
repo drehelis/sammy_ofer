@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from datetime import datetime
 from typing import Optional
 
+
 @dataclass
 class GameData:
     game_id: str
@@ -23,6 +24,7 @@ class GameData:
     notes: str
     specs_emoji: str
     custom_road_block_time: str
+
 
 def unpack_game_data(item_tuple: tuple) -> GameData:
     return GameData(*item_tuple)

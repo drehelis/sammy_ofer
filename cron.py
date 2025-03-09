@@ -4,7 +4,6 @@ from pathlib import Path
 from random import choice
 import asyncio
 import datetime
-import json
 import os
 import sys
 
@@ -45,37 +44,41 @@ def check_games_today(games):
 
     if not isinstance(games, str):
         for _, value in games.items():
-            if today == value[1].date(): # scraped_date_time is at index 1
+            if today == value[1].date():  # scraped_date_time is at index 1
                 logger.info("Yesh mishak!")
                 yield value
 
     return False
 
+
 def escape_markdown_v2(text):
     return escape_markdown(text, version=2)
+
 
 def create_message(*args):
     for item in args[0]:
         row = unpack_game_data(item)
 
-        yield f"""
+        yield (
+            f"""
 משחק ⚽ *היום* בשעה *{row.game_hour}*
 *{row.league}*: [{escape_markdown_v2(row.home_team)}]({row.home_team_url}) \\|\\| [{escape_markdown_v2(row.guest_team)}]({row.guest_team_url})
 צפי חסימת כבישים: *{row.custom_road_block_time}*
 צפי אוהדים משוער: *{row.specs_word}* {escape_markdown_v2(f"({row.specs_number:,})")} {row.specs_emoji}
 
-""", (
-            row.scraped_date_time,
-            row.home_team,
-            row.guest_team,
-            row.poll,
-            escape_markdown_v2(row.notes),
+""",
+            (
+                row.scraped_date_time,
+                row.home_team,
+                row.guest_team,
+                row.poll,
+                escape_markdown_v2(row.notes),
+            ),
         )
 
 
 async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     async with Bot(token) as bot:
-
         iterator = next(msg)
         send_message = list(iterator[:-1])
         iterated_data = iterator[-1]
@@ -90,7 +93,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
         )
         send_message.append("\n\n")
         send_message.append(
-            escape_markdown_v2(f"https://t.me/sammy_ofer_notification_channel")
+            escape_markdown_v2("https://t.me/sammy_ofer_notification_channel")
         )
 
         web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()

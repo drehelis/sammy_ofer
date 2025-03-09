@@ -68,12 +68,12 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/maccabi-tel-aviv",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
     },
-    'עירוני טבריה': {
+    "עירוני טבריה": {
         "name": "Ironi Tveria",
         "url": "https://www.football.co.il/ironi-tveria/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/12039.png",
     },
-    'עירוני דורות טבריה': {
+    "עירוני דורות טבריה": {
         "name": "Ironi Tveria",
         "url": "https://www.football.co.il/ironi-tveria/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/12039.png",
@@ -83,17 +83,17 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4563.png",
     },
-    'הפועל קריית שמונה': {
+    "הפועל קריית שמונה": {
         "name": "Hapoel Kiryat Shmona",
         "url": "https://www.football.co.il/hapoel-kiryat-shmona/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4563.png",
     },
-    'מ.ס. אשדוד': {
+    "מ.ס. אשדוד": {
         "name": "Football Club Ashdod",
         "url": "https://www.football.co.il/football-club-ashdod/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4548.png",
     },
-    'הפועל ירושלים': {
+    "הפועל ירושלים": {
         "name": "Hapoel Jerusalem",
         "url": "https://www.football.co.il/hapoel-jerusalem/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/7020.png",
@@ -108,7 +108,7 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/hapoel-petah-tikva/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4542.png",
     },
-    'עירוני אשקלון': {
+    "עירוני אשקלון": {
         "name": "Ironi Ashkelon",
         "url": "https://www.football.co.il/hapoel-ironi-ashkelon/",
         "logo": "https://upload.wikimedia.org/wikipedia/he/9/90/Logo_hapoel_ashkelon.png",
@@ -117,7 +117,7 @@ TEAMS_METADATA = {
         "name": "Maccabi Petah Tikva",
         "url": "https://www.football.co.il/maccabi-petah-tikva/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15006.png",
-    }
+    },
 }
 
 EMOJI_HEARTS = [

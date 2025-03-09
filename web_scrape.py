@@ -24,6 +24,7 @@ from static_html_page import gen_static_page
 
 load_dotenv()
 
+
 def random_ua():
     return {"User-Agent": choice(DESKTOP_AGENTS)}
 
@@ -67,7 +68,7 @@ class WebScrape:
                         games_list.append(text)
 
         if len(games_list) < 2:
-            msg = f"List returned empty, no games today?"
+            msg = "List returned empty, no games today?"
             logger.warning(msg)
             return f"<pre>{msg}</pre>"
 
@@ -94,9 +95,7 @@ class WebScrape:
                 char for char in str_time if not char.isalpha()
             ).strip()
 
-            if (
-                not tidy_str_time
-            ):  # skip entry if returns nothing (usually when there's hebrew input instead of date)
+            if not tidy_str_time:  # skip entry if returns nothing (usually when there's hebrew input instead of date)
                 continue
 
             try:
@@ -127,7 +126,9 @@ class WebScrape:
             )
             road_block_time = game_time_delta.time().strftime("%H:%M")
 
-            specs_word, specs_number, post_specs_number, poll, notes = db.get_game_details(game_id)
+            specs_word, specs_number, post_specs_number, poll, notes = (
+                db.get_game_details(game_id)
+            )
 
             specs_emoji = ""
             custom_road_block_time = f"החל מ {road_block_time}"
@@ -138,7 +139,7 @@ class WebScrape:
             if specs_word == "ללא" or int(specs_number) <= 6000:
                 custom_road_block_time = "אין"
             elif specs_word == "גדול מאוד":
-                custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time,'%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
+                custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time, '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
             deco_games_obj.update(
                 {
@@ -180,7 +181,8 @@ class WebScrape:
 
         calendar_manager = GoogleCalendarManager()
         calendar_manager.authenticate()
-        created_events = calendar_manager.create_events(games)
+        calendar_manager.create_events(games)
+
 
 class GenerateTeamsPNG:
     def __init__(self, home_team, guest_team):
