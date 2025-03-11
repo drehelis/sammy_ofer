@@ -70,7 +70,8 @@
                                         "specs_number": "{{ obj.specs_number }}",
                                         "post_specs_number": "{{ obj.post_specs_number }}",
                                         "poll": "{{ obj.poll }}",
-                                        "notes": "{{ obj.notes }}"}'>עדכן</option>
+                                        "notes": "{{ obj.notes }}"}'>
+                                עדכן</option>
                             <option id="delete" value='{
                                     "action":"delete",
                                     "game_id":"{{ obj.game_id }}",
@@ -108,6 +109,9 @@
             {{ render_games_table(mygames[1], 'past') }}
         </div>
 
+        <div class="action-button-container">
+            <button id="show-add-form-btn" class="action-button">הוסף רשומה ידנית</button>
+        </div>
         <p>
         <div id="result_action"></div>
         </p>
@@ -125,6 +129,13 @@
             row.addClass('highlight');
 
             $.post("/action", { [select_id]: this.value })
+                .done(function (data) {
+                    $("#result_action").empty().append(data);
+                });
+        });
+
+        $('#show-add-form-btn').on('click', function () {
+            $.post("/action", { "add": JSON.stringify({ "action": "add" }) })
                 .done(function (data) {
                     $("#result_action").empty().append(data);
                 });

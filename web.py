@@ -49,7 +49,7 @@ def update():
         request.form["specs_word"],
         request.form.get("poll", "off"),
         request.form["notes"],
-        datetime.now().isoformat()
+        datetime.now().isoformat(),
     )
     if ok:
         return Markup("עידכון בוצע בהצלחה")
@@ -64,9 +64,19 @@ def delete():
         return Markup("הרשומה נמחקה בהצלחה")
 
 
+@app.route("/add", methods=["POST"])
+def add():
+    ok = db.add_db_record(dict(request.form))
+    if ok:
+        return Markup("הרשומה התווספה בהצלחה")
+
+
 @app.route("/assets/teams/<file_name>")
 def get_image(file_name):
-    return send_file(f"./assets/teams/{file_name}", mimetype="image/png")
+    try:
+        return send_file(f"./assets/teams/{file_name}", mimetype="image/png")
+    except FileNotFoundError:
+        return app.response_class(status=404)
 
 
 if __name__ == "__main__":

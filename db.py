@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from datetime import datetime
+import hashlib
 import sqlite3
 
 from models import unpack_game_data
@@ -36,14 +37,38 @@ def update_db_record(id, number, post_number, word, poll, notes, updated_at):
             (number, post_number, word, poll, notes, updated_at, id),
         )
 
-    return cursor.rowcount > 0  # Return True if a row was updated
+    return cursor.rowcount > 0
 
 
 def delete_db_record(id):
     with db_transaction() as (conn, cursor):
         cursor.execute("DELETE FROM games WHERE game_id = ?", (id,))
 
-    return cursor.rowcount > 0  # Return True if a row was updated
+    return cursor.rowcount > 0
+
+
+def add_db_record(fields):
+    game_date, game_time = fields.pop("game_date"), fields.pop("game_time")
+    scraped_date_time = f"{game_date}T{game_time}:00"
+    game_id = hashlib.sha1(scraped_date_time.encode()).hexdigest()
+
+    fields["scraped_date_time"] = scraped_date_time
+    fields["game_id"] = game_id
+    fields["created_at"] = datetime.now().isoformat()
+
+    columns = ", ".join(fields.keys())
+    placeholders = ", ".join(["?" for _ in fields])
+    values = list(fields.values())
+
+    with db_transaction() as (conn, cursor):
+        query = f"""
+            INSERT INTO games
+            ({columns})
+            VALUES ({placeholders})
+        """
+        cursor.execute(query, values)
+
+    return cursor.rowcount > 0
 
 
 def check_for_field_update(games):
