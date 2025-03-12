@@ -39,14 +39,18 @@ def random_choice(rand):
 
 def check_games_today(games):
     # Set today to datetime.date(YEAR, M, D) when debugging specific date, i.e.:
-    # today = datetime.date(2025, 3, 9)
-    today = datetime.date.today()
+    today = datetime.date(2025, 3, 9)
+    # today = datetime.date.today()
 
     if not isinstance(games, str):
-        for _, value in games.items():
-            if today == value[1].date():  # scraped_date_time is at index 1
+        upcoming, passed = games
+        for obj in upcoming + passed:
+            scraped_date_time = datetime.datetime.fromisoformat(
+                obj["scraped_date_time"]
+            ).date()
+            if today == scraped_date_time:
                 logger.info("Yesh mishak!")
-                yield value
+                yield obj
 
     return False
 
@@ -55,9 +59,9 @@ def escape_markdown_v2(text):
     return escape_markdown(text, version=2)
 
 
-def create_message(*args):
-    for item in args[0]:
-        row = unpack_game_data(item)
+def create_message(obj_data):
+    for item in obj_data:
+        row = unpack_game_data(item.values())
 
         yield (
             f"""
@@ -79,43 +83,45 @@ def create_message(*args):
 
 async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     async with Bot(token) as bot:
-        iterator = next(msg)
-        send_message = list(iterator[:-1])
-        iterated_data = iterator[-1]
+        for iterator in msg:
+            send_message = list(iterator[:-1])
+            iterated_data = iterator[-1]
 
-        scraped_date_time, home_team, guest_team, poll, notes = iterated_data
+            scraped_date_time, home_team, guest_team, poll, notes = iterated_data
 
-        if notes:
-            send_message.append(f"📣: {notes}\n\n")
+            if notes:
+                send_message.append(f"📣: {notes}\n\n")
 
-        send_message.append(
-            f"_השירות מובא ב {random_choice(EMOJI_HEARTS)} לתושבי חיפה_"
-        )
-        send_message.append("\n\n")
-        send_message.append(
-            escape_markdown_v2("https://t.me/sammy_ofer_notification_channel")
-        )
-
-        web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()
-
-        await bot.send_photo(
-            chat_id,
-            photo=absolute_path / "banner.png",
-            caption="".join(send_message),
-            parse_mode=constants.ParseMode.MARKDOWN_V2,
-        )
-        logger.info("Telegram message sent!")
-
-        if poll == "on":
-            await bot.sendPoll(
-                chat_id,
-                random_choice(POLL_SENTENCES),
-                [home_team, guest_team],
-                disable_notification=True,
-                protect_content=True,
-                close_date=datetime.datetime.timestamp(scraped_date_time),
+            send_message.append(
+                f"_השירות מובא ב {random_choice(EMOJI_HEARTS)} לתושבי חיפה_"
             )
-            logger.info("Telegram poll sent!")
+            send_message.append("\n\n")
+            send_message.append(
+                escape_markdown_v2("https://t.me/sammy_ofer_notification_channel")
+            )
+
+            web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()
+
+            await bot.send_photo(
+                chat_id,
+                photo=absolute_path / "banner.png",
+                caption="".join(send_message),
+                parse_mode=constants.ParseMode.MARKDOWN_V2,
+            )
+            logger.info("Telegram message sent!")
+
+            if poll == "on":
+                await bot.sendPoll(
+                    chat_id,
+                    random_choice(POLL_SENTENCES),
+                    [home_team, guest_team],
+                    disable_notification=True,
+                    protect_content=True,
+                    close_date=datetime.datetime.fromisoformat(
+                        scraped_date_time
+                    ).timestamp(),
+                )
+                logger.info("Telegram poll sent!")
 
 
 if __name__ == "__main__":

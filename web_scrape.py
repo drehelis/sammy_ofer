@@ -142,9 +142,11 @@ class WebScrape:
             elif specs_word == "גדול מאוד":
                 custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time, '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
+            id, created_at, updated_at = None, None, None
             deco_games_obj.update(
                 {
                     key: (
+                        id,
                         game_id,
                         scraped_date_time,
                         league,
@@ -165,6 +167,8 @@ class WebScrape:
                         #
                         specs_emoji,
                         custom_road_block_time,
+                        created_at,
+                        updated_at,
                     )
                 }
             )
@@ -173,7 +177,7 @@ class WebScrape:
 
         db.store_scraped_games_in_db(deco_games_obj)
 
-        return deco_games_obj
+        return db.get_all_db_entries()
 
     def create_calendar_event(self, games):
         if os.getenv("SKIP_CALENDAR"):

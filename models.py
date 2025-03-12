@@ -5,6 +5,7 @@ from typing import Optional
 
 @dataclass
 class GameData:
+    id: int
     game_id: str
     scraped_date_time: datetime
     league: str
@@ -24,6 +25,8 @@ class GameData:
     notes: str
     specs_emoji: str
     custom_road_block_time: str
+    created_at: datetime
+    updated_at: datetime
 
 
 def unpack_game_data(item_tuple: tuple) -> GameData:

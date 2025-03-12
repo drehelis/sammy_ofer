@@ -11,7 +11,7 @@
     text-decoration: underline;
     user-select: none;
     margin-bottom: 10px;
-    display: inline-block;
+    display: flex;
     font-size: 0.80em;
 }
 
