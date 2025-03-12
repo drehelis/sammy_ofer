@@ -23,11 +23,33 @@
             </div>
             <div class="form-group">
                 <label for="home_team">קבוצת בית:</label>
-                <input type="text" id="home_team" name="home_team" required>
+                <select class="selectAction" id="home_team" name="home_team" required>
+                    <option value="" disabled selected>בחר קבוצה</option>
+                    {% for team_name in teams_metadata.keys() %}
+                    {% if team_name != "Unavailable" %}
+                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
+                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <!-- Hidden inputs to store data attributes -->
+                <input type="hidden" name="home_team_en" id="home_team_en">
+                <input type="hidden" name="home_team_url" id="home_team_url">
             </div>
             <div class="form-group">
                 <label for="guest_team">קבוצת חוץ:</label>
-                <input type="text" id="guest_team" name="guest_team" required>
+                <select class="selectAction" id="guest_team" name="guest_team" required>
+                    <option value="" disabled selected>בחר קבוצה</option>
+                    {% for team_name in teams_metadata.keys() %}
+                    {% if team_name != "Unavailable" %}
+                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
+                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <!-- Hidden inputs to store data attributes -->
+                <input type="hidden" name="guest_team_en" id="guest_team_en">
+                <input type="hidden" name="guest_team_url" id="guest_team_url">
             </div>
             <div class="form-group">
                 <label for="specs_number">מס. אוהדים:</label>
@@ -36,7 +58,7 @@
             <input type="hidden" name="post_specs_number" id="post_specs_number" value="0">
             <div class="form-group">
                 <label for="specs_word">כמות:</label>
-                <select id="specs_word" name="specs_word">
+                <select class="selectAction" id="specs_word" name="specs_word">
                     <option value="ללא">ללא</option>
                     <option value="קטן">קטן</option>
                     <option value="בינוני">בינוני</option>
@@ -131,6 +153,19 @@
         $(document).ready(function () {
             $("#togglePostSpecs").click(function () {
                 $("#postSpecsSection").slideToggle();
+            });
+
+            // Update hidden fields when team selections change
+            $("#home_team").change(function () {
+                var selectedOption = $(this).find("option:selected");
+                $("#home_team_en").val(selectedOption.data("en-name"));
+                $("#home_team_url").val(selectedOption.data("url"));
+            });
+
+            $("#guest_team").change(function () {
+                var selectedOption = $(this).find("option:selected");
+                $("#guest_team_en").val(selectedOption.data("en-name"));
+                $("#guest_team_url").val(selectedOption.data("url"));
             });
 
             $("form").submit(function (event) {

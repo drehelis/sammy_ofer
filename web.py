@@ -13,7 +13,7 @@ from paste.translogger import TransLogger
 import web_scrape
 import jinja_filters as jf
 import db
-
+from metadata import TEAMS_METADATA
 
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
@@ -37,7 +37,9 @@ def next_game():
 @app.route("/action", methods=["POST"])
 def action():
     for _, val in request.form.items():
-        return render_template("action.html", myval=json.loads(val))
+        return render_template(
+            "action.html", myval=json.loads(val), teams_metadata=TEAMS_METADATA
+        )
 
 
 @app.route("/update", methods=["POST"])

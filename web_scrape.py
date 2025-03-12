@@ -13,20 +13,21 @@ import re
 import requests
 
 
-import numpy as np
-from PIL import Image
 from dotenv import load_dotenv
+from PIL import Image
+import numpy as np
+import ua_generator
 
-import db
 from google_calendar import GoogleCalendarManager
-from metadata import TEAMS_METADATA, DESKTOP_AGENTS
+from metadata import TEAMS_METADATA
 from static_html_page import gen_static_page
+import db
 
 load_dotenv()
 
 
 def random_ua():
-    return {"User-Agent": choice(DESKTOP_AGENTS)}
+    return ua_generator.generate(device="desktop").headers.get()
 
 
 class WebScrape:

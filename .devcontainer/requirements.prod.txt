@@ -11,4 +11,5 @@ python-dateutil
 python-dotenv
 python-telegram-bot
 requests
+ua-generator
 waitress

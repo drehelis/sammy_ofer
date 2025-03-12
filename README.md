@@ -40,7 +40,7 @@ docker build . -t sammy_ofer
 cat << EOF > .env
 TELEGRAM_CHANNEL_ID=<required>
 TELEGRAM_TOKEN=<required>
-GH_PAT (optional)
+GH_PAT=(optional)
 SKIP_COMMIT=false
 SKIP_CALENDAR=false
 EOF

@@ -53,6 +53,7 @@ def add_db_record(fields):
     game_id = hashlib.sha1(scraped_date_time.encode()).hexdigest()
 
     fields["scraped_date_time"] = scraped_date_time
+    fields["game_hour"] = game_time
     fields["game_id"] = game_id
     fields["created_at"] = datetime.now().isoformat()
 

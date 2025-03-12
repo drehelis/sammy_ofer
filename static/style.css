@@ -40,7 +40,6 @@ h1 {
 
 .form-group input[type="text"],
 .form-group input[type="number"],
-.form-group select,
 .form-group textarea {
     flex: 2;
     padding: 5px;
@@ -67,17 +66,10 @@ h1 {
     background: #0056b3;
 }
 
-#result_update {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#result_delete {
-    margin-top: 20px;
-    text-align: center;
-}
-
-#result_add {
+#result_update,
+#result_delete,
+#result_add,
+#result_action {
     margin-top: 20px;
     text-align: center;
 }
@@ -123,15 +115,19 @@ h1 {
 }
 
 form select {
-    width: 100%;
     padding: 5px;
     font-size: 12px;
     border-radius: 5px;
     border: 1px solid #ddd;
 }
 
+form select.selectAction {
+    width: 300px;
+}
+
+
 input[type="checkbox"] {
-    transform: scale(1.2);
+    transform: scale(1.5);
 }
 
 @media (max-width: 768px) {
