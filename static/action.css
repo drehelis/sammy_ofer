@@ -1,0 +1,20 @@
+.collapsible-section {
+    display: none;
+    padding: 10px;
+    margin-top: 5px;
+    border-radius: 4px;
+}
+
+.collapse-toggle {
+    cursor: pointer;
+    color: #0066cc;
+    text-decoration: underline;
+    user-select: none;
+    margin-bottom: 10px;
+    display: flex;
+    font-size: 0.80em;
+}
+
+.collapse-toggle:hover {
+    color: #004080;
+}

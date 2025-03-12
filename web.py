@@ -3,7 +3,6 @@
 
 from datetime import datetime
 import json
-import shutil
 
 from flask import Flask, render_template, request
 from flask.helpers import send_file
@@ -11,13 +10,13 @@ from markupsafe import Markup
 from waitress import serve
 from paste.translogger import TransLogger
 
-
-from spectators import SPECTATORS
 import web_scrape
-from jinja_filters import *
+import jinja_filters as jf
+import db
+from metadata import TEAMS_METADATA
 
 app = Flask(__name__, template_folder="html_templates")
-app.jinja_env.filters["babel_format_day_heb"] = babel_format_day_heb
+app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
 
 
 @app.route("/next", methods=["GET"])
@@ -31,49 +30,55 @@ def next_game():
 
     web.create_calendar_event(games)
 
-    return render_template("next.html", mygames=games)
+    all_games = db.get_all_db_entries()
+    return render_template("next.html", mygames=all_games, datetime=datetime)
 
 
 @app.route("/action", methods=["POST"])
 def action():
     for _, val in request.form.items():
-        return render_template("action.html", myval=json.loads(val))
+        return render_template(
+            "action.html", myval=json.loads(val), teams_metadata=TEAMS_METADATA
+        )
 
 
 @app.route("/update", methods=["POST"])
 def update():
-    home_team = request.form["home_team"]
-    guest_team = request.form["guest_team"]
-    d = {
-        "number": int(request.form["specs_number"]),
-        "word": request.form["specs_word"],
-        "poll": request.form.get("poll", "off"),
-        "notes": request.form.get("notes", ""),
-    }
-
-    # Backup the file before editing it
-    spectators_file = "./spectators.py"
-    backup_file = (
-        f'{spectators_file}.backup-{datetime.now().strftime("%Y-%m-%d_%H%M%S")}'
+    ok = db.update_db_record(
+        request.form["game_id"],
+        request.form["specs_number"],
+        request.form["post_specs_number"],
+        request.form["specs_word"],
+        request.form.get("poll", "off"),
+        request.form["notes"],
+        datetime.now().isoformat(),
     )
-    shutil.copy(spectators_file, backup_file)
+    if ok:
+        return Markup("עידכון בוצע בהצלחה")
 
-    key_exist = SPECTATORS.get((home_team, guest_team))
-    if key_exist:
-        SPECTATORS[home_team, guest_team].update(d)
-        with open(spectators_file, "w", encoding="utf-8") as file:
-            file.write(f"SPECTATORS = {SPECTATORS}")
-        return Markup("השינויים נשמרו!")
 
-    SPECTATORS[(home_team, guest_team)] = d
-    with open(spectators_file, "w", encoding="utf-8") as file:
-        file.write(f"SPECTATORS = {SPECTATORS}")
-    return Markup("New entry saved!")
+@app.route("/delete", methods=["POST"])
+def delete():
+    game_id = request.form.get("game_id")
+
+    ok = db.delete_db_record(game_id)
+    if ok:
+        return Markup("הרשומה נמחקה בהצלחה")
+
+
+@app.route("/add", methods=["POST"])
+def add():
+    ok = db.add_db_record(dict(request.form))
+    if ok:
+        return Markup("הרשומה התווספה בהצלחה")
 
 
 @app.route("/assets/teams/<file_name>")
 def get_image(file_name):
-    return send_file(f"./assets/teams/{file_name}", mimetype="image/png")
+    try:
+        return send_file(f"./assets/teams/{file_name}", mimetype="image/png")
+    except FileNotFoundError:
+        return app.response_class(status=404)
 
 
 if __name__ == "__main__":

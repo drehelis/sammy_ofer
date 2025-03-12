@@ -1,5 +1,4 @@
 from jinja2 import Environment, FileSystemLoader
-from random import choice
 from pathlib import Path
 from shutil import copy
 import datetime
@@ -8,25 +7,30 @@ import os
 from git import Repo
 from logger import logger
 
-from jinja_filters import *
+import jinja_filters as jf
 
 
-REPO_URL = f"https://{os.getenv("GH_PAT")}@github.com/drehelis/sammy_ofer"
+REPO_URL = f"https://{os.getenv('GH_PAT')}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
 GH_PAGES_BRANCH = "static_page"
 
 absolute_path = Path(__file__).resolve().parent
 
+
 def gen_static_page(obj):
-    environment = Environment(loader=FileSystemLoader(absolute_path / "assets/templates/"))
-    environment.filters["babel_format_full_heb"] = babel_format_full_heb
+    environment = Environment(
+        loader=FileSystemLoader(absolute_path / "assets/templates/")
+    )
+    environment.filters["babel_format_full_heb"] = jf.babel_format_full_heb
     template = environment.get_template("static_page.jinja2")
 
     content = template.render(games=obj)
 
     try:
-        with open(absolute_path / STATIC_HTML_FILENAME, mode="r", encoding="utf-8") as f:
+        with open(
+            absolute_path / STATIC_HTML_FILENAME, mode="r", encoding="utf-8"
+        ) as f:
             existing_content = f.read()
     except FileNotFoundError:
         existing_content = None

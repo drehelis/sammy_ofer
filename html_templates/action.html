@@ -3,18 +3,103 @@
 
 <head>
     <meta charset="utf-8">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='action.css') }}">
 </head>
 
 <body>
     <div class="">
-        {% if myval['action'] == 'delete' %}
+        {% if myval['action'] == 'add' %}
         <h1>{{ myval['action'] | upper}}</h1>
-        <div class="form-group">
-            <input type="submit" value="{{ myval['action'] | upper}}" />
-        </div>
-        {% else %}
+        <form action="/add" method="post" id="addForm" class="form-container">
+            <div class="form-group">
+                <label for="game_date">תאריך משחק:</label>
+                <input type="date" id="game_date" name="game_date" required style="margin-left: 10px;">
+                <input type="time" id="game_time" name="game_time" required style="margin-right: 10px;">
+            </div>
+            <div class="form-group">
+                <label for="home_team">ליגה:</label>
+                <input type="text" id="league" name="league" required>
+            </div>
+            <div class="form-group">
+                <label for="home_team">קבוצת בית:</label>
+                <select class="selectAction" id="home_team" name="home_team" required>
+                    <option value="" disabled selected>בחר קבוצה</option>
+                    {% for team_name in teams_metadata.keys() %}
+                    {% if team_name != "Unavailable" %}
+                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
+                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <!-- Hidden inputs to store data attributes -->
+                <input type="hidden" name="home_team_en" id="home_team_en">
+                <input type="hidden" name="home_team_url" id="home_team_url">
+            </div>
+            <div class="form-group">
+                <label for="guest_team">קבוצת חוץ:</label>
+                <select class="selectAction" id="guest_team" name="guest_team" required>
+                    <option value="" disabled selected>בחר קבוצה</option>
+                    {% for team_name in teams_metadata.keys() %}
+                    {% if team_name != "Unavailable" %}
+                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
+                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
+                    {% endif %}
+                    {% endfor %}
+                </select>
+                <!-- Hidden inputs to store data attributes -->
+                <input type="hidden" name="guest_team_en" id="guest_team_en">
+                <input type="hidden" name="guest_team_url" id="guest_team_url">
+            </div>
+            <div class="form-group">
+                <label for="specs_number">מס. אוהדים:</label>
+                <input type="number" name="specs_number" id="specs_number" max="30000" required>
+            </div>
+            <input type="hidden" name="post_specs_number" id="post_specs_number" value="0">
+            <div class="form-group">
+                <label for="specs_word">כמות:</label>
+                <select class="selectAction" id="specs_word" name="specs_word">
+                    <option value="ללא">ללא</option>
+                    <option value="קטן">קטן</option>
+                    <option value="בינוני">בינוני</option>
+                    <option value="גדול">גדול</option>
+                    <option value="גדול מאוד">גדול מאוד</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="poll">סקר:</label>
+                <input type="checkbox" id="poll" name="poll">
+            </div>
+            <div class="form-group">
+                <label for="notes">הערות:</label>
+                <textarea id="notes" name="notes" rows="2"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="submit_button" value="{{ myval['action'] | upper}}">
+            </div>
+        </form>
+        <div id="result_add"></div>
+        {% elif myval['action'] == 'delete' %}
+        <h1>{{ myval['action'] | upper}}</h1>
+        <form action="/delete" method="post" id="deleteForm" class="form-container">
+            <input type="hidden" name="game_id" value="{{ myval['game_id'] }}">
+            <div class="form-group">
+                <label for="home_team">קבוצת בית:</label>
+                <input type="text" id="home_team" name="home_team" value="{{ myval['home_team'] }}" readonly>
+            </div>
+            <div class="form-group">
+                <label for="guest_team">קבוצת חוץ:</label>
+                <input type="text" id="guest_team" name="guest_team" value="{{ myval['guest_team'] }}" readonly>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="delete_button" value="{{ myval['action'] | upper}}" />
+            </div>
+        </form>
+        <div id="result_delete"></div>
+        {% elif myval['action'] == 'update' %}
         <h1>{{ myval['action'] | upper}}</h1>
         <form action="/update" method="post" id="updateForm" class="form-container">
+            <input type="hidden" name="game_id" value="{{ myval['game_id'] }}">
             <div class="form-group">
                 <label for="home_team">קבוצת בית:</label>
                 <input type="text" id="home_team" name="home_team" value="{{ myval['home_team'] }}" readonly>
@@ -25,12 +110,20 @@
             </div>
             <div class="form-group">
                 <label for="specs_number">מס. אוהדים:</label>
-                <input type="number" name="specs_number" value="{{ myval['specs_number'] }}" id="specNumber"
+                <input type="number" name="specs_number" value="{{ myval['specs_number'] }}" id="specs_number"
                     max="30000">
+            </div>
+            <span class="collapse-toggle" id="togglePostSpecs">הצג/הסתר מס. אוהדים בפועל</span>
+            <div class="collapsible-section" id="postSpecsSection">
+                <div class="form-group">
+                    <label for="post_specs_number">מס. אוהדים בפועל:</label>
+                    <input type="number" name="post_specs_number" value="{{ myval['post_specs_number'] }}"
+                        id="post_specs_number" max="30000">
+                </div>
             </div>
             <div class="form-group">
                 <label for="specs_word">כמות:</label>
-                <select id="specWord" name="specs_word">
+                <select id="specs_word" name="specs_word">
                     <option {% if myval['specs_word']=="ללא" %}selected="selected" {% endif %} value="ללא">ללא</option>
                     <option {% if myval['specs_word']=="קטן" %}selected="selected" {% endif %} value="קטן">קטן</option>
                     <option {% if myval['specs_word']=="בינוני" %}selected="selected" {% endif %} value="בינוני">בינוני
@@ -43,33 +136,62 @@
             </div>
             <div class="form-group">
                 <label for="poll">סקר:</label>
-                <input type="checkbox" name="poll" {% if myval['poll']=='on' %}checked=true{% endif %}>
+                <input type="checkbox" id="poll" name="poll" {% if myval['poll']=='on' %}checked=true{% endif %}>
             </div>
             <div class="form-group">
                 <label for="notes">הערות:</label>
                 <textarea id="notes" name="notes" rows="2">{{ myval['notes'] }}</textarea>
             </div>
             <div class="form-group">
-                <input type="submit" value="{{ myval['action'] | upper}}">
+                <input type="submit" id="submit_button" value="{{ myval['action'] | upper}}">
             </div>
         </form>
         <div id="result_update"></div>
         {% endif %}
     </div>
     <script>
-        $("#updateForm").submit(function (event) {
-            event.preventDefault(); // Stop form from submitting normally
-            var $form = $(this),
-                form_data = $form.serialize(), // Get form values
-                url = $form.attr("action");
-            $.post(url, (form_data))
-                .done(function (data) {
-                    $("#result_update").empty().append(data);
-                    setTimeout(function () {
-                        location.reload(); // Reload the page after 0 seconds
-                    }, 0);
+        $(document).ready(function () {
+            $("#togglePostSpecs").click(function () {
+                $("#postSpecsSection").slideToggle();
+            });
 
-                });
+            // Update hidden fields when team selections change
+            $("#home_team").change(function () {
+                var selectedOption = $(this).find("option:selected");
+                $("#home_team_en").val(selectedOption.data("en-name"));
+                $("#home_team_url").val(selectedOption.data("url"));
+            });
+
+            $("#guest_team").change(function () {
+                var selectedOption = $(this).find("option:selected");
+                $("#guest_team_en").val(selectedOption.data("en-name"));
+                $("#guest_team_url").val(selectedOption.data("url"));
+            });
+
+            $("form").submit(function (event) {
+                event.preventDefault();
+
+                var $form = $(this);
+                var formId = $form.attr("id");
+
+                var formType = formId.replace("Form", ""); // Extract the form type from the ID (e.g., "addForm" → "add")
+                var resultContainer = "#result_" + formType;
+
+                var form_data = $form.serialize();
+                var url = $form.attr("action");
+
+                $.post(url, form_data)
+                    .done(function (data) {
+                        $(resultContainer).empty().append(data);
+
+                        setTimeout(function () {
+                            location.reload(); // Reload the page after 0 second
+                        }, 0);
+                    })
+                    .fail(function (error) {
+                        $(resultContainer).empty().append("<p style='color:red'>Error: " + error.statusText + "</p>");
+                    });
+            });
         });
     </script>
 </body>

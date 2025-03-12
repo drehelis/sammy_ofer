@@ -3,13 +3,14 @@
 
 <head>
     <meta charset="utf-8">
-    <title>המשחקים הקרובים</title>
+    <title>לוח משחקים באצטדיון</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
     <div class="container">
+        {% macro render_games_table(games_list, section_id) %}
         <div class="divTable unstyledTable">
             <div class="divTableHeading">
                 <div class="divTableRow">
@@ -20,86 +21,132 @@
                     <div class="divTableHead">ליגה</div>
                     <div class="divTableHead">בית</div>
                     <div class="divTableHead">חוץ</div>
-                    <div class="divTableHead">אוהדים</div>
+                    <div class="divTableHead">כמות</div>
                     <div class="divTableHead">מספר</div>
+                    <div class="divTableHead">מס. בפועל</div>
                     <div class="divTableHead">פעולה</div>
                     <div class="divTableHead">סקר</div>
                     <div class="divTableHead">הערות</div>
                     <div class="divTableHead">שלח</div>
                 </div>
             </div>
-            {% for key, value in mygames.items() %}
-            {% set scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team,
-            guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, poll, notes,
-            custom_sepcs_number, custom_road_block_time = value %}
-            {% if guest_team_url != '' %}
-            {% set guest_team_alter = '<a href="' ~ guest_team_url ~ '" target="_blank">' ~ guest_team ~ '</a>' %}
+            {% for obj in games_list %}
+            {% set _scraped_date_time = datetime.fromisoformat(obj.scraped_date_time) %}
+            {% if obj.guest_team_url != '' %}
+            {% set _guest_team_alter = '<a href="' ~ obj.guest_team_url ~ '" target="_blank">' ~ obj.guest_team ~ '</a>'
+            %}
             {% else %}
-            {% set guest_team_alter = guest_team %}
+            {% set _guest_team_alter = obj.guest_team %}
             {% endif %}
-            <div class="divTableRow">
+            <div class="divTableRow" data-section="{{ section_id }}">
                 <div class="divTableCell">{{ loop.index }}</div>
-                <div class="divTableCell">{{ scraped_date_time.strftime('%Y-%m-%d') }}</div>
-                <div class="divTableCell">{{ scraped_date_time | babel_format_day_heb }}</div>
-                <div class="divTableCell">{{ scraped_date_time.strftime('%H:%M') }}</div>
-                <div class="divTableCell">{{ league }}</div>
-                <div class="divTableCell"><img width="18" height="18" src="assets/teams/{{ home_team_en }}.png">&nbsp;<a
-                        href="{{ home_team_url }}" target="_blank">{{ home_team }}</a></div>
-                <div class="divTableCell"><img width="18" height="18"
-                        src="assets/teams/{{ guest_team_en }}.png">&nbsp;{{ guest_team_alter | safe }}</div>
-                <div class="divTableCell">{{ specs_word }}</div>
-                <div class="divTableCell" {% if specs_number==0 %}style="background: yellow;" {% endif %}>{{
-                    specs_number }}</div>
+                <div class="divTableCell">{{ _scraped_date_time.strftime('%Y-%m-%d') }}</div>
+                <div class="divTableCell">{{ _scraped_date_time | babel_format_day_heb }}</div>
+                <div class="divTableCell">{{ _scraped_date_time.strftime('%H:%M') }}</div>
+                <div class="divTableCell">{{ obj.league }}</div>
+                <div class="divTableCell">
+                    <img width="18" height="18" src="assets/teams/{{ obj.home_team_en }}.png">&nbsp;
+                    <a href="{{ obj.home_team_url }}" target="_blank">{{ obj.home_team }}</a>
+                </div>
+                <div class="divTableCell">
+                    <img width="18" height="18" src="assets/teams/{{ obj.guest_team_en }}.png">&nbsp;
+                    {{ _guest_team_alter | safe }}
+                </div>
+                <div class="divTableCell">{{ obj.specs_word }}</div>
+                <div class="divTableCell" {% if obj.specs_number==0 %}style="background: yellow;" {% endif %}>
+                    {{ "{:,}".format(obj.specs_number) }}
+                </div>
+                <div class="divTableCell">{{ "{:,}".format(obj.post_specs_number) }}</div>
                 <div class="divTableCell">
                     <form action="/action" method="post">
-                        <select id="action_{{ loop.index }}" name="action">
+                        <select id="action_{{ section_id }}_{{ loop.index }}" name="action">
                             <option option hidden selected>בחר</option>
-                            <option id="update" value='{
-                                    "action":"update",
-                                    "home_team":"{{ home_team | replace('"', '\\"') }}",
-                                    "guest_team":"{{ guest_team | replace('"', '\\"') }}",
-                                    "specs_word": "{{ specs_word }}",
-                                    "specs_number": "{{ specs_number }}",
-                                    "poll": "{{ poll }}",
-                                    "notes": "{{ notes }}"}'>עדכן</option>
-                            <option id="delete" value='{
-                                "action":"delete",
-                                "home_team":"{{ home_team }}",
-                                "guest_team":"{{ guest_team }}"}'>מחק</option>
+                            <option value="update" data-game-id="{{ obj.game_id }}" data-home-team="{{ obj.home_team }}"
+                                data-guest-team="{{ obj.guest_team }}" data-specs-word="{{ obj.specs_word }}"
+                                data-specs-number="{{ obj.specs_number }}"
+                                data-post-specs-number="{{ obj.post_specs_number }}" data-poll="{{ obj.poll }}"
+                                data-notes="{{ obj.notes }}">עדכן</option>
+                            <option value="delete" data-game-id="{{ obj.game_id }}" data-home-team="{{ obj.home_team }}"
+                                data-guest-team="{{ obj.guest_team }}">מחק</option>
                         </select>
                     </form>
                 </div>
                 <div class="divTableCell">
-                    <input type="checkbox" id="poll" disabled="disabled" {% if poll=='on' %}checked{% endif %}>
+                    <input type="checkbox" id="poll_{{ section_id }}_{{ loop.index }}" disabled="disabled" {% if
+                        obj.poll=='on' %}checked{% endif %}>
                 </div>
-                <div class="divTableCell">{{ notes }}</div>
+                <div class="divTableCell">{{ obj.notes }}</div>
                 <div class="divTableCell">
                     <button onclick="send(this)">שלח</button>
                 </div>
             </div>
             {% endfor %}
         </div>
+        {% endmacro %}
+
+        <!-- Upcoming Games Section -->
+        <div class="table-separator" id="upcoming-header">
+            <span class="toggle-icon">▼</span>משחקים קרבים
+        </div>
+        <div class="collapsible-content">
+            {{ render_games_table(mygames[0], 'upcoming') }}
+        </div>
+
+        <!-- Past Games Section - Collapsed by default -->
+        <div class="table-separator collapsed" id="past-header">
+            <span class="toggle-icon">▼</span>משחקי עבר
+        </div>
+        <div class="collapsible-content">
+            {{ render_games_table(mygames[1], 'past') }}
+        </div>
+
+        <div class="action-button-container">
+            <button id="show-add-form-btn" class="action-button">הוסף רשומה ידנית</button>
+        </div>
         <p>
         <div id="result_action"></div>
         </p>
     </div>
+
     <script>
         $('select').on('change', function () {
-            let select_id = $(this).children(":selected").attr("id");
-            let row = $(this).closest('.divTableRow');
+            const selected = $(this).children(":selected");
+            const action = selected.val();  // "update" or "delete"
+            const row = $(this).closest('.divTableRow');
 
-            // Remove highlight from all rows
+            // highlight raw
             $('.divTableRow').removeClass('highlight');
-
-            // Add highlight to the selected row
             row.addClass('highlight');
 
-            $.post("/action", { [select_id]: this.value })
+            const data = {
+                action: action,
+                game_id: selected.data('gameId'),
+                home_team: selected.data('homeTeam'),
+                guest_team: selected.data('guestTeam')
+            };
+
+            if (action === "update") {
+                data.specs_word = selected.data('specsWord');
+                data.specs_number = selected.data('specsNumber');
+                data.post_specs_number = selected.data('postSpecsNumber');
+                data.poll = selected.data('poll');
+                data.notes = selected.data('notes');
+            }
+
+            $.post("/action", { [action]: JSON.stringify(data) })
+                .done(function (response) {
+                    $("#result_action").empty().append(response);
+                });
+        });
+
+        $('#show-add-form-btn').on('click', function () {
+            $.post("/action", { "add": JSON.stringify({ "action": "add" }) })
                 .done(function (data) {
                     $("#result_action").empty().append(data);
                 });
         });
 
+        // TODO: Add ability to send specific game row, this is just a placeholder.
         function send(button) {
             const row = button.closest('.divTableRow');
             const cells = row.querySelectorAll('.divTableCell');
@@ -108,7 +155,9 @@
                 'fans', 'number', 'action', 'poll', 'notes', 'send'
             ];
             const values = {};
+            const section = row.dataset.section; // Get the section (upcoming or past)
 
+            values['section'] = section;
             cells.forEach((cell, index) => {
                 values[keys[index]] = cell.innerText.trim();
             });
@@ -122,6 +171,24 @@
                     console.error('Error:', error);
                 });
         }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const pastContent = document.querySelector('#past-header + .collapsible-content');
+            pastContent.style.maxHeight = '0px';
+
+            document.querySelectorAll('.table-separator').forEach(header => {
+                header.addEventListener('click', function () {
+                    this.classList.toggle('collapsed');
+                    const content = this.nextElementSibling;
+
+                    if (this.classList.contains('collapsed')) {
+                        content.style.maxHeight = '0px';
+                    } else {
+                        content.style.maxHeight = content.scrollHeight + 'px';
+                    }
+                });
+            });
+        });
     </script>
 </body>
 

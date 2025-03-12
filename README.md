@@ -40,7 +40,9 @@ docker build . -t sammy_ofer
 cat << EOF > .env
 TELEGRAM_CHANNEL_ID=<required>
 TELEGRAM_TOKEN=<required>
-GH_PAT (optional)
+GH_PAT=(optional)
+SKIP_COMMIT=false
+SKIP_CALENDAR=false
 EOF
 
 docker run -d --name sammy_ofer \
@@ -48,6 +50,7 @@ docker run -d --name sammy_ofer \
     --restart=on-failure \
     --env-file ./.env \
     --volume $(PWD)/service_account.json:/usr/src/sammy_ofer/service_account.json \
+    --volume $(PWD)/sammy_ofer.db:/usr/src/sammy_ofer/sammy_ofer.db \
     sammy_ofer:latest
 ```
 
@@ -59,6 +62,6 @@ flask run --port=5001
 
 ## TODO
 
+- [x] ~~Use SQLite instead of a dictionary file~~
+- [x] ~~**Delete** option currently does absolutely nothing~~
 - [ ] Cron configuation (some sort of UI?)
-- [ ] **Delete** option currently does absolutely nothing
-- [ ] Use SQLite instead of a dictionary file
