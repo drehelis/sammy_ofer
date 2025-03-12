@@ -164,7 +164,6 @@ class WebScrape:
                         post_specs_number,
                         poll,
                         notes,
-                        #
                         specs_emoji,
                         custom_road_block_time,
                         created_at,
