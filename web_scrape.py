@@ -183,9 +183,10 @@ class WebScrape:
             logger.info("SKIP_CALENDAR is set, skipping calendar update")
             return
 
+        upcoming, _ = games
         calendar_manager = GoogleCalendarManager()
         calendar_manager.authenticate()
-        calendar_manager.create_events(games)
+        calendar_manager.create_events(upcoming)
 
 
 class GenerateTeamsPNG:

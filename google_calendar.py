@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from zoneinfo import ZoneInfo
 import hashlib
 import json
@@ -43,21 +43,22 @@ class GoogleCalendarManager:
             logger.warning("Not going to update Google calendar")
             return
 
-        for _, item in payload.items():
-            row = unpack_game_data(item)
+        for obj in payload:
+            row = unpack_game_data(obj.values())
 
             current_hash = hashlib.sha256(
                 f"{row.league}|{row.home_team}|{row.guest_team}|{row.specs_number}|{row.notes}".encode()
             ).hexdigest()
 
+            dt = datetime.fromisoformat(row.scraped_date_time)
             start_time = (
-                row.scraped_date_time.replace(tzinfo=self.timezone)
+                dt.replace(tzinfo=self.timezone)
                 .astimezone(ZoneInfo("UTC"))
                 .astimezone(self.timezone)
                 .isoformat()
             )
             end_time = (
-                (row.scraped_date_time + timedelta(hours=2))
+                (dt + timedelta(hours=2))
                 .replace(tzinfo=self.timezone)
                 .astimezone(ZoneInfo("UTC"))
                 .astimezone(self.timezone)
@@ -69,13 +70,11 @@ class GoogleCalendarManager:
                 "location": "איצטדיון סמי עופר - רח' רוטנברג 2, חיפה",
                 "description": current_hash,
                 "start": {
-                    "dateTime": row.scraped_date_time.isoformat(),
+                    "dateTime": row.scraped_date_time,  # isoformat() by default
                     "timeZone": "Asia/Jerusalem",
                 },
                 "end": {
-                    "dateTime": (
-                        row.scraped_date_time + timedelta(hours=2)
-                    ).isoformat(),
+                    "dateTime": (dt + timedelta(hours=2)).isoformat(),
                     "timeZone": "Asia/Jerusalem",
                 },
                 "transparency": "transparent",
