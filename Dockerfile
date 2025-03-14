@@ -1,6 +1,8 @@
 FROM python:3-alpine
 LABEL maintainer="Danny Rehelis <autogun@gmail.com>"
 
+COPY --from=ghcr.io/astral-sh/uv:alpine /usr/local/bin/uv /usr/local/bin/uvx /usr/local/bin/
+
 ARG APP_NAME=sammy_ofer
 
 WORKDIR /usr/src/$APP_NAME/
@@ -23,7 +25,7 @@ COPY requirements.txt \
     docker-entrypoint.sh \
     *.py ./
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN uv pip install --system --no-cache-dir -r requirements.txt
 
 EXPOSE 5000
 
