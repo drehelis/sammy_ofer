@@ -1,5 +1,7 @@
 FROM python:3-slim
 
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+
 ARG USER_NAME="user"
 ARG USER_UID=1000
 ARG GROUP_NAME="user"
@@ -16,7 +18,7 @@ RUN sed -i 's/^# *\(he_IL.UTF-8\)/\1/' /etc/locale.gen && \
     locale-gen
 
 COPY requirements.dev.txt /tmp/
-RUN pip install -r /tmp/requirements.dev.txt
+RUN uv pip install --system -r /tmp/requirements.dev.txt
 
 COPY requirements.prod.txt /tmp/
-RUN pip install -r /tmp/requirements.prod.txt
+RUN uv pip install --system -r /tmp/requirements.prod.txt
