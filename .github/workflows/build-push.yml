@@ -3,6 +3,12 @@ name: build-push
 on:
   push:
     branches: ['master']
+    paths:
+      - .github/workflows/build-push.yml
+      - Dockerfile
+      - requirements.txt
+      - '**.py'
+      - docker-entrypoint.sh
 
 env:
   REGISTRY: ghcr.io
