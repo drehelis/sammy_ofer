@@ -224,3 +224,11 @@ input[type="checkbox"] {
 .action-button:hover {
     background-color: #45a049;
 }
+
+.team-logo {
+    vertical-align: middle;
+    margin-right: 5px;
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+}

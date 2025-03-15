@@ -45,11 +45,11 @@
                 <div class="divTableCell">{{ _scraped_date_time.strftime('%H:%M') }}</div>
                 <div class="divTableCell">{{ obj.league }}</div>
                 <div class="divTableCell">
-                    <img width="18" height="18" src="assets/teams/{{ obj.home_team_en }}.png">&nbsp;
+                    <img class="team-logo" src="assets/teams/{{ obj.home_team_en }}.png">
                     <a href="{{ obj.home_team_url }}" target="_blank">{{ obj.home_team }}</a>
                 </div>
                 <div class="divTableCell">
-                    <img width="18" height="18" src="assets/teams/{{ obj.guest_team_en }}.png">&nbsp;
+                    <img class="team-logo" src="assets/teams/{{ obj.guest_team_en }}.png">
                     {{ _guest_team_alter | safe }}
                 </div>
                 <div class="divTableCell">{{ obj.specs_word }}</div>
