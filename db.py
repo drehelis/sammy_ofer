@@ -3,6 +3,7 @@ from datetime import datetime
 import hashlib
 import sqlite3
 
+from logger import logger
 from models import unpack_game_data
 
 
@@ -76,8 +77,10 @@ def check_for_field_update(games):
     fields_to_compare = [
         "scraped_date_time",
         "home_team",
+        "home_team_en",
         "game_hour",
         "guest_team",
+        "guest_team_en",
         "specs_word",
         "specs_number",
         "post_specs_number",
@@ -113,9 +116,9 @@ def check_for_field_update(games):
                 changes[field] = {"db": db_value, "web": web_value}
 
         if changes:
-            print(f"Changes detected for game {games.game_id}:")
+            logger.info(f"Changes detected for game {games.game_id}:")
             for field, values in changes.items():
-                print(f"  - {field}: '{values['db']} (db)' → '{values['web']} (web)'")
+                logger.info(f"Field: [{field}] '{values['db']} (db)' → '{values['web']} (web)'")
 
             return True
         return False
@@ -129,7 +132,7 @@ def store_scraped_games_in_db(games):
             update_required = check_for_field_update(game_data)
 
             if update_required:
-                print("Updating existing game record")
+                logger.info("Updating existing game record")
                 cursor.execute(
                     """
                     UPDATE games SET
@@ -151,7 +154,7 @@ def store_scraped_games_in_db(games):
                         notes = ?,
                         specs_emoji = ?,
                         custom_road_block_time = ?,
-                        created_at = ?
+                        created_at = ?,
                         updated_at = ?
                     WHERE game_id = ?
                 """,

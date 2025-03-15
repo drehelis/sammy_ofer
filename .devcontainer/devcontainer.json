@@ -7,7 +7,7 @@
             "ms-python.vscode-pylance",
             "eamodio.gitlens",
             "ms-azuretools.vscode-docker",
-            "vscode-icons-team.vscode-icons"
+            "yy0931.vscode-sqlite3-editor"
          ]
       }
    },

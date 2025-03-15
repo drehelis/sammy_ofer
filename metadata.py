@@ -60,6 +60,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/maccabi-tel-aviv",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
     },
+    "מכבי תל אביב": {
+        "name": "Maccabi Tel Aviv",
+        "url": "https://www.football.co.il/maccabi-tel-aviv",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
+    },
     "עירוני טבריה": {
         "name": "Ironi Tveria",
         "url": "https://www.football.co.il/ironi-tveria/",
