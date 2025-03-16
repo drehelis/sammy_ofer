@@ -84,6 +84,7 @@ def check_for_field_update(games):
         "specs_word",
         "specs_number",
         "post_specs_number",
+        "custom_road_block_time",
         "poll",
         "notes",
     ]
