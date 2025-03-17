@@ -140,6 +140,8 @@ class WebScrape:
             if specs_word == "ללא" or int(specs_number) <= 6000:
                 custom_road_block_time = "אין"
             elif specs_word == "גדול מאוד":
+                # default road block time is 2 hours before game start
+                # for games with high attendance, set block road to 3 hours
                 custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time, '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
             id, created_at, updated_at = None, None, None

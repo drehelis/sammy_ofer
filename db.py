@@ -1,15 +1,18 @@
 from contextlib import contextmanager
 from datetime import datetime
 import hashlib
+import os
 import sqlite3
 
 from logger import logger
 from models import unpack_game_data
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_PATH = os.path.join(BASE_DIR, "sammy_ofer.db")
 
 @contextmanager
 def db_transaction():
-    conn = sqlite3.connect("sammy_ofer.db")
+    conn = sqlite3.connect(DB_PATH)
     conn.row_factory = sqlite3.Row
     cursor = conn.cursor()
     try:
@@ -84,6 +87,7 @@ def check_for_field_update(games):
         "specs_word",
         "specs_number",
         "post_specs_number",
+        "custom_road_block_time",
         "poll",
         "notes",
     ]
