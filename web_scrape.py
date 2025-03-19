@@ -1,27 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-from random import choice
 import datetime
-from dateutil import parser
-from pathlib import Path
-from logger import logger
 import hashlib
 import os
 import re
+from pathlib import Path
+from random import choice
+
+import numpy as np
 import requests
-
-
+import ua_generator
+from bs4 import BeautifulSoup
+from dateutil import parser
 from dotenv import load_dotenv
 from PIL import Image
-import numpy as np
-import ua_generator
 
+import db
 from google_calendar import GoogleCalendarManager
+from logger import logger
 from metadata import TEAMS_METADATA
 from static_html_page import gen_static_page
-import db
 
 load_dotenv()
 

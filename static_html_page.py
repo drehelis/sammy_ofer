@@ -1,14 +1,13 @@
-from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
-from shutil import copy
 import datetime
 import os
+from pathlib import Path
+from shutil import copy
 
 from git import Repo
-from logger import logger
+from jinja2 import Environment, FileSystemLoader
 
 import jinja_filters as jf
-
+from logger import logger
 
 REPO_URL = f"https://{os.getenv('GH_PAT')}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
