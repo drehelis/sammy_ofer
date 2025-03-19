@@ -1,14 +1,15 @@
-from contextlib import contextmanager
-from datetime import datetime
 import hashlib
 import os
 import sqlite3
+from contextlib import contextmanager
+from datetime import datetime
 
 from logger import logger
 from models import unpack_game_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "sammy_ofer.db")
+
 
 @contextmanager
 def db_transaction():
@@ -122,7 +123,9 @@ def check_for_field_update(games):
         if changes:
             logger.info(f"Changes detected for game {games.game_id}:")
             for field, values in changes.items():
-                logger.info(f"Field: [{field}] '{values['db']} (db)' → '{values['web']} (web)'")
+                logger.info(
+                    f"Field: [{field}] '{values['db']} (db)' → '{values['web']} (web)'"
+                )
 
             return True
         return False

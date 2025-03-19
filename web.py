@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from datetime import datetime
 import json
+from datetime import datetime
 
 from flask import Flask, render_template, request
 from flask.helpers import send_file
 from markupsafe import Markup
-from waitress import serve
 from paste.translogger import TransLogger
+from waitress import serve
 
-import web_scrape
-import jinja_filters as jf
 import db
+import jinja_filters as jf
+import web_scrape
 from metadata import TEAMS_METADATA
 
 app = Flask(__name__, template_folder="html_templates")

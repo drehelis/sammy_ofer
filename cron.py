@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-from random import choice
 import asyncio
 import datetime
 import os
 import sys
+from pathlib import Path
+from random import choice
 
 from dotenv import load_dotenv
-
 from telegram import Bot, constants
 from telegram.helpers import escape_markdown
 
-from logger import logger
+import db
 import web_scrape
-from models import unpack_game_data
-
+from logger import logger
 from metadata import EMOJI_HEARTS, POLL_SENTENCES
+from models import unpack_game_data
 
 load_dotenv()
 
@@ -125,12 +124,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
 
 
 if __name__ == "__main__":
-    web = web_scrape.WebScrape()
-    scrape = web.scrape()
-    scraped_games = web.decoratored_games(
-        scrape
-    )  # also fetches teams logos, generates static page and update calendar
-    generated_data = check_games_today(scraped_games)
+    generated_data = check_games_today(db.get_all_db_entries())
     detected_games_today = list(generated_data)
     message = create_message(detected_games_today)
 
