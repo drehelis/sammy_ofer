@@ -26,11 +26,14 @@ def db_transaction():
         conn.close()
 
 
-def update_db_record(id, number, post_number, word, poll, notes, updated_at):
+def update_db_record(
+    id, sched_time, number, post_number, word, poll, notes, updated_at
+):
     with db_transaction() as (conn, cursor):
         cursor.execute(
             """
             UPDATE games SET
+                sched_time = ?,
                 specs_number = ?,
                 post_specs_number = ?,
                 specs_word = ?,
@@ -39,7 +42,7 @@ def update_db_record(id, number, post_number, word, poll, notes, updated_at):
                 updated_at = ?
             WHERE game_id = ?
         """,
-            (number, post_number, word, poll, notes, updated_at, id),
+            (sched_time, number, post_number, word, poll, notes, updated_at, id),
         )
 
     return cursor.rowcount > 0
@@ -86,6 +89,7 @@ def check_for_field_update(games):
         "guest_team",
         "guest_team_en",
         "specs_word",
+        "sched_time",
         "specs_number",
         "post_specs_number",
         "custom_road_block_time",
@@ -265,8 +269,7 @@ def get_game_details(game_id):
     with db_transaction() as (conn, cursor):
         cursor.execute(
             """
-            SELECT notes, poll, specs_number, post_specs_number, specs_word
-            FROM games
+            SELECT * FROM games
             WHERE game_id = ?
         """,
             (game_id,),
@@ -275,12 +278,13 @@ def get_game_details(game_id):
         result = cursor.fetchone()
 
         if result:
-            return (
-                result["specs_word"],
-                result["specs_number"],
-                result["post_specs_number"],
-                result["poll"],
-                result["notes"],
-            )
+            return dict(result)
 
-        return "לא ידוע", 0, 0, "off", ""
+        return {
+            "specs_word": "לא ידוע",
+            "sched_time": "09:00",
+            "specs_number": 0,
+            "post_specs_number": 0,
+            "poll": "off",
+            "notes": "",
+        }

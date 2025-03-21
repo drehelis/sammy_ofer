@@ -12,11 +12,14 @@ from waitress import serve
 
 import db
 import jinja_filters as jf
+import scheduler
 import web_scrape
 from metadata import TEAMS_METADATA
 
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
+
+scheduler.scheduler_onstart()
 
 
 @app.route("/next", methods=["GET"])
@@ -31,6 +34,7 @@ def next_game():
     web.create_calendar_event(games)
 
     all_games = db.get_all_db_entries()
+
     return render_template("next.html", mygames=all_games, datetime=datetime)
 
 
@@ -44,8 +48,10 @@ def action():
 
 @app.route("/update", methods=["POST"])
 def update():
-    ok = db.update_db_record(
-        request.form["game_id"],
+    game_id = request.form.get("game_id")
+    update_db = db.update_db_record(
+        game_id,
+        request.form["sched_time"],
         request.form["specs_number"],
         request.form["post_specs_number"],
         request.form["specs_word"],
@@ -53,7 +59,17 @@ def update():
         request.form["notes"],
         datetime.now().isoformat(),
     )
-    if ok:
+
+    item = db.get_game_details(game_id)
+    scheduler_date = datetime.fromisoformat(item["scraped_date_time"]).date()
+    scheduler_time = datetime.strptime(request.form["sched_time"], "%H:%M").time()
+    scheduler_dt = datetime.combine(scheduler_date, scheduler_time)
+    update_sched = scheduler.scheduler_update(
+        game_id,
+        scheduler_dt,
+    )
+
+    if update_db and update_sched:
         return Markup("עידכון בוצע בהצלחה")
 
 
@@ -61,15 +77,21 @@ def update():
 def delete():
     game_id = request.form.get("game_id")
 
-    ok = db.delete_db_record(game_id)
-    if ok:
+    delete_db = db.delete_db_record(game_id)
+    scheduler.scheduler_delete(game_id)
+
+    if delete_db:
         return Markup("הרשומה נמחקה בהצלחה")
 
 
 @app.route("/add", methods=["POST"])
 def add():
-    ok = db.add_db_record(dict(request.form))
-    if ok:
+    form = dict(request.form)
+
+    add_db = db.add_db_record(form)
+    add_scheduler = scheduler.scheduler_add(form)
+
+    if add_db and add_scheduler:
         return Markup("הרשומה התווספה בהצלחה")
 
 
@@ -83,4 +105,4 @@ def get_image(file_name):
 
 if __name__ == "__main__":
     app_access_logs = TransLogger(app)
-    serve(app_access_logs, host="0.0.0.0", port=5000)
+    serve(app_access_logs, host="0.0.0.0", port=5001)

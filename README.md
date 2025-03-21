@@ -61,7 +61,8 @@ flask run --port=5001
 ```
 
 ## TODO
+I'm out of ideas...
 
 - [x] ~~Use SQLite instead of a dictionary file~~
 - [x] ~~**Delete** option currently does absolutely nothing~~
-- [ ] Cron configuation (some sort of UI?)
+- [x] ~~Cron configuation (some sort of UI?)~~
