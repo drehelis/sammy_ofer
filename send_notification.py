@@ -2,7 +2,6 @@
 
 import datetime
 import os
-import sys
 from pathlib import Path
 from random import choice
 
@@ -18,11 +17,9 @@ from models import unpack_game_data
 load_dotenv()
 
 
-if "TELEGRAM_CHANNEL_ID" not in os.environ or "TELEGRAM_TOKEN" not in os.environ:
-    logger.info(
-        "Both 'TELEGRAM_CHANNEL_ID' and 'TELEGRAM_TOKEN' env. variables must be set."
-    )
-    sys.exit(1)
+assert "TELEGRAM_CHANNEL_ID" in os.environ and "TELEGRAM_TOKEN" in os.environ, (
+    "Both 'TELEGRAM_CHANNEL_ID' and 'TELEGRAM_TOKEN' env. variables must be set."
+)
 
 TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")

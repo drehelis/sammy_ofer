@@ -26,11 +26,11 @@ def test_action_route_detailed(client):
         "update": json.dumps(
             {
                 "action": "update",
-                "game_id": "abcdef",
-                "home_team": "מכבי חיפה",
-                "guest_team": "הפועל חיפה",
-                "specs_word": "בינוני",
-                "specs_number": "15000",
+                "gameId": "abcdef",
+                "homeTeam": "מכבי חיפה",
+                "guestTeam": "הפועל חיפה",
+                "specsWord": "בינוני",
+                "specsNumber": "15000",
                 "poll": "off",
                 "notes": "",
             }
