@@ -36,6 +36,8 @@ jobs:
       env:
         SKIP_COMMIT: True
         SKIP_CALENDAR: True
+        TELEGRAM_CHANNEL_ID: placeholder
+        TELEGRAM_BOT_TOKEN: placeholder
       run: |
         python init_db.py
         pytest -vs
