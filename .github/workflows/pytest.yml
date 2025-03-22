@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  pytest:
 
     runs-on: ubuntu-latest
 
@@ -37,7 +37,7 @@ jobs:
         SKIP_COMMIT: True
         SKIP_CALENDAR: True
         TELEGRAM_CHANNEL_ID: placeholder
-        TELEGRAM_BOT_TOKEN: placeholder
+        TELEGRAM_TOKEN: placeholder
       run: |
         python init_db.py
         pytest -vs

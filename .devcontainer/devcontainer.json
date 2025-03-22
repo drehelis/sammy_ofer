@@ -13,7 +13,7 @@
       }
    },
    "remoteEnv": {
-      "FLASK_APP": "run.py",
+      "FLASK_APP": "main.py",
       "FLASK_DEBUG": "true"
    },
    "containerUser": "user"
