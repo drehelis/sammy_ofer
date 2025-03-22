@@ -80,10 +80,6 @@ def scheduler_add(game):
 
 
 def scheduler_onstart():
-    if scheduler.running:
-        logging.info("Scheduler already running, skipping...")
-        return
-
     upcoming, _ = db.get_all_db_entries()
 
     for game in upcoming:

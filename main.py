@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import os
 from datetime import datetime
 
 from flask import Flask, render_template, request
@@ -19,7 +20,8 @@ from metadata import TEAMS_METADATA
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
 
-scheduler.scheduler_onstart()
+if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
+    scheduler.scheduler_onstart()
 
 
 @app.route("/next", methods=["GET"])

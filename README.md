@@ -57,7 +57,7 @@ docker run -d --name sammy_ofer \
 ## Debug
 ```
 uv pip install -r requirements.txt
-flask run --port=5001
+flask run --debug --port=5001
 ```
 
 ## TODO
