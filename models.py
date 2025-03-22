@@ -19,6 +19,7 @@ class GameData:
     game_time_delta: datetime
     road_block_time: str
     specs_word: str
+    sched_time: str
     specs_number: int
     post_specs_number: int
     poll: Optional[str]

@@ -63,7 +63,7 @@
                             <option option hidden selected>בחר</option>
                             <option value="update" data-game-id="{{ obj.game_id }}" data-home-team="{{ obj.home_team }}"
                                 data-guest-team="{{ obj.guest_team }}" data-specs-word="{{ obj.specs_word }}"
-                                data-specs-number="{{ obj.specs_number }}"
+                                data-sched-time="{{ obj.sched_time }}" data-specs-number="{{ obj.specs_number }}"
                                 data-post-specs-number="{{ obj.post_specs_number }}" data-poll="{{ obj.poll }}"
                                 data-notes="{{ obj.notes }}">עדכן</option>
                             <option value="delete" data-game-id="{{ obj.game_id }}" data-home-team="{{ obj.home_team }}"
@@ -119,19 +119,13 @@
             row.addClass('highlight');
 
             const data = {
-                action: action,
-                game_id: selected.data('gameId'),
-                home_team: selected.data('homeTeam'),
-                guest_team: selected.data('guestTeam')
+                action: action
             };
 
-            if (action === "update") {
-                data.specs_word = selected.data('specsWord');
-                data.specs_number = selected.data('specsNumber');
-                data.post_specs_number = selected.data('postSpecsNumber');
-                data.poll = selected.data('poll');
-                data.notes = selected.data('notes');
-            }
+            $.each(selected.data(), function (key, value) {
+                data[key] = value;
+            });
+            console.log(data);
 
             $.post("/action", { [action]: JSON.stringify(data) })
                 .done(function (response) {

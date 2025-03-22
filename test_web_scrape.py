@@ -1,6 +1,9 @@
+from unittest.mock import MagicMock, patch
+
 import pytest
-from unittest.mock import patch, MagicMock
+
 from web_scrape import WebScrape
+
 
 @pytest.fixture
 def mock_response():
@@ -17,16 +20,17 @@ def mock_response():
     mock.raise_for_status.return_value = None
     return mock
 
-@patch('requests.get')
+
+@patch("requests.get")
 def test_scrape(mock_get, mock_response):
     """Test the scrape method of WebScrape class"""
     mock_get.return_value = mock_response
-    
+
     scraper = WebScrape()
     result = scraper.scrape()
 
     print(result)
-    
+
     assert isinstance(result, dict)
     assert "game_1" in result
     assert len(result["game_1"]) == 4

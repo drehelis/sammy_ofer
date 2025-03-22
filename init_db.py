@@ -29,6 +29,7 @@ def init_db():
             game_time_delta TEXT,
             road_block_time TEXT,
             specs_word TEXT,
+            sched_time TEXT,
             specs_number INTEGER,
             post_specs_number INTEGER,
             poll TEXT,

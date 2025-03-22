@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-from random import choice
 import datetime
-from dateutil import parser
-from pathlib import Path
-from logger import logger
 import hashlib
 import os
 import re
+from pathlib import Path
+from random import choice
+from types import SimpleNamespace
+
+import numpy as np
 import requests
-
-
+import ua_generator
+from bs4 import BeautifulSoup
+from dateutil import parser
 from dotenv import load_dotenv
 from PIL import Image
-import numpy as np
-import ua_generator
 
+import db
 from google_calendar import GoogleCalendarManager
+from logger import logger
 from metadata import TEAMS_METADATA
 from static_html_page import gen_static_page
-import db
 
 load_dotenv()
 
@@ -127,19 +127,17 @@ class WebScrape:
             )
             road_block_time = game_time_delta.time().strftime("%H:%M")
 
-            specs_word, specs_number, post_specs_number, poll, notes = (
-                db.get_game_details(game_id)
-            )
+            metadata = SimpleNamespace(**db.get_game_details(game_id))
 
             specs_emoji = ""
             custom_road_block_time = f"החל מ {road_block_time}"
-            if int(specs_number) >= 28000:
+            if int(metadata.specs_number) >= 28000:
                 specs_emoji = "😱"
-            if 1 <= int(specs_number) <= 6000:
+            if 1 <= int(metadata.specs_number) <= 6000:
                 specs_emoji = "🤏"
-            if specs_word == "ללא" or int(specs_number) <= 6000:
+            if metadata.specs_word == "ללא" or int(metadata.specs_number) <= 6000:
                 custom_road_block_time = "אין"
-            elif specs_word == "גדול מאוד":
+            elif metadata.specs_word == "גדול מאוד":
                 # default road block time is 2 hours before game start
                 # for games with high attendance, set block road to 3 hours
                 custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time, '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
@@ -161,11 +159,12 @@ class WebScrape:
                         guest_team_url,
                         game_time_delta,
                         road_block_time,
-                        specs_word,
-                        specs_number,
-                        post_specs_number,
-                        poll,
-                        notes,
+                        metadata.specs_word,
+                        metadata.sched_time,
+                        metadata.specs_number,
+                        metadata.post_specs_number,
+                        metadata.poll,
+                        metadata.notes,
                         specs_emoji,
                         custom_road_block_time,
                         created_at,

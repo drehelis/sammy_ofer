@@ -1,3 +1,4 @@
+apscheduler
 babel
 beautifulsoup4
 flask
