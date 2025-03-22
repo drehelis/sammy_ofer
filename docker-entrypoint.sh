@@ -1,6 +1,6 @@
 #!/bin/sh
 set -e
 
-python3 app.py
+python3 main.py
 
 exec "$@"
