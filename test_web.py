@@ -3,7 +3,7 @@ import json
 import pytest
 from bs4 import BeautifulSoup
 
-from main import app
+from run import app
 
 
 @pytest.fixture
