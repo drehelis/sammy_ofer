@@ -1,13 +1,14 @@
 import asyncio
-import os
 from datetime import datetime
 
+from apscheduler.jobstores.base import JobLookupError
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.date import DateTrigger
 
 import db
 from logger import logging
+from send_notification import check_games_today, create_message, send
 
 job_stores = {"SammyScheduler": MemoryJobStore()}
 
@@ -19,7 +20,16 @@ def run_job():
 
 
 async def execute_cron_job():
-    logging.info(f"Running scheduled job at {datetime.now()}")
+    generated_data = check_games_today(db.get_all_db_entries())
+    detected_games_today = list(generated_data)
+
+    if not detected_games_today:
+        logging.info("No games today!")
+        return
+
+    message = create_message(detected_games_today)
+    await send(message)
+    logging.info("Cron job completed successfully")
 
 
 def scheduler_update(job_id, new_sched_time):
@@ -29,11 +39,12 @@ def scheduler_update(job_id, new_sched_time):
             trigger=DateTrigger(run_date=new_sched_time, timezone="Asia/Jerusalem"),
         )
         logging.info(f"Job {job_id} rescheduled to {new_sched_time}")
-        return True
 
-    except Exception as err:
+    except JobLookupError as err:
         logging.error(f"Failed to reschedule job {job_id}: {str(err)}")
-        return False
+        scheduler_add(db.get_game_details(job_id))
+
+    return True
 
 
 def scheduler_delete(job_id):
@@ -69,7 +80,8 @@ def scheduler_add(game):
 
 
 def scheduler_onstart():
-    if os.environ.get("WERKZEUG_RUN_MAIN") != "true":
+    if scheduler.running:
+        logging.info("Scheduler already running, skipping...")
         return
 
     upcoming, _ = db.get_all_db_entries()
