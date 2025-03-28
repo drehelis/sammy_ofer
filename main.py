@@ -19,16 +19,34 @@ from metadata import TEAMS_METADATA
 
 app = Flask(__name__, template_folder="html_templates")
 app.jinja_env.filters["babel_format_day_heb"] = jf.babel_format_day_heb
+web = web_scrape.WebScrape()
 
 if not app.debug or os.environ.get("WERKZEUG_RUN_MAIN") == "true":
     scheduler.scheduler_onstart()
 
 
+def game_data_from_form(form):
+    return {
+        "stam": (
+            form["league"],
+            form["home_team"],
+            f"{form['game_date']} {form['game_time']}",
+            form["guest_team"],
+            # below unpacked as extra
+            form["specs_word"],
+            form["sched_time"],
+            form["specs_number"],
+            form["post_specs_number"],
+            form.get("poll", "off"),
+            form["notes"],
+        )
+    }
+
+
 @app.route("/next", methods=["GET"])
 def next_game():
-    web = web_scrape.WebScrape()
     scrape = web.scrape()
-    games = web.decoratored_games(scrape)
+    games, _ = web.decorate_game_data(scrape)
 
     if isinstance(games, str):
         return Markup(scrape)
@@ -50,28 +68,19 @@ def action():
 
 @app.route("/update", methods=["POST"])
 def update():
-    game_id = request.form.get("game_id")
-    update_db = db.update_db_record(
-        game_id,
-        request.form["sched_time"],
-        request.form["specs_number"],
-        request.form["post_specs_number"],
-        request.form["specs_word"],
-        request.form.get("poll", "off"),
-        request.form["notes"],
-        datetime.now().isoformat(),
-    )
+    form = dict(request.form)
+    data = game_data_from_form(form)
+    _, updated_entry = web.decorate_game_data(data)
 
-    item = db.get_game_details(game_id)
-    scheduler_date = datetime.fromisoformat(item["scraped_date_time"]).date()
+    scheduler_date = datetime.fromisoformat(updated_entry["scraped_date_time"]).date()
     scheduler_time = datetime.strptime(request.form["sched_time"], "%H:%M").time()
     scheduler_dt = datetime.combine(scheduler_date, scheduler_time)
     update_sched = scheduler.scheduler_update(
-        game_id,
+        updated_entry["game_id"],
         scheduler_dt,
     )
 
-    if update_db and update_sched:
+    if len(updated_entry) and update_sched:
         return Markup("עידכון בוצע בהצלחה")
 
 
@@ -89,12 +98,34 @@ def delete():
 @app.route("/add", methods=["POST"])
 def add():
     form = dict(request.form)
+    data = {
+        "stam": (
+            form["league"],
+            form["home_team"],
+            f"{form['game_date']} {form['game_time']}",
+            form["guest_team"],
+            # below unpacked as extra
+            form["specs_word"],
+            form["sched_time"],
+            form["specs_number"],
+            form["post_specs_number"],
+            form.get("poll", "off"),
+            form["notes"],
+        )
+    }
 
-    add_db = db.add_db_record(form)
-    add_scheduler = scheduler.scheduler_add(form)
+    _, added_entry = web.decorate_game_data(data)
+    add_scheduler = scheduler.scheduler_add(added_entry)
 
-    if add_db and add_scheduler:
+    if len(added_entry) and add_scheduler:
         return Markup("הרשומה התווספה בהצלחה")
+
+
+@app.route("/scheduler", methods=["GET"])
+def scheduler_page():
+    jobs = scheduler.list_jobs()
+
+    return Markup(f"<pre>{'\n'.join(jobs)}</pre>")
 
 
 @app.route("/assets/teams/<file_name>")

@@ -17,14 +17,16 @@ GH_PAGES_BRANCH = "static_page"
 absolute_path = Path(__file__).resolve().parent
 
 
-def gen_static_page(obj):
+def gen_static_page(db_data):
+    upcoming, _ = db_data
+
     environment = Environment(
         loader=FileSystemLoader(absolute_path / "assets/templates/")
     )
     environment.filters["babel_format_full_heb"] = jf.babel_format_full_heb
     template = environment.get_template("static_page.jinja2")
 
-    content = template.render(games=obj)
+    content = template.render(upcoming=upcoming, datetime=datetime)
 
     try:
         with open(

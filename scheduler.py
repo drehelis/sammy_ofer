@@ -15,6 +15,24 @@ job_stores = {"SammyScheduler": MemoryJobStore()}
 scheduler = BackgroundScheduler(jobstores=job_stores)
 
 
+def list_jobs():
+    jobs = scheduler.get_jobs()
+
+    job_details = []
+    for job in jobs:
+        job_info = (
+            f"Job ID: {job.id}\n"
+            f"Name: {job.name}\n"
+            f"Next Run: {job.next_run_time}\n"
+            f"Trigger: {job.trigger}\n"
+            f"Arguments: {job.args}\n"
+            "---"
+        )
+        job_details.append(job_info)
+
+    return job_details
+
+
 def run_job():
     asyncio.run(execute_cron_job())
 

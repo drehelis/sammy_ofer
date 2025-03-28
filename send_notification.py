@@ -4,6 +4,7 @@ import datetime
 import os
 from pathlib import Path
 from random import choice
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
 from telegram import Bot, constants
@@ -32,7 +33,7 @@ def random_choice(rand):
 
 
 def check_games_today(all_db_entries):
-    today = datetime.date.today()
+    today = datetime.datetime.now(ZoneInfo("Asia/Jerusalem")).date()
 
     upcoming, passed = all_db_entries
     for obj in upcoming + passed:

@@ -3,12 +3,29 @@ import os
 import sqlite3
 from contextlib import contextmanager
 from datetime import datetime
+from zoneinfo import ZoneInfo
 
 from logger import logger
-from models import unpack_game_data
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "sammy_ofer.db")
+
+FIELDS_TO_COMPARE = [
+    "scraped_date_time",
+    "home_team",
+    "home_team_en",
+    "game_hour",
+    "guest_team",
+    "guest_team_en",
+    "specs_word",
+    "sched_time",
+    "specs_number",
+    "post_specs_number",
+    "poll",
+    "notes",
+    "specs_emoji",
+    "custom_road_block_time",
+]
 
 
 @contextmanager
@@ -81,22 +98,7 @@ def add_db_record(fields):
 
 
 def check_for_field_update(games):
-    fields_to_compare = [
-        "scraped_date_time",
-        "home_team",
-        "home_team_en",
-        "game_hour",
-        "guest_team",
-        "guest_team_en",
-        "specs_word",
-        "sched_time",
-        "specs_number",
-        "post_specs_number",
-        "custom_road_block_time",
-        "poll",
-        "notes",
-    ]
-    fields_str = ", ".join(fields_to_compare)
+    fields_str = ", ".join(FIELDS_TO_COMPARE)
 
     with db_transaction() as (conn, cursor):
         query = f"""
@@ -114,7 +116,7 @@ def check_for_field_update(games):
         db_values = dict(existing)
 
         changes = {}
-        for field in fields_to_compare:
+        for field in FIELDS_TO_COMPARE:
             db_value = db_values.get(field)
             web_value = getattr(games, field)
 
@@ -137,9 +139,7 @@ def check_for_field_update(games):
 
 def store_scraped_games_in_db(games):
     with db_transaction() as (conn, cursor):
-        for _, game_tuple in games.items():
-            game_data = unpack_game_data(game_tuple)
-
+        for game_data in games:
             update_required = check_for_field_update(game_data)
 
             if update_required:
@@ -159,6 +159,7 @@ def store_scraped_games_in_db(games):
                         game_time_delta = ?,
                         road_block_time = ?,
                         specs_word = ?,
+                        sched_time = ?,
                         specs_number = ?,
                         post_specs_number = ?,
                         poll = ?,
@@ -186,6 +187,7 @@ def store_scraped_games_in_db(games):
                         else str(game_data.game_time_delta),
                         game_data.road_block_time,
                         game_data.specs_word,
+                        game_data.sched_time,
                         game_data.specs_number,
                         game_data.post_specs_number,
                         game_data.poll,
@@ -203,9 +205,9 @@ def store_scraped_games_in_db(games):
                 INSERT INTO games
                 (game_id, scraped_date_time, league, home_team, home_team_en, home_team_url,
                     game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta,
-                    road_block_time, specs_word, specs_number, post_specs_number, poll, notes, specs_emoji,
-                    custom_road_block_time, created_at)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    road_block_time, specs_word, sched_time, specs_number, post_specs_number, 
+                    poll, notes, specs_emoji, custom_road_block_time, created_at)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
                     (
                         game_data.game_id,
@@ -225,6 +227,7 @@ def store_scraped_games_in_db(games):
                         else str(game_data.game_time_delta),
                         game_data.road_block_time,
                         game_data.specs_word,
+                        game_data.sched_time,
                         game_data.specs_number,
                         game_data.post_specs_number,
                         game_data.poll,
@@ -238,7 +241,7 @@ def store_scraped_games_in_db(games):
 
 def get_all_db_entries():
     with db_transaction() as (conn, cursor):
-        current_time = datetime.now().isoformat()
+        current_time = datetime.now(ZoneInfo("Asia/Jerusalem")).isoformat()
 
         cursor.execute(
             """
@@ -279,12 +282,3 @@ def get_game_details(game_id):
 
         if result:
             return dict(result)
-
-        return {
-            "specs_word": "לא ידוע",
-            "sched_time": "09:00",
-            "specs_number": 0,
-            "post_specs_number": 0,
-            "poll": "off",
-            "notes": "",
-        }

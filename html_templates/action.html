@@ -57,7 +57,9 @@
             </div>
             <div class="form-group">
                 <label for="specs_number">מס. אוהדים:</label>
-                <input type="number" name="specs_number" id="specs_number" max="30000" required>
+                <input type="number" name="specs_number" id="specs_number" max="30000" maxlength="5"
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
+                    required>
             </div>
             <input type="hidden" name="post_specs_number" id="post_specs_number" value="0">
             <div class="form-group">
@@ -104,6 +106,9 @@
         <h1>{{ myval['action'] | upper}}</h1>
         <form action="/update" method="post" id="updateForm" class="form-container">
             <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
+            <input type="hidden" name="league" value="{{ myval['league'] }}">
+            <input type="hidden" name="game_date" value="{{ myval['gameDate'] }}">
+            <input type="hidden" name="game_time" value="{{ myval['gameTime'] }}">
             <div class="form-group">
                 <label for="hour">תיזמון</label>
                 <input type="time" id="sched_time" name="sched_time" value="{{ myval['schedTime'] }}">
@@ -119,14 +124,16 @@
             <div class="form-group">
                 <label for="specs_number">מס. אוהדים:</label>
                 <input type="number" name="specs_number" value="{{ myval['specsNumber'] }}" id="specs_number"
-                    max="30000">
+                    max="30000" maxlength="5"
+                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
             </div>
             <span class="collapse-toggle" id="togglePostSpecs">הצג/הסתר מס. אוהדים בפועל</span>
             <div class="collapsible-section" id="postSpecsSection">
                 <div class="form-group">
                     <label for="post_specs_number">מס. אוהדים בפועל:</label>
                     <input type="number" name="post_specs_number" value="{{ myval['postSpecsNumber'] }}"
-                        id="post_specs_number" max="30000">
+                        id="post_specs_number" max="30000" maxlength="5"
+                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
                 </div>
             </div>
             <div class="form-group">
