@@ -5,7 +5,7 @@ import json
 import os
 from datetime import datetime
 
-from flask import Flask, render_template, request
+from flask import Flask, jsonify, render_template, request
 from flask.helpers import send_file
 from markupsafe import Markup
 from paste.translogger import TransLogger
@@ -93,6 +93,17 @@ def delete():
 
     if delete_db:
         return Markup("הרשומה נמחקה בהצלחה")
+
+
+@app.route("/send", methods=["POST"])
+def send():
+    try:
+        scheduler.run_job()
+        return jsonify({"status": "success", "message": "Job executed successfully"})
+    except Exception as e:
+        return jsonify(
+            {"status": "error", "message": f"Error executing job: {str(e)}"}
+        ), 500
 
 
 @app.route("/add", methods=["POST"])

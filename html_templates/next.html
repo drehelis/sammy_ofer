@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>לוח משחקים באצטדיון</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>pm
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
@@ -129,7 +129,6 @@
             $.each(selected.data(), function (key, value) {
                 data[key] = value;
             });
-            console.log(data);
 
             $.post("/action", { [action]: JSON.stringify(data) })
                 .done(function (response) {
@@ -144,30 +143,15 @@
                 });
         });
 
-        // TODO: Add ability to send specific game row, this is just a placeholder.
         function send(button) {
-            const row = button.closest('.divTableRow');
-            const cells = row.querySelectorAll('.divTableCell');
-            const keys = [
-                'index', 'date', 'day', 'time', 'league', 'home_team', 'guest_team',
-                'fans', 'number', 'action', 'poll', 'notes', 'send'
-            ];
-            const values = {};
-            const section = row.dataset.section; // Get the section (upcoming or past)
+            if (!confirm("האם אתה בטוח שברצונך לשלוח הודעה עכשיו?")) {
+                return;
+            }
 
-            values['section'] = section;
-            cells.forEach((cell, index) => {
-                values[keys[index]] = cell.innerText.trim();
+            $.post('/send', function (response) {
+                $("#result_action").empty().append(response);
+                $(button).prop('disabled', false).text('שלח');
             });
-
-            // Send the values using $.post
-            $.post('/your-endpoint', values)
-                .done(function (data) {
-                    console.log('Success:', data);
-                })
-                .fail(function (error) {
-                    console.error('Error:', error);
-                });
         }
 
         document.addEventListener('DOMContentLoaded', function () {
