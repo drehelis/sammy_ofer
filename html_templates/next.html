@@ -40,7 +40,7 @@
             {% endif %}
             <div class="divTableRow" data-section="{{ section_id }}">
                 <div class="divTableCell">{{ loop.index }}</div>
-                <div class="divTableCell">{{ _scraped_date_time.strftime('%Y-%m-%d') }}</div>
+                <div class="divTableCell" title="{{ obj.game_id }}">{{ _scraped_date_time.strftime('%d.%m.%Y') }}</div>
                 <div class="divTableCell">{{ _scraped_date_time | babel_format_day_heb }}</div>
                 <div class="divTableCell">{{ _scraped_date_time.strftime('%H:%M') }}</div>
                 <div class="divTableCell">{{ obj.league }}</div>
@@ -62,7 +62,7 @@
                         <select id="action_{{ section_id }}_{{ loop.index }}" name="action">
                             <option option hidden selected>בחר</option>
                             <option value="update" data-game-id="{{ obj.game_id }}" data-league="{{ obj.league }}"
-                                data-game-date="{{ _scraped_date_time.strftime('%Y-%m-%d') }}"
+                                data-game-date="{{ _scraped_date_time.strftime('%d-%m-%Y') }}"
                                 data-game-time="{{ _scraped_date_time.strftime('%H:%M') }}"
                                 data-home-team="{{ obj.home_team }}" data-guest-team="{{ obj.guest_team }}"
                                 data-specs-word="{{ obj.specs_word }}" data-sched-time="{{ obj.sched_time }}"
@@ -109,6 +109,7 @@
         <p>
         <div id="result_action"></div>
         </p>
+        <a href="/scheduler">תיזמונים</a>
     </div>
 
     <script>

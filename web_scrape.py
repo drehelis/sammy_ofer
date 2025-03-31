@@ -99,7 +99,7 @@ class WebScrape:
             try:
                 scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
             except parser.ParserError as err:
-                logger.error(f"Failed to parse date in {value}': {err}")
+                logger.error(f"Failed to parse date in {value}: {err}")
                 continue  # skip if date is in bad format
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
@@ -130,26 +130,24 @@ class WebScrape:
                     dbrecord.custom_road_block_time = custom_road_block_time
             except TypeError:
                 logger.info(f"Creating new record for game {game_id}")
+                home_team_metadata = TEAMS_METADATA.get(
+                    home_team, TEAMS_METADATA.get("Unavailable")
+                )
+                guest_team_metadata = TEAMS_METADATA.get(
+                    guest_team, TEAMS_METADATA.get("Unavailable")
+                )
                 dbrecord = SimpleNamespace(
                     id=None,
                     game_id=game_id,
                     scraped_date_time=scraped_date_time.isoformat(),
                     league=league,
                     home_team=home_team,
-                    home_team_en=TEAMS_METADATA.get(
-                        home_team, TEAMS_METADATA.get("Unavailable")
-                    ).get("name"),
-                    home_team_url=TEAMS_METADATA.get(
-                        home_team, TEAMS_METADATA.get("Unavailable")
-                    ).get("url"),
+                    home_team_en=home_team_metadata.get("name"),
+                    home_team_url=home_team_metadata.get("url"),
                     game_hour=scraped_date_time.time().strftime("%H:%M"),
                     guest_team=guest_team,
-                    guest_team_en=TEAMS_METADATA.get(
-                        guest_team, TEAMS_METADATA.get("Unavailable")
-                    ).get("name"),
-                    guest_team_url=TEAMS_METADATA.get(
-                        guest_team, TEAMS_METADATA.get("Unavailable")
-                    ).get("url"),
+                    guest_team_en=guest_team_metadata.get("name"),
+                    guest_team_url=guest_team_metadata.get("url"),
                     game_time_delta=game_time_delta,
                     road_block_time=road_block_time,
                     specs_word=specs_word,
