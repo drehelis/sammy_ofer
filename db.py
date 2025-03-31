@@ -205,7 +205,7 @@ def store_scraped_games_in_db(games):
                 INSERT INTO games
                 (game_id, scraped_date_time, league, home_team, home_team_en, home_team_url,
                     game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta,
-                    road_block_time, specs_word, sched_time, specs_number, post_specs_number, 
+                    road_block_time, specs_word, sched_time, specs_number, post_specs_number,
                     poll, notes, specs_emoji, custom_road_block_time, created_at)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,
@@ -245,8 +245,8 @@ def get_all_db_entries():
 
         cursor.execute(
             """
-            SELECT * FROM games 
-            WHERE scraped_date_time >= ? 
+            SELECT * FROM games
+            WHERE scraped_date_time >= ?
             ORDER BY scraped_date_time ASC
         """,
             (current_time,),
@@ -256,8 +256,8 @@ def get_all_db_entries():
 
         cursor.execute(
             """
-            SELECT * FROM games 
-            WHERE scraped_date_time < ? 
+            SELECT * FROM games
+            WHERE scraped_date_time < ?
             ORDER BY scraped_date_time DESC
         """,
             (current_time,),

@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 from shutil import copy
 
-from git import Repo
+from git import Repo, exc
 from jinja2 import Environment, FileSystemLoader
 
 import jinja_filters as jf
@@ -54,7 +54,7 @@ def git_commit():
     try:
         repo = Repo(TMP_REPO_DIR)
         repo.remotes.origin.pull(GH_PAGES_BRANCH)
-    except:
+    except (exc.NoSuchPathError, exc.InvalidGitRepositoryError):
         repo = Repo.clone_from(REPO_URL, TMP_REPO_DIR)
 
     repo.config_writer().set_value("user", "name", "sammy-ofer-bot").release()
@@ -62,7 +62,7 @@ def git_commit():
 
     try:
         repo.git.checkout(GH_PAGES_BRANCH)
-    except:
+    except exc.GitCommandError:
         repo.git.checkout(b=GH_PAGES_BRANCH)
 
     src = absolute_path / STATIC_HTML_FILENAME

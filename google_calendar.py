@@ -66,7 +66,11 @@ class GoogleCalendarManager:
             )
 
             event_data = {
-                "summary": f"{self._shorten_team_name(row.home_team)} || {self._shorten_team_name(row.guest_team)} (קהל {row.specs_number:,}~)",
+                "summary": (
+                    f"{self._shorten_team_name(row.home_team)} || "
+                    f"{self._shorten_team_name(row.guest_team)} "
+                    f"(קהל {row.specs_number:,}~)"
+                ),
                 "location": "איצטדיון סמי עופר - רח' רוטנברג 2, חיפה",
                 "description": current_hash,
                 "start": {
