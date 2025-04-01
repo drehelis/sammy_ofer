@@ -57,11 +57,12 @@ docker run -d --name sammy_ofer \
 ## Debug
 ```
 uv pip install -r requirements.txt
-flask run --port=5001
+flask run --debug --port=5001
 ```
 
 ## TODO
+I'm out of ideas...
 
 - [x] ~~Use SQLite instead of a dictionary file~~
 - [x] ~~**Delete** option currently does absolutely nothing~~
-- [ ] Cron configuation (some sort of UI?)
+- [x] ~~Cron configuation (some sort of UI?)~~

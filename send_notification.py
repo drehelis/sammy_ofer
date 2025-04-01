@@ -1,31 +1,26 @@
 #!/usr/bin/env python3
 
-from pathlib import Path
-from random import choice
-import asyncio
 import datetime
 import os
-import sys
+from pathlib import Path
+from random import choice
+from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
-
 from telegram import Bot, constants
 from telegram.helpers import escape_markdown
 
-from logger import logger
 import web_scrape
-from models import unpack_game_data
-
+from logger import logger
 from metadata import EMOJI_HEARTS, POLL_SENTENCES
+from models import unpack_game_data
 
 load_dotenv()
 
 
-if "TELEGRAM_CHANNEL_ID" not in os.environ or "TELEGRAM_TOKEN" not in os.environ:
-    logger.info(
-        "Both 'TELEGRAM_CHANNEL_ID' and 'TELEGRAM_TOKEN' env. variables must be set."
-    )
-    sys.exit(1)
+assert "TELEGRAM_CHANNEL_ID" in os.environ and "TELEGRAM_TOKEN" in os.environ, (
+    "Both 'TELEGRAM_CHANNEL_ID' and 'TELEGRAM_TOKEN' env. variables must be set."
+)
 
 TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
@@ -37,20 +32,16 @@ def random_choice(rand):
     return choice(rand)
 
 
-def check_games_today(games):
-    # Set today to datetime.date(YEAR, M, D) when debugging specific date, i.e.:
-    # today = datetime.date(2025, 3, 9)
-    today = datetime.date.today()
+def check_games_today(all_db_entries):
+    today = datetime.datetime.now(ZoneInfo("Asia/Jerusalem")).date()
 
-    if not isinstance(games, str):
-        upcoming, passed = games
-        for obj in upcoming + passed:
-            scraped_date_time = datetime.datetime.fromisoformat(
-                obj["scraped_date_time"]
-            ).date()
-            if today == scraped_date_time:
-                logger.info("Yesh mishak!")
-                yield obj
+    upcoming, passed = all_db_entries
+    for obj in upcoming + passed:
+        scraped_date_time = datetime.datetime.fromisoformat(
+            obj["scraped_date_time"]
+        ).date()
+        if today == scraped_date_time:
+            yield obj
 
     return False
 
@@ -122,20 +113,3 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
                     ).timestamp(),
                 )
                 logger.info("Telegram poll sent!")
-
-
-if __name__ == "__main__":
-    web = web_scrape.WebScrape()
-    scrape = web.scrape()
-    scraped_games = web.decoratored_games(
-        scrape
-    )  # also fetches teams logos, generates static page and update calendar
-    generated_data = check_games_today(scraped_games)
-    detected_games_today = list(generated_data)
-    message = create_message(detected_games_today)
-
-    if not detected_games_today:
-        logger.info("There is only one thing we say to death - Not today!")
-        sys.exit(0)
-
-    asyncio.run(send(message))

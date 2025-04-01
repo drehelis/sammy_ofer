@@ -1,27 +1,27 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from bs4 import BeautifulSoup
-from random import choice
 import datetime
-from dateutil import parser
-from pathlib import Path
-from logger import logger
 import hashlib
 import os
 import re
+from pathlib import Path
+from random import choice
+from types import SimpleNamespace
+
+import numpy as np
 import requests
-
-
+import ua_generator
+from bs4 import BeautifulSoup
+from dateutil import parser
 from dotenv import load_dotenv
 from PIL import Image
-import numpy as np
-import ua_generator
 
+import db
 from google_calendar import GoogleCalendarManager
+from logger import logger
 from metadata import TEAMS_METADATA
 from static_html_page import gen_static_page
-import db
 
 load_dotenv()
 
@@ -33,7 +33,6 @@ def random_ua():
 class WebScrape:
     def __init__(self):
         self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
-        self.time_delta = 2
         self.soup = None
 
     def scrape(self):
@@ -80,17 +79,15 @@ class WebScrape:
         }
         return games
 
-    def decoratored_games(self, scraped):
+    def decorate_game_data(self, scraped):
         if isinstance(scraped, str):
             if not self.conn_err:
                 gen_static_page({})
             return scraped
 
-        deco_games_obj = {}
+        arr_obj = []
         for key, value in scraped.items():
-            league, home_team, str_time, guest_team = value
-            if len(list(filter(None, value))) != 4:  # skip if tuple is not whole
-                continue
+            league, home_team, str_time, guest_team, *extra = value
 
             tidy_str_time = "".join(
                 char for char in str_time if not char.isalpha()
@@ -102,83 +99,88 @@ class WebScrape:
             try:
                 scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
             except parser.ParserError as err:
-                logger.error(f"Failed to parse date in {value}': {err}")
+                logger.error(f"Failed to parse date in {value}: {err}")
                 continue  # skip if date is in bad format
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
             game_id = hashlib.sha1(scraped_date_time.isoformat().encode()).hexdigest()
-            home_team_en = TEAMS_METADATA.get(
-                home_team, TEAMS_METADATA.get("Unavailable")
-            ).get("name")
-            home_team_url = TEAMS_METADATA.get(
-                home_team, TEAMS_METADATA.get("Unavailable")
-            ).get("url")
-            guest_team_en = TEAMS_METADATA.get(
-                guest_team, TEAMS_METADATA.get("Unavailable")
-            ).get("name")
-            guest_team_url = TEAMS_METADATA.get(
-                guest_team, TEAMS_METADATA.get("Unavailable")
-            ).get("url")
 
-            game_hour = scraped_date_time.time().strftime("%H:%M")
-            game_time_delta = scraped_date_time - datetime.timedelta(
-                hours=self.time_delta
-            )
+            game_time_delta = scraped_date_time - datetime.timedelta(hours=2)
             road_block_time = game_time_delta.time().strftime("%H:%M")
-
-            specs_word, specs_number, post_specs_number, poll, notes = (
-                db.get_game_details(game_id)
-            )
-
-            specs_emoji = ""
             custom_road_block_time = f"החל מ {road_block_time}"
-            if int(specs_number) >= 28000:
-                specs_emoji = "😱"
-            if 1 <= int(specs_number) <= 6000:
-                specs_emoji = "🤏"
-            if specs_word == "ללא" or int(specs_number) <= 6000:
-                custom_road_block_time = "אין"
-            elif specs_word == "גדול מאוד":
+
+            specs_word = extra[0] if len(extra) > 0 else "לא ידוע"
+            sched_time = extra[1] if len(extra) > 1 else "09:00"
+            specs_number = extra[2] if len(extra) > 2 else 0
+            post_specs_number = extra[3] if len(extra) > 3 else 0
+            poll = extra[4] if len(extra) > 4 else "off"
+            notes = extra[5] if len(extra) > 5 else ""
+
+            try:
+                dbrecord = SimpleNamespace(**db.get_game_details(game_id))
+                if extra:
+                    dbrecord.specs_word = specs_word
+                    dbrecord.sched_time = sched_time
+                    dbrecord.specs_number = specs_number
+                    dbrecord.post_specs_number = post_specs_number
+                    dbrecord.poll = poll
+                    dbrecord.notes = notes
+                    dbrecord.specs_emoji = ""
+                    dbrecord.custom_road_block_time = custom_road_block_time
+            except TypeError:
+                logger.info(f"Creating new record for game {game_id}")
+                home_team_metadata = TEAMS_METADATA.get(
+                    home_team, TEAMS_METADATA.get("Unavailable")
+                )
+                guest_team_metadata = TEAMS_METADATA.get(
+                    guest_team, TEAMS_METADATA.get("Unavailable")
+                )
+                dbrecord = SimpleNamespace(
+                    id=None,
+                    game_id=game_id,
+                    scraped_date_time=scraped_date_time.isoformat(),
+                    league=league,
+                    home_team=home_team,
+                    home_team_en=home_team_metadata.get("name"),
+                    home_team_url=home_team_metadata.get("url"),
+                    game_hour=scraped_date_time.time().strftime("%H:%M"),
+                    guest_team=guest_team,
+                    guest_team_en=guest_team_metadata.get("name"),
+                    guest_team_url=guest_team_metadata.get("url"),
+                    game_time_delta=game_time_delta,
+                    road_block_time=road_block_time,
+                    specs_word=specs_word,
+                    sched_time=sched_time,
+                    specs_number=specs_number,
+                    post_specs_number=post_specs_number,
+                    poll=poll,
+                    notes=notes,
+                    specs_emoji="",
+                    custom_road_block_time=custom_road_block_time,
+                    created_at=datetime.datetime.now().isoformat(),
+                )
+
+            if int(dbrecord.specs_number) >= 28000:
+                dbrecord.specs_emoji = "😱"
+
+            if 1 <= int(dbrecord.specs_number) <= 6000:
+                dbrecord.specs_emoji = "🤏"
+
+            if dbrecord.specs_word == "ללא" or int(dbrecord.specs_number) <= 6000:
+                dbrecord.custom_road_block_time = "אין"
+            elif dbrecord.specs_word == "גדול מאוד":
                 # default road block time is 2 hours before game start
                 # for games with high attendance, set block road to 3 hours
-                custom_road_block_time = f"החל מ {(datetime.datetime.strptime(road_block_time, '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
+                dbrecord.custom_road_block_time = f"החל מ {(datetime.datetime.strptime(getattr(dbrecord, 'road_block_time'), '%H:%M') - datetime.timedelta(hours=1)).strftime('%H:%M')}"
 
-            id, created_at, updated_at = None, None, None
-            deco_games_obj.update(
-                {
-                    key: (
-                        id,
-                        game_id,
-                        scraped_date_time,
-                        league,
-                        home_team,
-                        home_team_en,
-                        home_team_url,
-                        game_hour,
-                        guest_team,
-                        guest_team_en,
-                        guest_team_url,
-                        game_time_delta,
-                        road_block_time,
-                        specs_word,
-                        specs_number,
-                        post_specs_number,
-                        poll,
-                        notes,
-                        specs_emoji,
-                        custom_road_block_time,
-                        created_at,
-                        updated_at,
-                    )
-                }
-            )
+            arr_obj.append(dbrecord)
 
-        gen_static_page(deco_games_obj)
+        db.store_scraped_games_in_db(arr_obj)
 
-        db.store_scraped_games_in_db(deco_games_obj)
+        gen_static_page(db.get_all_db_entries())
 
-        return db.get_all_db_entries()
+        return db.get_all_db_entries(), db.get_game_details(game_id)
 
     def create_calendar_event(self, games):
         if os.getenv("SKIP_CALENDAR"):

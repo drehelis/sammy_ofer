@@ -1,14 +1,13 @@
-from jinja2 import Environment, FileSystemLoader
-from pathlib import Path
-from shutil import copy
 import datetime
 import os
+from pathlib import Path
+from shutil import copy
 
-from git import Repo
-from logger import logger
+from git import Repo, exc
+from jinja2 import Environment, FileSystemLoader
 
 import jinja_filters as jf
-
+from logger import logger
 
 REPO_URL = f"https://{os.getenv('GH_PAT')}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
@@ -18,14 +17,16 @@ GH_PAGES_BRANCH = "static_page"
 absolute_path = Path(__file__).resolve().parent
 
 
-def gen_static_page(obj):
+def gen_static_page(db_data):
+    upcoming, _ = db_data
+
     environment = Environment(
         loader=FileSystemLoader(absolute_path / "assets/templates/")
     )
     environment.filters["babel_format_full_heb"] = jf.babel_format_full_heb
     template = environment.get_template("static_page.jinja2")
 
-    content = template.render(games=obj)
+    content = template.render(upcoming=upcoming, datetime=datetime)
 
     try:
         with open(
@@ -53,7 +54,7 @@ def git_commit():
     try:
         repo = Repo(TMP_REPO_DIR)
         repo.remotes.origin.pull(GH_PAGES_BRANCH)
-    except:
+    except (exc.NoSuchPathError, exc.InvalidGitRepositoryError):
         repo = Repo.clone_from(REPO_URL, TMP_REPO_DIR)
 
     repo.config_writer().set_value("user", "name", "sammy-ofer-bot").release()
@@ -61,7 +62,7 @@ def git_commit():
 
     try:
         repo.git.checkout(GH_PAGES_BRANCH)
-    except:
+    except exc.GitCommandError:
         repo.git.checkout(b=GH_PAGES_BRANCH)
 
     src = absolute_path / STATIC_HTML_FILENAME

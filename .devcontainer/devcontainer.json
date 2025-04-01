@@ -7,13 +7,13 @@
             "ms-python.vscode-pylance",
             "eamodio.gitlens",
             "ms-azuretools.vscode-docker",
-            "yy0931.vscode-sqlite3-editor"
+            "yy0931.vscode-sqlite3-editor",
+            "charliermarsh.ruff"
          ]
       }
    },
    "remoteEnv": {
-      "FLASK_APP": "web.py",
-      "FLASK_DEBUG": "true"
+      "FLASK_APP": "main.py"
    },
    "containerUser": "user"
 }

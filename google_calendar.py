@@ -1,13 +1,13 @@
-from datetime import datetime, timedelta
-from zoneinfo import ZoneInfo
 import hashlib
 import json
-from logger import logger
+from datetime import datetime, timedelta
+from zoneinfo import ZoneInfo
 
-from googleapiclient.discovery import build
-from google.oauth2 import service_account
 from google.auth.exceptions import RefreshError
+from google.oauth2 import service_account
+from googleapiclient.discovery import build
 
+from logger import logger
 from models import unpack_game_data
 
 
@@ -66,7 +66,11 @@ class GoogleCalendarManager:
             )
 
             event_data = {
-                "summary": f"{self._shorten_team_name(row.home_team)} || {self._shorten_team_name(row.guest_team)} (קהל {row.specs_number:,}~)",
+                "summary": (
+                    f"{self._shorten_team_name(row.home_team)} || "
+                    f"{self._shorten_team_name(row.guest_team)} "
+                    f"(קהל {row.specs_number:,}~)"
+                ),
                 "location": "איצטדיון סמי עופר - רח' רוטנברג 2, חיפה",
                 "description": current_hash,
                 "start": {

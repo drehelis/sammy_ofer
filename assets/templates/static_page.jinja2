@@ -12,6 +12,7 @@
   </a>
 </div>
 {% endmacro -%}
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -33,25 +34,24 @@
   </script>
 </head>
 <body>
-  {% for key, value in games.items() -%}
-  {% set id, game_id, scraped_date_time, league, home_team, home_team_en, home_team_url, game_hour, guest_team, guest_team_en, guest_team_url, game_time_delta, road_block_time, specs_word, specs_number, post_specs_number, poll, notes, specs_emoji, custom_road_block_time, created_at, updated_at = value -%}
+  {% for game in upcoming -%}
   <div id="container-{{loop.index}}" class="container">
     <div class="metadata">
-      <div class="metadata-item">משחק ⚽ היום בשעה: {{ game_hour }}</div>
+      <div class="metadata-item">משחק ⚽ היום בשעה: {{ game.game_hour }}</div>
     </div>
     <div class="team">
-      <div class="team-logo" style="background-image: url('assets/teams/{{ home_team_en }}.png');"></div>
-      <div class="team-name">{{ home_team }}</div>
+      <div class="team-logo" style="background-image: url('assets/teams/{{ game.home_team_en }}.png');"></div>
+      <div class="team-name">{{ game.home_team }}</div>
     </div>
     <div class="team">
-      <div class="team-logo" style="background-image: url('assets/teams/{{ guest_team_en }}.png');"></div>
-      <div class="team-name">{{ guest_team }}</div>
+      <div class="team-logo" style="background-image: url('assets/teams/{{ game.guest_team_en }}.png');"></div>
+      <div class="team-name">{{ game.guest_team }}</div>
     </div>
     <div class="metadata">
-      <div class="metadata-item">צפי חסימת כבישים: {{ custom_road_block_time }}</div>
-      <div class="metadata-item">צפי אוהדים משוער: {{ specs_word }} ({{ "{:,}".format(specs_number) }}) {{ specs_emoji }}</div>
-      {% if notes %}
-      <div class="metadata-item">📣: {{ notes }}</div>
+      <div class="metadata-item">צפי חסימת כבישים: {{ game.custom_road_block_time }}</div>
+      <div class="metadata-item">צפי אוהדים משוער: {{ game.specs_word }} ({{ "{:,}".format(game.specs_number) }}) {{ game.specs_emoji }}</div>
+      {% if game.notes %}
+      <div class="metadata-item">📣: {{ game.notes }}</div>
       {% endif %}
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
       <div>
@@ -60,7 +60,7 @@
     </div>
   </div>
   <script>
-    const gameDate_{{loop.index}} = "{{ scraped_date_time.strftime('%Y-%m-%d') }}";
+    const gameDate_{{loop.index}} = "{{ datetime.datetime.strptime(game.scraped_date_time, "%Y-%m-%dT%H:%M:%S").date() }}";
     if (todayDate !== gameDate_{{loop.index}}) {
       document.getElementById('container-{{loop.index}}').style.display = 'none';
     }
@@ -68,7 +68,13 @@
   {% endfor %}
   <div id="default-container" class="container" style="display: none;">
     <div class="metadata">
-      <div class="metadata-item">המשחק ⚽ הבא: {{ games.get('game_1', ['אין משחקים קרבים'])[2] | babel_format_full_heb }}</div>
+      <div class="metadata-item">המשחק ⚽ הבא:
+      {% if upcoming and upcoming|length > 0 %}
+        {{ upcoming[0].get('scraped_date_time') | babel_format_full_heb }}
+      {% else %}
+          אין משחקים קרבים
+      {% endif %}
+      </div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
       {{ notification_channel() | indent(6) }}
     </div>
@@ -76,7 +82,7 @@
   
   <script>    
     let allContainersHidden = true;
-    for (let i = 1; i <= {{ games.items() |length }}; i++) {
+    for (let i = 1; i <= {{ upcoming | length }}; i++) {
       if (document.getElementById(`container-${i}`).style.display !== 'none') {
         allContainersHidden = false;
         break;
