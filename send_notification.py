@@ -61,6 +61,10 @@ def create_message(obj_data):
 צפי חסימת כבישים: *{row.custom_road_block_time}*
 צפי אוהדים משוער: *{row.specs_word}* {escape_markdown_v2(f"({row.specs_number:,})")} {row.specs_emoji}
 
+🚦 *מצב התנועה בזמן אמת*:
+[גוגל מפות](https://www.google.com/maps/@32.785090452228864,34.96269433141559,15z/data=!5m1!1e1)
+[וייז Waze](https://www.waze.com/he/live-map/directions?to=ll.32.78507,34.962766)
+
 """,
             (
                 row.scraped_date_time,
