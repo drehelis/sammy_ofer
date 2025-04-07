@@ -13,7 +13,6 @@ import numpy as np
 import requests
 import ua_generator
 from bs4 import BeautifulSoup
-from dateutil import parser
 from dotenv import load_dotenv
 from PIL import Image
 
@@ -96,11 +95,23 @@ class WebScrape:
             if not tidy_str_time:  # skip entry if returns nothing (usually when there's hebrew input instead of date)
                 continue
 
-            try:
-                scraped_date_time = parser.parse(tidy_str_time, dayfirst=True)
-            except parser.ParserError as err:
-                logger.error(f"Failed to parse date in {value}: {err}")
-                continue  # skip if date is in bad format
+            date_formats = [
+                "%d/%m/%y %H:%M",  # 05/04/25 18:30
+                "%d/%m/%Y %H:%M",  # 05/04/2025 18:30
+                "%d.%m.%y %H:%M",  # 05.04.25 18:30
+                "%d.%m.%Y %H:%M",  # 05.04.2025 18:30
+                "%d-%m-%y %H:%M",  # 05-04-25 18:30
+                "%d-%m-%Y %H:%M",  # 05-04-2025 18:30
+                "%Y-%m-%d %H:%M",  # 2025-04-05 18:30
+            ]
+
+            for fmt in date_formats:
+                try:
+                    scraped_date_time = datetime.datetime.strptime(tidy_str_time, fmt)
+                    break
+                except ValueError as err:
+                    logger.error(f"Failed to parse date: {err}")
+                    continue  # skip if date is in bad format
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
