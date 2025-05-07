@@ -258,11 +258,9 @@ class GenerateTeamsPNG:
         images = []
         for img_path in banner_list:
             img = Image.open(img_path)
-            # Convert RGBA or other formats to RGB with white background
             if img.mode != "RGB":
-                # Create a white background image
                 white_bg = Image.new("RGB", img.size, (255, 255, 255))
-                # Paste the image on white background if it has transparency
+
                 if img.mode == "RGBA":
                     white_bg.paste(img, (0, 0), img)
                     img = white_bg
