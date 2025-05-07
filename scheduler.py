@@ -33,17 +33,26 @@ def list_jobs():
     return job_details
 
 
-def run_job():
-    asyncio.run(execute_cron_job())
+def run_job(game_id=None):
+    asyncio.run(execute_cron_job(game_id))
 
 
-async def execute_cron_job():
-    generated_data = check_games_today(db.get_all_db_entries())
+async def execute_cron_job(game_id=None):
+    all_db_entries = db.get_all_db_entries()
+    generated_data = check_games_today(all_db_entries)
     detected_games_today = list(generated_data)
 
     if not detected_games_today:
         logging.info("No games today!")
         return
+
+    if game_id:
+        detected_games_today = [
+            game for game in detected_games_today if game["game_id"] == game_id
+        ]
+        if not detected_games_today:
+            logging.info(f"Game ID {game_id} not found in today's games")
+            return
 
     message = create_message(detected_games_today)
     await send(message)
@@ -88,6 +97,7 @@ def scheduler_add(game):
             name=f"{job_id} ({scheduler_dt})",
             replace_existing=True,
             jobstore="SammyScheduler",
+            args=[job_id],  # Pass game_id as an argument to run_job
         )
         return True
 
@@ -114,6 +124,7 @@ def scheduler_onstart():
             name=f"{job_id} ({scheduler_dt})",
             replace_existing=True,
             jobstore="SammyScheduler",
+            args=[job_id],  # Pass game_id as an argument to run_job
         )
 
     scheduler.start()
