@@ -65,6 +65,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/maccabi-tel-aviv",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
     },
+    "מכבי תל-אביב": {
+        "name": "Maccabi Tel Aviv",
+        "url": "https://www.football.co.il/maccabi-tel-aviv",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4536.png",
+    },
     "עירוני טבריה": {
         "name": "Ironi Tveria",
         "url": "https://www.football.co.il/ironi-tveria/",
@@ -114,6 +119,16 @@ TEAMS_METADATA = {
         "name": "Maccabi Petah Tikva",
         "url": "https://www.football.co.il/maccabi-petah-tikva/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15006.png",
+    },
+    "אושר כהן": {
+        "name": "Osher Cohen",
+        "url": "https://youtube.com/user/OfficialOsherCohen",
+        "logo": "",
+    },
+    "תושבי נאות פרס": {
+        "name": "Neot Peres",
+        "url": "https://www.facebook.com/groups/pereshaifa/",
+        "logo": "",
     },
 }
 

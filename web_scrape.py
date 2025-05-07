@@ -253,11 +253,31 @@ class GenerateTeamsPNG:
         )
 
         banner_list = [guest_team_fname, versus_image_fname, home_team_fname]
-        images = [Image.open(i) for i in banner_list]
 
-        # pick the image which is the smallest, and resize the others to match it (can be arbitrary image shape here)
+        # Open images and convert all to RGB mode for consistency
+        images = []
+        for img_path in banner_list:
+            img = Image.open(img_path)
+            # Convert RGBA or other formats to RGB with white background
+            if img.mode != "RGB":
+                # Create a white background image
+                white_bg = Image.new("RGB", img.size, (255, 255, 255))
+                # Paste the image on white background if it has transparency
+                if img.mode == "RGBA":
+                    white_bg.paste(img, (0, 0), img)
+                    img = white_bg
+                else:
+                    img = img.convert("RGB")
+            images.append(img)
+
+        # pick the image which is the smallest, and resize the others to match it
         min_shape = sorted([(np.sum(i.size), i.size) for i in images])[0][1]
-        hstack = np.hstack([i.resize(min_shape) for i in images])
+
+        # Resize all images to the same shape before stacking
+        resized_images = [np.array(img.resize(min_shape)) for img in images]
+
+        # Stack the images horizontally
+        hstack = np.hstack(resized_images)
 
         images_combine = Image.fromarray(hstack)
         final_size = (770, 300)  # best found to fit telegram photo on mobile

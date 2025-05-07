@@ -37,7 +37,7 @@
   {% for game in upcoming -%}
   <div id="container-{{loop.index}}" class="container">
     <div class="metadata">
-      <div class="metadata-item">משחק ⚽ היום בשעה: {{ game.game_hour }}</div>
+      <div class="metadata-item">אירוע 🏟️ היום בשעה: {{ game.game_hour }}</div>
     </div>
     <div class="team">
       <div class="team-logo" style="background-image: url('assets/teams/{{ game.home_team_en }}.png');"></div>
@@ -68,11 +68,11 @@
   {% endfor %}
   <div id="default-container" class="container" style="display: none;">
     <div class="metadata">
-      <div class="metadata-item">המשחק ⚽ הבא:
+      <div class="metadata-item">אירוע 🏟️ הבא:
       {% if upcoming and upcoming|length > 0 %}
         {{ upcoming[0].get('scraped_date_time') | babel_format_full_heb }}
       {% else %}
-          אין משחקים קרבים
+        אין אירועים קרובים
       {% endif %}
       </div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
