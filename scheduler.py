@@ -97,7 +97,7 @@ def scheduler_add(game):
             name=f"{job_id} ({scheduler_dt})",
             replace_existing=True,
             jobstore="SammyScheduler",
-            args=[job_id],  # Pass game_id as an argument to run_job
+            args=[job_id],
         )
         return True
 
@@ -124,7 +124,7 @@ def scheduler_onstart():
             name=f"{job_id} ({scheduler_dt})",
             replace_existing=True,
             jobstore="SammyScheduler",
-            args=[job_id],  # Pass game_id as an argument to run_job
+            args=[job_id],
         )
 
     scheduler.start()
