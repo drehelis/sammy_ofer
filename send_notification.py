@@ -56,7 +56,7 @@ def create_message(obj_data):
 
         yield (
             f"""
-משחק ⚽ *היום* בשעה *{row.game_hour}*
+אירוע 🏟️ *היום* בשעה *{row.game_hour}*
 *{row.league}*: [{escape_markdown_v2(row.home_team)}]({row.home_team_url}) \\|\\| [{escape_markdown_v2(row.guest_team)}]({row.guest_team_url})
 צפי חסימת כבישים: *{row.custom_road_block_time}*
 צפי אוהדים משוער: *{row.specs_word}* {escape_markdown_v2(f"({row.specs_number:,})")} {row.specs_emoji}

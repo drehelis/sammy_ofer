@@ -60,6 +60,11 @@ uv pip install -r requirements.txt
 flask run --debug --port=5001
 ```
 
+Manually run cron job
+```
+python -c "from scheduler import run_job; run_job()"
+```
+
 ## TODO
 I'm out of ideas...
 
