@@ -85,6 +85,7 @@ class WebScrape:
             return scraped
 
         arr_obj = []
+        game_id = None
         for key, value in scraped.items():
             league, home_team, str_time, guest_team, *extra = value
 
@@ -92,7 +93,8 @@ class WebScrape:
                 char for char in str_time if not char.isalpha()
             ).strip()
 
-            if not tidy_str_time:  # skip entry if returns nothing (usually when there's hebrew input instead of date)
+            if not tidy_str_time:  # skip entry if returns nothing (usually when there's bad input instead of date)
+                logger.error(f"Skipping bad entry: {value}")
                 continue
 
             date_formats = [
@@ -111,7 +113,7 @@ class WebScrape:
                     break
                 except ValueError as err:
                     logger.error(f"Failed to parse date: {err}")
-                    continue  # skip if date is in bad format
+                    continue  # skip if date is in bad format after all
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
