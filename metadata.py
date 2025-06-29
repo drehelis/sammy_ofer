@@ -105,6 +105,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/beitar-jerusalem/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4524.png",
     },
+    'בית"ר י"ם': {
+        "name": "Beitar Jerusalem",
+        "url": "https://www.football.co.il/beitar-jerusalem/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4524.png",
+    },
     'הפועל פ"ת': {
         "name": "Hapoel Petah Tikva",
         "url": "https://www.football.co.il/hapoel-petah-tikva/",
