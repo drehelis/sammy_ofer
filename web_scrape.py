@@ -104,12 +104,15 @@ class WebScrape:
                 "%d.%m.%Y %H:%M",  # 05.04.2025 18:30
                 "%d-%m-%y %H:%M",  # 05-04-25 18:30
                 "%d-%m-%Y %H:%M",  # 05-04-2025 18:30
+                "%d/%m %H:%M",  # 05/04 18:30
                 "%Y-%m-%d %H:%M",  # 2025-04-05 18:30
             ]
 
             for fmt in date_formats:
                 try:
-                    scraped_date_time = datetime.datetime.strptime(tidy_str_time, fmt)
+                    scraped_date_time = datetime.datetime.strptime(
+                        tidy_str_time, fmt
+                    ).replace(year=datetime.datetime.today().year)
                     break
                 except ValueError as err:
                     logger.error(f"Failed to parse date: {err}")
