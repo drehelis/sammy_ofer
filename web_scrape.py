@@ -117,6 +117,10 @@ class WebScrape:
                 except ValueError as err:
                     logger.error(f"Failed to parse date: {err}")
                     continue  # skip if date is in bad format after all
+            else:
+                # If no date format worked, skip this entry
+                logger.error(f"No valid date format found for entry: {value}")
+                continue
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
 
