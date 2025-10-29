@@ -56,7 +56,9 @@ docker run -d --name sammy_ofer \
 
 ## Debug
 ```
-uv pip install -r requirements.txt
+uv pip install -r requirements.txt --system
+python init_db.py
+
 flask run --debug --port=5001
 ```
 
