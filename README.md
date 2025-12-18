@@ -20,7 +20,8 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 
 <p align="center">
   <img src="img/screenshot.png">
-  <img src="img/screenshot_mobile.png" width="256" height="455">
+  <div></div>
+  <img src="img/screenshot_mobile.png" width="400" height="888">
 </p>
 
 ## Static landing page ([link](https://drehelis.github.io/sammy_ofer/static.html))
