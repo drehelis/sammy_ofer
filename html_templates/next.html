@@ -1,181 +1,357 @@
-<!doctype html>
-<html dir="rtl" lang="he">
+{% extends "base.html" %}
 
-<head>
-    <meta charset="utf-8">
-    <title>לוח משחקים באצטדיון</title>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
-</head>
+{% block title %}משחקים קרובים - אצטדיון סמי עופר{% endblock %}
 
-<body>
-    <div class="container">
-        {% macro render_games_table(games_list, section_id) %}
-        <div class="divTable unstyledTable">
-            <div class="divTableHeading">
-                <div class="divTableRow">
-                    <div class="divTableHead">#</div>
-                    <div class="divTableHead">תאריך</div>
-                    <div class="divTableHead">יום</div>
-                    <div class="divTableHead">שעה</div>
-                    <div class="divTableHead">ליגה</div>
-                    <div class="divTableHead">בית</div>
-                    <div class="divTableHead">חוץ</div>
-                    <div class="divTableHead">כמות</div>
-                    <div class="divTableHead">מספר</div>
-                    <div class="divTableHead">מס. בפועל</div>
-                    <div class="divTableHead">פעולה</div>
-                    <div class="divTableHead">סקר</div>
-                    <div class="divTableHead">הערות</div>
-                    <div class="divTableHead">שלח</div>
-                </div>
+{% block extra_css %}
+<style>
+    .fab-container {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% macro render_game_card(game, index, section) %}
+{% set game_date = datetime.fromisoformat(game.scraped_date_time) %}
+<div class="game-card" data-section="{{ section }}" data-game-id="{{ game.game_id }}">
+    <div class="game-card-header">
+        <div class="game-number">#{{ index }}</div>
+        <div class="game-date-time">
+            <div class="game-date">
+                <i class="fas fa-calendar"></i>
+                {{ game_date.strftime('%d.%m.%Y') }}
             </div>
-            {% for obj in games_list %}
-            {% set _scraped_date_time = datetime.fromisoformat(obj.scraped_date_time) %}
-            {% if obj.guest_team_url != '' %}
-            {% set _guest_team_alter = '<a href="' ~ obj.guest_team_url ~ '" target="_blank">' ~ obj.guest_team ~ '</a>'
-            %}
-            {% else %}
-            {% set _guest_team_alter = obj.guest_team %}
-            {% endif %}
-            <div class="divTableRow" data-section="{{ section_id }}">
-                <div class="divTableCell">{{ loop.index }}</div>
-                <div class="divTableCell" title="{{ obj.game_id }}">{{ _scraped_date_time.strftime('%d.%m.%Y') }}</div>
-                <div class="divTableCell">{{ _scraped_date_time | babel_format_day_heb }}</div>
-                <div class="divTableCell">{{ _scraped_date_time.strftime('%H:%M') }}</div>
-                <div class="divTableCell">{{ obj.league }}</div>
-                <div class="divTableCell">
-                    <img class="team-logo-ico" src="assets/teams/{{ obj.home_team_en }}.png">
-                    <a href="{{ obj.home_team_url }}" target="_blank">{{ obj.home_team }}</a>
-                </div>
-                <div class="divTableCell">
-                    <img class="team-logo-ico" src="assets/teams/{{ obj.guest_team_en }}.png">
-                    {{ _guest_team_alter | safe }}
-                </div>
-                <div class="divTableCell">{{ obj.specs_word }}</div>
-                <div class="divTableCell" {% if obj.specs_number==0 %}style="background: yellow;" {% endif %}>
-                    {{ "{:,}".format(obj.specs_number) }}
-                </div>
-                <div class="divTableCell">{{ "{:,}".format(obj.post_specs_number) }}</div>
-                <div class="divTableCell">
-                    <form action="/action" method="post">
-                        <select id="action_{{ section_id }}_{{ loop.index }}" name="action">
-                            <option option hidden selected>בחר</option>
-                            <option value="update" data-game-id="{{ obj.game_id }}" data-league="{{ obj.league }}"
-                                data-game-date="{{ _scraped_date_time.strftime('%d-%m-%Y') }}"
-                                data-game-time="{{ _scraped_date_time.strftime('%H:%M') }}"
-                                data-home-team="{{ obj.home_team }}" data-guest-team="{{ obj.guest_team }}"
-                                data-specs-word="{{ obj.specs_word }}" data-sched-time="{{ obj.sched_time }}"
-                                data-specs-number="{{ obj.specs_number }}"
-                                data-post-specs-number="{{ obj.post_specs_number }}" data-poll="{{ obj.poll }}"
-                                data-notes="{{ obj.notes }}">עדכן</option>
-                            <option value="delete" data-game-id="{{ obj.game_id }}" data-home-team="{{ obj.home_team }}"
-                                data-guest-team="{{ obj.guest_team }}">מחק</option>
-                        </select>
-                    </form>
-                </div>
-                <div class="divTableCell">
-                    <input type="checkbox" id="poll_{{ section_id }}_{{ loop.index }}" disabled="disabled" {% if
-                        obj.poll=='on' %}checked{% endif %}>
-                </div>
-                <div class="divTableCell">{{ obj.notes }}</div>
-                <div class="divTableCell">
-                    <button onclick="send(this)">שלח</button>
-                </div>
+            <div class="game-day">
+                {{ game_date | babel_format_day_heb }}
+                <i class="fas fa-clock"></i>
+                {{ game_date.strftime('%H:%M') }}
             </div>
-            {% endfor %}
         </div>
-        {% endmacro %}
-
-        <!-- Upcoming Games Section -->
-        <div class="table-separator" id="upcoming-header">
-            <span class="toggle-icon">▼</span>משחקים קרבים
+        <!-- League Badge in header for all games -->
+        <div class="league-badge league-badge-header">
+            <i class="fas fa-trophy"></i>
+            {{ game.league }}
         </div>
-        <div class="collapsible-content">
-            {{ render_games_table(mygames[0], 'upcoming') }}
-        </div>
-
-        <!-- Past Games Section - Collapsed by default -->
-        <div class="table-separator collapsed" id="past-header">
-            <span class="toggle-icon">▼</span>משחקי עבר
-        </div>
-        <div class="collapsible-content">
-            {{ render_games_table(mygames[1], 'past') }}
-        </div>
-
-        <div class="action-button-container">
-            <button id="show-add-form-btn" class="action-button">הוסף רשומה ידנית</button>
-        </div>
-        <p>
-        <div id="result_action"></div>
-        </p>
-        <li>
-            <a href="/scheduler">תיזמונים</a> |
-            <a href="https://yeshmishak.top/static.html">עמוד תצוגה</a> |
-            <a href="https://yeshmishak.top/cal.html">יומן</a>
-        </li>
     </div>
 
-    <script>
-        $('select').on('change', function () {
-            const selected = $(this).children(":selected");
-            const action = selected.val();  // "update" or "delete"
-            const row = $(this).closest('.divTableRow');
+    <div class="game-card-body">
 
-            // highlight raw
-            $('.divTableRow').removeClass('highlight');
-            row.addClass('highlight');
+        <!-- Teams -->
+        <div class="teams-container">
+            <!-- Home Team -->
+            <div class="team home-team">
+                <img src="assets/teams/{{ game.home_team_en }}.png" alt="{{ game.home_team }}" class="team-logo">
+                <a href="{{ game.home_team_url }}" target="_blank" class="team-name">{{ game.home_team }}</a>
+                <span class="team-label">בית</span>
+            </div>
 
-            const data = {
-                action: action
-            };
+            <!-- VS -->
+            <div class="vs-divider">
+                <span>VS</span>
+            </div>
 
-            $.each(selected.data(), function (key, value) {
-                data[key] = value;
+            <!-- Guest Team -->
+            <div class="team guest-team">
+                <img src="assets/teams/{{ game.guest_team_en }}.png" alt="{{ game.guest_team }}" class="team-logo">
+                {% if game.guest_team_url != '' %}
+                    <a href="{{ game.guest_team_url }}" target="_blank" class="team-name">{{ game.guest_team }}</a>
+                {% else %}
+                    <span class="team-name">{{ game.guest_team }}</span>
+                {% endif %}
+                <span class="team-label">חוץ</span>
+            </div>
+        </div>
+
+        <!-- Game Info -->
+        <div class="game-info-grid">
+            <!-- Attendance Stats Stacked -->
+            <div class="info-stack">
+                <div class="info-item">
+                    <i class="fas fa-user-friends"></i>
+                    <div class="info-content">
+                        <span class="info-label">מספר אוהדים</span>
+                        <span class="info-value {% if game.specs_number == 0 %}warning{% endif %}">
+                            {{ "{:,}".format(game.specs_number) }}
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-chart-line"></i>
+                    <div class="info-content">
+                        <span class="info-label">בפועל</span>
+                        <span class="info-value">{{ "{:,}".format(game.post_specs_number) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Crowd Size & Poll Stacked -->
+            <div class="info-stack">
+                <div class="info-item">
+                    <i class="fas fa-users"></i>
+                    <div class="info-content">
+                        <span class="info-label">גודל קהל</span>
+                        <span class="info-value">{{ game.specs_word }}</span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-poll"></i>
+                    <div class="info-content">
+                        <span class="info-label">סקר</span>
+                        <span class="info-value">
+                            {% if game.poll == 'on' %}
+                                <i class="fas fa-check-circle text-success"></i>
+                            {% else %}
+                                <i class="fas fa-times-circle text-muted"></i>
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons Stacked -->
+            <div class="info-stack buttons-stack">
+                <button class="card-btn btn-edit" data-action="update"
+                        data-game-id="{{ game.game_id }}"
+                        data-league="{{ game.league }}"
+                        data-game-date="{{ game_date.strftime('%d-%m-%Y') }}"
+                        data-game-time="{{ game_date.strftime('%H:%M') }}"
+                        data-home-team="{{ game.home_team }}"
+                        data-guest-team="{{ game.guest_team }}"
+                        data-specs-word="{{ game.specs_word }}"
+                        data-sched-time="{{ game.sched_time }}"
+                        data-specs-number="{{ game.specs_number }}"
+                        data-post-specs-number="{{ game.post_specs_number }}"
+                        data-poll="{{ game.poll }}"
+                        data-notes="{{ game.notes }}">
+                    <i class="fas fa-edit"></i>
+                    <span>עדכן</span>
+                </button>
+                <button class="card-btn btn-send" data-game-id="{{ game.game_id }}">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>שלח</span>
+                </button>
+                <button class="card-btn btn-delete" data-action="delete"
+                        data-game-id="{{ game.game_id }}"
+                        data-home-team="{{ game.home_team }}"
+                        data-guest-team="{{ game.guest_team }}">
+                    <i class="fas fa-trash"></i>
+                    <span>מחק</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Notes -->
+        {% if game.notes %}
+        <div class="game-notes">
+            <i class="fas fa-sticky-note"></i>
+            <span>{{ game.notes }}</span>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+<div class="container">
+    <!-- Result Message Area -->
+    <div id="result_action"></div>
+
+    <!-- Upcoming Games Section -->
+    <section class="games-section">
+        <div class="section-header" id="upcoming-header">
+            <div class="section-title">
+                <i class="fas fa-calendar-check section-icon"></i>
+                <h2>משחקים קרובים</h2>
+                <span class="badge">{{ mygames[0]|length }}</span>
+            </div>
+            <button class="toggle-btn" data-target="upcoming-content">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="section-content" id="upcoming-content">
+            {% if mygames[0]|length > 0 %}
+                {% for game in mygames[0] %}
+                    {{ render_game_card(game, loop.index, 'upcoming') }}
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <p>אין משחקים קרובים</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+
+    <!-- Past Games Section -->
+    <section class="games-section">
+        <div class="section-header collapsed" id="past-header">
+            <div class="section-title">
+                <i class="fas fa-history section-icon"></i>
+                <h2>משחקי עבר</h2>
+                <span class="badge">{{ mygames[1]|length }}</span>
+            </div>
+            <button class="toggle-btn" data-target="past-content">
+                <i class="fas fa-chevron-down"></i>
+            </button>
+        </div>
+        <div class="section-content collapsed" id="past-content">
+            {% if mygames[1]|length > 0 %}
+                {% for game in mygames[1] %}
+                    {{ render_game_card(game, loop.index, 'past') }}
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <i class="fas fa-calendar-times"></i>
+                    <p>אין משחקי עבר</p>
+                </div>
+            {% endif %}
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$(document).ready(function() {
+    // Toggle section collapse
+    $('.section-header').on('click', function() {
+        const toggleBtn = $(this).find('.toggle-btn');
+        const target = toggleBtn.data('target');
+        const content = $('#' + target);
+
+        $(this).toggleClass('collapsed');
+        content.toggleClass('collapsed');
+        toggleBtn.find('i').toggleClass('fa-chevron-down fa-chevron-up');
+    });
+
+    // FAB Add button (Desktop)
+    $('#fab-add').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $.post("/action", { "add": JSON.stringify({ "action": "add" }) })
+            .done(function(data) {
+                showModal(data);
             });
+    });
 
-            $.post("/action", { [action]: JSON.stringify(data) })
-                .done(function (response) {
-                    $("#result_action").empty().append(response);
-                });
+    // Mobile Add button
+    $('#fab-add-mobile').on('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        $.post("/action", { "add": JSON.stringify({ "action": "add" }) })
+            .done(function(data) {
+                showModal(data);
+            });
+    });
+
+    // Edit button
+    $('.btn-edit').on('click', function() {
+        const card = $(this).closest('.game-card');
+        card.addClass('highlight');
+
+        const data = {
+            action: 'update'
+        };
+
+        $.each($(this).data(), function(key, value) {
+            data[key] = value;
         });
 
-        $('#show-add-form-btn').on('click', function () {
-            $.post("/action", { "add": JSON.stringify({ "action": "add" }) })
-                .done(function (data) {
-                    $("#result_action").empty().append(data);
-                });
+        $.post("/action", { "update": JSON.stringify(data) })
+            .done(function(response) {
+                showModal(response);
+            });
+    });
+
+    // Delete button
+    $('.btn-delete').on('click', function() {
+        const card = $(this).closest('.game-card');
+        const homeTeam = $(this).data('home-team');
+        const guestTeam = $(this).data('guest-team');
+
+        card.addClass('highlight');
+
+        const data = {
+            action: 'delete',
+            gameId: $(this).data('game-id'),
+            homeTeam: homeTeam,
+            guestTeam: guestTeam
+        };
+
+        $.post("/action", { "delete": JSON.stringify(data) })
+            .done(function(response) {
+                showModal(response);
+            });
+    });
+
+    // Send button
+    $('.btn-send').on('click', function() {
+        const card = $(this).closest('.game-card');
+        const gameId = $(this).data('game-id');
+
+        // Find team names from the card
+        const homeTeam = card.find('.home-team .team-name').text();
+        const guestTeam = card.find('.guest-team .team-name').text();
+
+        card.addClass('highlight');
+
+        const data = {
+            action: 'send',
+            gameId: gameId,
+            homeTeam: homeTeam,
+            guestTeam: guestTeam
+        };
+
+        $.post("/action", { "send": JSON.stringify(data) })
+            .done(function(response) {
+                showModal(response);
+            });
+    });
+
+    // Show modal for action forms
+    function showModal(content) {
+        const modal = $('<div class="modal-overlay"></div>');
+        const modalContent = $('<div class="modal-content"></div>');
+        const modalInner = $('<div class="modal-inner"></div>');
+        const closeBtn = $('<button class="modal-close"><i class="fas fa-times"></i></button>');
+
+        modalInner.html(content);
+        modalContent.append(closeBtn);
+        modalContent.append(modalInner);
+        modal.append(modalContent);
+        $('body').append(modal);
+
+        setTimeout(() => modal.addClass('active'), 10);
+
+        closeBtn.on('click', function() {
+            closeModal(modal);
         });
 
-        function send(button) {
-            if (!confirm("האם אתה בטוח שברצונך לשלוח הודעה עכשיו?")) {
-                return;
+        modal.on('click', function(e) {
+            if ($(e.target).is('.modal-overlay')) {
+                closeModal(modal);
             }
-
-            $.post('/send', function (response) {
-                $("#result_action").empty().append(response);
-                $(button).prop('disabled', false).text('שלח');
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const pastContent = document.querySelector('#past-header + .collapsible-content');
-            pastContent.style.maxHeight = '0px';
-
-            document.querySelectorAll('.table-separator').forEach(header => {
-                header.addEventListener('click', function () {
-                    this.classList.toggle('collapsed');
-                    const content = this.nextElementSibling;
-
-                    if (this.classList.contains('collapsed')) {
-                        content.style.maxHeight = '0px';
-                    } else {
-                        content.style.maxHeight = content.scrollHeight + 'px';
-                    }
-                });
-            });
         });
-    </script>
-</body>
+    }
 
-</html>
+    function closeModal(modal) {
+        modal.removeClass('active');
+        setTimeout(() => modal.remove(), 300);
+    }
+
+    // Show toast notification
+    function showToast(message, type = 'info') {
+        const toast = $('#toast');
+        toast.removeClass('success error info warning').addClass(type);
+        toast.text(message);
+        toast.addClass('show');
+
+        setTimeout(() => {
+            toast.removeClass('show');
+        }, 3000);
+    }
+
+    // Expose to global scope for action.html forms
+    window.showToast = showToast;
+});
+</script>
+{% endblock %}
