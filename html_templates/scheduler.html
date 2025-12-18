@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}תיזמונים - אצטדיון סמי עופר{% endblock %}
+
+{% block extra_css %}
+<style>
+    .fab-container {
+        display: block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="page-header">
+        <h1>
+            <i class="fas fa-clock"></i>
+            תיזמונים פעילים
+        </h1>
+        <span class="badge-large">{{ jobs|length }}</span>
+    </div>
+
+    {% if jobs|length > 0 %}
+        <div class="jobs-grid">
+            {% for job in jobs %}
+            <div class="job-card">
+                <div class="job-card-header">
+                    <div class="job-icon">
+                        <i class="fas fa-calendar-check"></i>
+                    </div>
+                    <div class="job-title">
+                        <h3>משחק #{{ job.id[:8] }}</h3>
+                        <span class="job-id">{{ job.next_run }}</span>
+                    </div>
+                </div>
+
+                <div class="job-card-body">
+                    <div class="job-info-row">
+                        <div class="job-info-item">
+                            <i class="fas fa-clock"></i>
+                            <div class="job-info-content">
+                                <span class="job-label">זמן ריצה הבא</span>
+                                <span class="job-value">{{ job.next_run }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="job-info-row">
+                        <div class="job-info-item">
+                            <i class="fas fa-cog"></i>
+                            <div class="job-info-content">
+                                <span class="job-label">טריגר</span>
+                                <span class="job-value trigger">{{ job.trigger }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    {% if job.args and job.args != '()' %}
+                    <div class="job-info-row">
+                        <div class="job-info-item">
+                            <i class="fas fa-info-circle"></i>
+                            <div class="job-info-content">
+                                <span class="job-label">ארגומנטים</span>
+                                <span class="job-value args">{{ job.args }}</span>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="job-card-footer">
+                    <div class="job-status active">
+                        <i class="fas fa-circle"></i>
+                        <span>פעיל</span>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="empty-state large">
+            <i class="fas fa-calendar-times"></i>
+            <h2>אין תיזמונים פעילים</h2>
+            <p>לא נמצאו תיזמונים מתוזמנים כרגע</p>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

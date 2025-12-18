@@ -60,9 +60,31 @@ def next_game():
 
 @app.route("/action", methods=["POST"])
 def action():
+    from zoneinfo import ZoneInfo
+
     for _, val in request.form.items():
+        myval = json.loads(val)
+
+        # If it's a send action, check if the game is today
+        if myval.get('action') == 'send':
+            game_id = myval.get('gameId')
+            game_details = db.get_game_details(game_id)
+
+            if game_details:
+                game_date = datetime.fromisoformat(game_details["scraped_date_time"]).date()
+                today = datetime.now(ZoneInfo("Asia/Jerusalem")).date()
+
+                if game_date != today:
+                    # Return an info modal instead of the send form
+                    return render_template(
+                        "info_modal.html",
+                        title="לא ניתן לשלוח הודעה",
+                        message=f"המשחק מתוכנן ל-{game_date.strftime('%d.%m.%Y')}, אך ניתן לשלוח הודעות רק עבור משחקים המתקיימים היום ({today.strftime('%d.%m.%Y')})",
+                        icon="fa-info-circle"
+                    )
+
         return render_template(
-            "action.html", myval=json.loads(val), teams_metadata=TEAMS_METADATA
+            "action.html", myval=myval, teams_metadata=TEAMS_METADATA
         )
 
 
@@ -97,13 +119,13 @@ def delete():
 
 @app.route("/send", methods=["POST"])
 def send():
+    game_id = request.form.get("game_id")
+
     try:
-        scheduler.run_job()
-        return jsonify({"status": "success", "message": "Job executed successfully"})
+        scheduler.run_job(game_id)
+        return Markup("ההודעה נשלחה בהצלחה")
     except Exception as e:
-        return jsonify(
-            {"status": "error", "message": f"Error executing job: {str(e)}"}
-        ), 500
+        return Markup(f"שגיאה בשליחת ההודעה: {str(e)}")
 
 
 @app.route("/add", methods=["POST"])
@@ -135,8 +157,21 @@ def add():
 @app.route("/scheduler", methods=["GET"])
 def scheduler_page():
     jobs = scheduler.list_jobs()
+    job_data = []
 
-    return Markup(f"<pre>{'\n'.join(jobs)}</pre>")
+    for job_str in jobs:
+        lines = job_str.split('\n')
+        if len(lines) >= 5:
+            job_info = {
+                'id': lines[0].replace('Job ID: ', '').strip(),
+                'name': lines[1].replace('Name: ', '').strip(),
+                'next_run': lines[2].replace('Next Run: ', '').strip(),
+                'trigger': lines[3].replace('Trigger: ', '').strip(),
+                'args': lines[4].replace('Arguments: ', '').strip()
+            }
+            job_data.append(job_info)
+
+    return render_template("scheduler.html", jobs=job_data)
 
 
 @app.route("/assets/teams/<file_name>")

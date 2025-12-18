@@ -1,214 +1,622 @@
 <!doctype html>
 <html dir="rtl" lang="he">
-
 <head>
     <meta charset="utf-8">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='action.css') }}">
-</head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='action.css') }}?v=2">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
 
+        /* Custom Dropdown Component */
+        .custom-select-wrapper {
+            position: relative;
+        }
+
+        .custom-select {
+            position: relative;
+            width: 100%;
+        }
+
+        .custom-select-trigger {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 150ms ease;
+            min-height: 44px;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+        }
+
+        .custom-select-trigger:hover {
+            border-color: #0066FF;
+            background-color: #f5f5f5;
+        }
+
+        .custom-select.open .custom-select-trigger {
+            border-color: #0066FF;
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.1);
+        }
+
+        .custom-select-trigger span,
+        .custom-select-trigger i {
+            pointer-events: none;
+        }
+
+        .custom-select-trigger i {
+            color: #0066FF;
+            transition: transform 150ms ease;
+        }
+
+        .custom-select.open .custom-select-trigger i {
+            transform: rotate(180deg);
+        }
+
+        .custom-options {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            left: 0;
+            background: white;
+            border: 2px solid #0066FF;
+            border-radius: 8px;
+            margin-top: 4px;
+            max-height: 0;
+            overflow: hidden;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 200ms ease;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            pointer-events: none;
+        }
+
+        .custom-select.open .custom-options {
+            max-height: 300px;
+            opacity: 1;
+            visibility: visible;
+            overflow-y: auto;
+            pointer-events: auto;
+        }
+
+        .custom-option {
+            padding: 12px 16px;
+            cursor: pointer;
+            transition: background 150ms ease;
+            font-size: 1rem;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-touch-callout: none;
+            user-select: none;
+            position: relative;
+        }
+
+        .custom-option * {
+            pointer-events: none;
+        }
+
+        .custom-option:hover {
+            background: #f5f5f5;
+        }
+
+        .custom-option.selected {
+            background: #e3f2fd;
+            color: #0066FF;
+            font-weight: 600;
+        }
+    </style>
+</head>
 <body>
-    <div class="">
+    <div class="action-container">
         {% if myval['action'] == 'add' %}
-        <h1>{{ myval['action'] | upper}}</h1>
-        <form action="/add" method="post" id="addForm" class="form-container">
-            <div class="form-group">
-                <label for="game_date">תאריך משחק:</label>
-                <input type="date" id="game_date" name="game_date" required style="margin-left: 10px;">
-                <input type="time" id="game_time" name="game_time" required style="margin-right: 10px;">
+        <div class="form-header">
+            <i class="fas fa-plus-circle"></i>
+            <h2>הוסף משחק חדש</h2>
+        </div>
+        <form action="/add" method="post" id="addForm" class="modern-form">
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="game_date">
+                        <i class="fas fa-calendar-day"></i>
+                        תאריך משחק
+                    </label>
+                    <input type="date" id="game_date" name="game_date" required>
+                </div>
+                <div class="form-field">
+                    <label for="game_time">
+                        <i class="fas fa-clock"></i>
+                        שעת משחק
+                    </label>
+                    <input type="time" id="game_time" name="game_time" required>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="hour">תיזמון</label>
+
+            <div class="form-field">
+                <label for="sched_time">
+                    <i class="fas fa-bell"></i>
+                    שעת תיזמון הודעה
+                </label>
                 <input type="time" id="sched_time" name="sched_time" value="09:00" required>
             </div>
-            <div class="form-group">
-                <label for="home_team">ליגה:</label>
-                <input type="text" id="league" name="league" required>
+
+            <div class="form-field">
+                <label for="league">
+                    <i class="fas fa-trophy"></i>
+                    ליגה
+                </label>
+                <input type="text" id="league" name="league" placeholder="שם הליגה" required>
             </div>
-            <div class="form-group">
-                <label for="home_team">קבוצת בית:</label>
-                <select class="selectAction" id="home_team" name="home_team" required>
-                    <option value="" disabled selected>בחר קבוצה</option>
-                    {% for team_name in teams_metadata.keys() %}
-                    {% if team_name != "Unavailable" %}
-                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
-                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-                <!-- Hidden inputs to store data attributes -->
-                <input type="hidden" name="home_team_en" id="home_team_en">
-                <input type="hidden" name="home_team_url" id="home_team_url">
+
+            <div class="form-field">
+                <label for="home_team">
+                    <i class="fas fa-home"></i>
+                    קבוצת בית
+                </label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" data-name="home_team">
+                        <div class="custom-select-trigger">
+                            <span>בחר קבוצה</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="custom-options">
+                            {% for team_name in teams_metadata.keys() %}
+                            {% if team_name != "Unavailable" %}
+                            <div class="custom-option" data-value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}" data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <input type="hidden" id="home_team" name="home_team" required>
+                    <input type="hidden" name="home_team_en" id="home_team_en">
+                    <input type="hidden" name="home_team_url" id="home_team_url">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="guest_team">קבוצת חוץ:</label>
-                <select class="selectAction" id="guest_team" name="guest_team" required>
-                    <option value="" disabled selected>בחר קבוצה</option>
-                    {% for team_name in teams_metadata.keys() %}
-                    {% if team_name != "Unavailable" %}
-                    <option value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}"
-                        data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</option>
-                    {% endif %}
-                    {% endfor %}
-                </select>
-                <!-- Hidden inputs to store data attributes -->
-                <input type="hidden" name="guest_team_en" id="guest_team_en">
-                <input type="hidden" name="guest_team_url" id="guest_team_url">
+
+            <div class="form-field">
+                <label for="guest_team">
+                    <i class="fas fa-plane-departure"></i>
+                    קבוצת חוץ
+                </label>
+                <div class="custom-select-wrapper">
+                    <div class="custom-select" data-name="guest_team">
+                        <div class="custom-select-trigger">
+                            <span>בחר קבוצה</span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="custom-options">
+                            {% for team_name in teams_metadata.keys() %}
+                            {% if team_name != "Unavailable" %}
+                            <div class="custom-option" data-value="{{ team_name }}" data-url="{{ teams_metadata[team_name].url }}" data-en-name="{{ teams_metadata[team_name].name }}">{{ team_name }}</div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <input type="hidden" id="guest_team" name="guest_team" required>
+                    <input type="hidden" name="guest_team_en" id="guest_team_en">
+                    <input type="hidden" name="guest_team_url" id="guest_team_url">
+                </div>
             </div>
-            <div class="form-group">
-                <label for="specs_number">מס. אוהדים:</label>
-                <input type="number" name="specs_number" id="specs_number" max="30000" maxlength="5"
-                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
-                    required>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="specs_number">
+                        <i class="fas fa-user-friends"></i>
+                        מספר אוהדים
+                    </label>
+                    <input type="number" name="specs_number" id="specs_number" max="30000"
+                           placeholder="למשל: 15000" required>
+                </div>
+
+                <div class="form-field">
+                    <label for="specs_word">
+                        <i class="fas fa-users"></i>
+                        גודל קהל
+                    </label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" data-name="specs_word">
+                            <div class="custom-select-trigger">
+                                <span>ללא</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option selected" data-value="ללא">ללא</div>
+                                <div class="custom-option" data-value="קטן">קטן</div>
+                                <div class="custom-option" data-value="בינוני">בינוני</div>
+                                <div class="custom-option" data-value="גדול">גדול</div>
+                                <div class="custom-option" data-value="גדול מאוד">גדול מאוד</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="specs_word" name="specs_word" value="ללא">
+                    </div>
+                </div>
             </div>
+
             <input type="hidden" name="post_specs_number" id="post_specs_number" value="0">
-            <div class="form-group">
-                <label for="specs_word">כמות:</label>
-                <select class="selectAction" id="specs_word" name="specs_word">
-                    <option value="ללא">ללא</option>
-                    <option value="קטן">קטן</option>
-                    <option value="בינוני">בינוני</option>
-                    <option value="גדול">גדול</option>
-                    <option value="גדול מאוד">גדול מאוד</option>
-                </select>
+
+            <div class="form-field checkbox-field">
+                <label for="poll" class="checkbox-label">
+                    <input type="checkbox" id="poll" name="poll">
+                    <span class="checkbox-custom"></span>
+                    <i class="fas fa-poll"></i>
+                    הוסף סקר להודעה
+                </label>
             </div>
-            <div class="form-group">
-                <label for="poll">סקר:</label>
-                <input type="checkbox" id="poll" name="poll">
+
+            <div class="form-field">
+                <label for="notes">
+                    <i class="fas fa-sticky-note"></i>
+                    הערות
+                </label>
+                <textarea id="notes" name="notes" rows="3" placeholder="הערות נוספות (אופציונלי)"></textarea>
             </div>
-            <div class="form-group">
-                <label for="notes">הערות:</label>
-                <textarea id="notes" name="notes" rows="2"></textarea>
-            </div>
-            <div class="form-group">
-                <input type="submit" id="submit_button" value="{{ myval['action'] | upper}}">
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-plus"></i>
+                    הוסף משחק
+                </button>
             </div>
         </form>
-        <div id="result_add"></div>
+        <div id="result_add" class="result-message"></div>
+
         {% elif myval['action'] == 'delete' %}
-        <h1>{{ myval['action'] | upper}}</h1>
-        <form action="/delete" method="post" id="deleteForm" class="form-container">
+        <div class="form-header delete">
+            <i class="fas fa-trash-alt"></i>
+            <h2>מחק משחק</h2>
+        </div>
+        <form action="/delete" method="post" id="deleteForm" class="modern-form">
             <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
-            <div class="form-group">
-                <label for="home_team">קבוצת בית:</label>
-                <input type="text" id="home_team" name="home_team" value="{{ myval['homeTeam'] }}" readonly>
+
+            <div class="delete-confirmation">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>האם אתה בטוח שברצונך למחוק את המשחק?</p>
             </div>
-            <div class="form-group">
-                <label for="guest_team">קבוצת חוץ:</label>
-                <input type="text" id="guest_team" name="guest_team" value="{{ myval['guestTeam'] }}" readonly>
+
+            <div class="game-details-box">
+                <div class="detail-row">
+                    <span class="detail-label">
+                        <i class="fas fa-home"></i>
+                        קבוצת בית:
+                    </span>
+                    <span class="detail-value">{{ myval['homeTeam'] }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">
+                        <i class="fas fa-plane-departure"></i>
+                        קבוצת חוץ:
+                    </span>
+                    <span class="detail-value">{{ myval['guestTeam'] }}</span>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" id="delete_button" value="{{ myval['action'] | upper}}" />
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash"></i>
+                    אשר מחיקה
+                </button>
             </div>
         </form>
-        <div id="result_delete"></div>
+        <div id="result_delete" class="result-message"></div>
+
+        {% elif myval['action'] == 'send' %}
+        <div class="form-header send">
+            <i class="fas fa-paper-plane"></i>
+            <h2>שלח הודעה</h2>
+        </div>
+        <form action="/send" method="post" id="sendForm" class="modern-form">
+            <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
+
+            <div class="delete-confirmation">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>האם אתה בטוח שברצונך לשלוח הודעה עכשיו?</p>
+            </div>
+
+            <div class="game-details-box">
+                <div class="detail-row">
+                    <span class="detail-label">
+                        <i class="fas fa-home"></i>
+                        קבוצת בית:
+                    </span>
+                    <span class="detail-value">{{ myval['homeTeam'] }}</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">
+                        <i class="fas fa-plane-departure"></i>
+                        קבוצת חוץ:
+                    </span>
+                    <span class="detail-value">{{ myval['guestTeam'] }}</span>
+                </div>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">
+                    <i class="fas fa-paper-plane"></i>
+                    אשר שליחה
+                </button>
+            </div>
+        </form>
+        <div id="result_send" class="result-message"></div>
+
         {% elif myval['action'] == 'update' %}
-        <h1>{{ myval['action'] | upper}}</h1>
-        <form action="/update" method="post" id="updateForm" class="form-container">
+        <div class="form-header update">
+            <i class="fas fa-edit"></i>
+            <h2>עדכן משחק</h2>
+        </div>
+        <form action="/update" method="post" id="updateForm" class="modern-form">
             <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
             <input type="hidden" name="league" value="{{ myval['league'] }}">
             <input type="hidden" name="game_date" value="{{ myval['gameDate'] }}">
             <input type="hidden" name="game_time" value="{{ myval['gameTime'] }}">
-            <div class="form-group">
-                <label for="hour">תיזמון</label>
-                <input type="time" id="sched_time" name="sched_time" value="{{ myval['schedTime'] }}">
-            </div>
-            <div class="form-group">
-                <label for="home_team">קבוצת בית:</label>
-                <input type="text" id="home_team" name="home_team" value="{{ myval['homeTeam'] }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="guest_team">קבוצת חוץ:</label>
-                <input type="text" id="guest_team" name="guest_team" value="{{ myval['guestTeam'] }}" readonly>
-            </div>
-            <div class="form-group">
-                <label for="specs_number">מס. אוהדים:</label>
-                <input type="number" name="specs_number" value="{{ myval['specsNumber'] }}" id="specs_number"
-                    max="30000" maxlength="5"
-                    oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
-            </div>
-            <span class="collapse-toggle" id="togglePostSpecs">הצג/הסתר מס. אוהדים בפועל</span>
-            <div class="collapsible-section" id="postSpecsSection">
-                <div class="form-group">
-                    <label for="post_specs_number">מס. אוהדים בפועל:</label>
-                    <input type="number" name="post_specs_number" value="{{ myval['postSpecsNumber'] }}"
-                        id="post_specs_number" max="30000" maxlength="5"
-                        oninput="javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);">
+            <input type="hidden" name="home_team" value="{{ myval['homeTeam'] }}">
+            <input type="hidden" name="guest_team" value="{{ myval['guestTeam'] }}">
+
+            <div class="info-box">
+                <div class="info-item">
+                    <i class="fas fa-trophy"></i>
+                    <span>{{ myval['league'] }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-calendar"></i>
+                    <span>{{ myval['gameDate'] }}</span>
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i>
+                    <span>{{ myval['gameTime'] }}</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label for="specs_word">כמות:</label>
-                <select id="specs_word" name="specs_word">
-                    <option {% if myval['specsWord']=="ללא" %}selected="selected" {% endif %} value="ללא">ללא</option>
-                    <option {% if myval['specsWord']=="קטן" %}selected="selected" {% endif %} value="קטן">קטן</option>
-                    <option {% if myval['specsWord']=="בינוני" %}selected="selected" {% endif %} value="בינוני">בינוני
-                    </option>
-                    <option {% if myval['specsWord']=="גדול" %}selected="selected" {% endif %} value="גדול">גדול
-                    </option>
-                    <option {% if myval['specsWord']=="גדול מאוד" %}selected="selected" {% endif %} value="גדול מאוד">
-                        גדול מאוד</option>
-                </select>
+
+            <div class="teams-display">
+                <div class="team-display">
+                    <i class="fas fa-home"></i>
+                    <span>{{ myval['homeTeam'] }}</span>
+                </div>
+                <div class="vs">VS</div>
+                <div class="team-display">
+                    <i class="fas fa-plane-departure"></i>
+                    <span>{{ myval['guestTeam'] }}</span>
+                </div>
             </div>
-            <div class="form-group">
-                <label for="poll">סקר:</label>
-                <input type="checkbox" id="poll" name="poll" {% if myval['poll']=='on' %}checked=true{% endif %}>
+
+            <div class="form-field">
+                <label for="sched_time">
+                    <i class="fas fa-bell"></i>
+                    שעת תיזמון הודעה
+                </label>
+                <input type="time" id="sched_time" name="sched_time" value="{{ myval['schedTime'] }}">
             </div>
-            <div class="form-group">
-                <label for="notes">הערות:</label>
-                <textarea id="notes" name="notes" rows="2">{{ myval['notes'] }}</textarea>
+
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="specs_number">
+                        <i class="fas fa-user-friends"></i>
+                        מספר אוהדים
+                    </label>
+                    <input type="number" name="specs_number" value="{{ myval['specsNumber'] }}"
+                           id="specs_number" max="30000">
+                </div>
+
+                <div class="form-field">
+                    <label for="specs_word">
+                        <i class="fas fa-users"></i>
+                        גודל קהל
+                    </label>
+                    <div class="custom-select-wrapper">
+                        <div class="custom-select" data-name="specs_word">
+                            <div class="custom-select-trigger">
+                                <span>{{ myval['specsWord'] }}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="custom-options">
+                                <div class="custom-option {% if myval['specsWord']=='ללא' %}selected{% endif %}" data-value="ללא">ללא</div>
+                                <div class="custom-option {% if myval['specsWord']=='קטן' %}selected{% endif %}" data-value="קטן">קטן</div>
+                                <div class="custom-option {% if myval['specsWord']=='בינוני' %}selected{% endif %}" data-value="בינוני">בינוני</div>
+                                <div class="custom-option {% if myval['specsWord']=='גדול' %}selected{% endif %}" data-value="גדול">גדול</div>
+                                <div class="custom-option {% if myval['specsWord']=='גדול מאוד' %}selected{% endif %}" data-value="גדול מאוד">גדול מאוד</div>
+                            </div>
+                        </div>
+                        <input type="hidden" id="specs_word" name="specs_word" value="{{ myval['specsWord'] }}">
+                    </div>
+                </div>
             </div>
-            <div class="form-group">
-                <input type="submit" id="submit_button" value="{{ myval['action'] | upper}}">
+
+            <div class="expandable-section">
+                <button type="button" class="expand-toggle" id="togglePostSpecs">
+                    <i class="fas fa-chevron-down"></i>
+                    הצג מספר אוהדים בפועל
+                </button>
+                <div class="expandable-content" id="postSpecsSection">
+                    <div class="form-field">
+                        <label for="post_specs_number">
+                            <i class="fas fa-chart-line"></i>
+                            מספר אוהדים בפועל
+                        </label>
+                        <input type="number" name="post_specs_number" value="{{ myval['postSpecsNumber'] }}"
+                               id="post_specs_number" max="30000" placeholder="מספר בפועל">
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-field checkbox-field">
+                <label for="poll" class="checkbox-label">
+                    <input type="checkbox" id="poll" name="poll" {% if myval['poll']=='on' %}checked{% endif %}>
+                    <span class="checkbox-custom"></span>
+                    <i class="fas fa-poll"></i>
+                    הוסף סקר להודעה
+                </label>
+            </div>
+
+            <div class="form-field">
+                <label for="notes">
+                    <i class="fas fa-sticky-note"></i>
+                    הערות
+                </label>
+                <textarea id="notes" name="notes" rows="3" placeholder="הערות נוספות">{{ myval['notes'] }}</textarea>
+            </div>
+
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i>
+                    שמור שינויים
+                </button>
             </div>
         </form>
-        <div id="result_update"></div>
+        <div id="result_update" class="result-message"></div>
         {% endif %}
     </div>
+
     <script>
-        $(document).ready(function () {
-            $("#togglePostSpecs").click(function () {
-                $("#postSpecsSection").slideToggle();
+        $(document).ready(function() {
+            // Custom dropdown functionality - properly scoped to avoid conflicts between modals
+
+            function handleTriggerEvent(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Only handle if target is within a modal or action container
+                if (!e.target.closest('.modal-inner, .action-container')) return;
+
+                const trigger = e.target.closest('.custom-select-trigger');
+                if (!trigger) return;
+
+                const $select = $(trigger).closest('.custom-select');
+                const isOpen = $select.hasClass('open');
+
+                // Close all dropdowns first
+                $('.custom-select').removeClass('open');
+
+                // Toggle current dropdown
+                if (!isOpen) {
+                    $select.addClass('open');
+                }
+            }
+
+            function handleOptionEvent(e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Only handle if target is within a modal or action container
+                if (!e.target.closest('.modal-inner, .action-container')) return;
+
+                const option = e.target.closest('.custom-option');
+                if (!option) return;
+
+                const $option = $(option);
+                const value = $option.data('value');
+                const text = $option.text();
+                const $select = $option.closest('.custom-select');
+                const fieldName = $select.data('name');
+
+                // Update hidden input
+                $(`#${fieldName}`).val(value);
+
+                // Update trigger text
+                $select.find('.custom-select-trigger span').text(text);
+
+                // Update selected state
+                $option.siblings().removeClass('selected');
+                $option.addClass('selected');
+
+                // For team dropdowns, update the en-name and url hidden fields
+                if (fieldName === 'home_team' || fieldName === 'guest_team') {
+                    const enName = $option.data('en-name');
+                    const url = $option.data('url');
+                    $(`#${fieldName}_en`).val(enName);
+                    $(`#${fieldName}_url`).val(url);
+                }
+
+                // Close dropdown
+                $select.removeClass('open');
+            }
+
+            function handleDocumentClick(e) {
+                const trigger = e.target.closest('.custom-select-trigger');
+                const option = e.target.closest('.custom-option');
+                const select = e.target.closest('.custom-select');
+
+                // Handle option click
+                if (option) {
+                    handleOptionEvent(e);
+                    return;
+                }
+
+                // Handle trigger click
+                if (trigger) {
+                    handleTriggerEvent(e);
+                    return;
+                }
+
+                // Handle outside click - only if not clicking anywhere in a custom-select
+                if (!select) {
+                    $('.custom-select').removeClass('open');
+                }
+            }
+
+            // Remove any existing listener to avoid duplicates
+            if (window.customDropdownHandler) {
+                document.removeEventListener('click', window.customDropdownHandler, true);
+            }
+
+            // Store the handler reference globally so we can remove it later
+            window.customDropdownHandler = handleDocumentClick;
+
+            // Use click events which work better on mobile and don't conflict with scrolling
+            document.addEventListener('click', handleDocumentClick, true);
+
+            // Toggle expandable section
+            $("#togglePostSpecs").click(function() {
+                $("#postSpecsSection").slideToggle(300);
+                $(this).find('i').toggleClass('fa-chevron-down fa-chevron-up');
             });
 
-            // Update hidden fields when team selections change
-            $("#home_team").change(function () {
-                var selectedOption = $(this).find("option:selected");
-                $("#home_team_en").val(selectedOption.data("en-name"));
-                $("#home_team_url").val(selectedOption.data("url"));
-            });
-
-            $("#guest_team").change(function () {
-                var selectedOption = $(this).find("option:selected");
-                $("#guest_team_en").val(selectedOption.data("en-name"));
-                $("#guest_team_url").val(selectedOption.data("url"));
-            });
-
-            $("form").submit(function (event) {
+            // Form submission
+            $("form").submit(function(event) {
                 event.preventDefault();
 
                 var $form = $(this);
                 var formId = $form.attr("id");
-
-                var formType = formId.replace("Form", ""); // Extract the form type from the ID (e.g., "addForm" → "add")
+                var formType = formId.replace("Form", "");
                 var resultContainer = "#result_" + formType;
+                var submitBtn = $form.find('button[type="submit"]');
+
+                // Disable button and show loading
+                var originalBtnHtml = submitBtn.html();
+                submitBtn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> מעבד...');
 
                 var form_data = $form.serialize();
                 var url = $form.attr("action");
 
                 $.post(url, form_data)
-                    .done(function (data) {
-                        $(resultContainer).empty().append(data);
+                    .done(function(data) {
+                        // Show toast if available
+                        if (typeof window.parent.showToast === 'function') {
+                            window.parent.showToast(data, 'success');
+                        }
 
-                        setTimeout(function () {
-                            location.reload(); // Reload the page after 0 second
-                        }, 0);
+                        setTimeout(function() {
+                            if (window.parent && window.parent.location) {
+                                window.parent.location.reload();
+                            } else {
+                                location.reload();
+                            }
+                        }, 500);
                     })
-                    .fail(function (error) {
-                        $(resultContainer).empty().append("<p style='color:red'>Error: " + error.statusText + "</p>");
+                    .fail(function(error) {
+                        $(resultContainer).html("<p>שגיאה: " + error.statusText + "</p>").addClass('error');
+                        submitBtn.prop('disabled', false).html(originalBtnHtml);
                     });
             });
         });
     </script>
 </body>
-
 </html>

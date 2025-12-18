@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="he">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#1a73e8">
+    <title>{% block title %}אצטדיון סמי עופר{% endblock %}</title>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Main Styles -->
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='action.css') }}?v=2">
+
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Top App Bar -->
+    <header class="app-bar">
+        <div class="app-bar-content">
+            <h1 class="app-title">
+                <i class="fas fa-futbol"></i>
+                אצטדיון סמי עופר
+            </h1>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Floating Action Button (Desktop) / Bottom Navigation Bar (Mobile) -->
+    <div class="fab-container">
+        <button class="fab" id="fab-add" title="הוסף משחק">
+            <i class="fas fa-plus"></i>
+        </button>
+        <div class="fab-menu" id="fab-menu">
+            <a href="/next" class="fab-menu-item" data-page="next">
+                <i class="fas fa-home"></i>
+                <span>בית</span>
+            </a>
+            <a href="/scheduler" class="fab-menu-item" data-page="scheduler">
+                <i class="fas fa-clock"></i>
+                <span>תיזמונים</span>
+            </a>
+            <a href="https://yeshmishak.top/static.html" class="fab-menu-item" data-page="static" target="_blank">
+                <i class="fas fa-tv"></i>
+                <span>תצוגה</span>
+            </a>
+            <a href="https://yeshmishak.top/cal.html" class="fab-menu-item" data-page="cal" target="_blank">
+                <i class="fas fa-calendar"></i>
+                <span>יומן</span>
+            </a>
+            <button class="fab-menu-item" id="fab-add-mobile">
+                <i class="fas fa-plus"></i>
+                <span>הוסף משחק</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+    // Set active menu item based on current page
+    $(document).ready(function() {
+        const currentPath = window.location.pathname;
+
+        // Determine which page we're on
+        let activePage = '';
+        if (currentPath === '/next' || currentPath === '/') {
+            activePage = 'next';
+        } else if (currentPath === '/scheduler') {
+            activePage = 'scheduler';
+        }
+
+        // Add active class to the matching menu item
+        if (activePage) {
+            $('.fab-menu-item[data-page="' + activePage + '"]').addClass('active');
+        }
+    });
+    </script>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
