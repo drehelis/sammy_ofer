@@ -18,11 +18,9 @@ Join the notification #channel on [Telegram](https://t.me/sammy_ofer_notificatio
 
 ## Web-UI
 
-<p align="center">
-  <img src="img/screenshot.png">
-  <div></div>
-  <img src="img/screenshot_mobile.png" width="400" height="888" align="center">
-</p>
+<img src="img/screenshot.png">
+
+<img src="img/screenshot_mobile.png" width="400" height="888" align="center">
 
 ## Static landing page ([link](https://drehelis.github.io/sammy_ofer/static.html))
 
