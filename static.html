@@ -21,47 +21,6 @@
 <body>
   <div id="container-1" class="container">
     <div class="metadata">
-      <div class="metadata-item">אירוע 🏟️ היום בשעה: 20:30</div>
-    </div>
-    <div class="team">
-      <div class="team-logo" style="background-image: url('assets/teams/Maccabi Haifa.png');"></div>
-      <div class="team-name">מכבי חיפה</div>
-    </div>
-    <div class="team">
-      <div class="team-logo" style="background-image: url('assets/teams/Beitar Jerusalem.png');"></div>
-      <div class="team-name">בית"ר י"ם</div>
-    </div>
-    <div class="metadata">
-      <div class="metadata-item">צפי חסימת כבישים: החל מ 17:30</div>
-      <div class="metadata-item">צפי אוהדים משוער: גדול מאוד (30,000) 😱</div>
-      
-      <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
-      <div>
-        
-        <div class="container-dumb">
-          <!-- https://github.com/badges/shields/issues/10109 -->
-          <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
-            <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
-          </a>
-          <a href="cal.html" style="border: none; text-decoration: none;">
-            <img src="https://img.shields.io/badge/-Sammy_Ofer_Notification_Calendar-gray?logo=googlecalendar&style=plastic&logoColor=e9ff70" alt="Sammy Ofer Notification Calendar">
-          </a>
-          <a href="https://buymeacoffee.com/drehelis" style="border: none; text-decoration: none;">
-            <img src="https://img.shields.io/badge/-buy_me_a%C2%A0coffee-gray?logo=buy-me-a-coffee&style=plastic" alt="Buy Me A Coffee">
-          </a>
-        </div>
-
-      </div>
-    </div>
-  </div>
-  <script>
-    const gameDate_1 = "2025-12-22";
-    if (todayDate !== gameDate_1) {
-      document.getElementById('container-1').style.display = 'none';
-    }
-  </script>
-  <div id="container-2" class="container">
-    <div class="metadata">
       <div class="metadata-item">אירוע 🏟️ היום בשעה: 19:30</div>
     </div>
     <div class="team">
@@ -96,9 +55,9 @@
     </div>
   </div>
   <script>
-    const gameDate_2 = "2025-12-30";
-    if (todayDate !== gameDate_2) {
-      document.getElementById('container-2').style.display = 'none';
+    const gameDate_1 = "2025-12-30";
+    if (todayDate !== gameDate_1) {
+      document.getElementById('container-1').style.display = 'none';
     }
   </script>
   
@@ -106,7 +65,7 @@
     <div class="metadata">
       <div class="metadata-item">אירוע 🏟️ הבא:
       
-        יום שני, 22 בדצמבר 2025
+        יום שלישי, 30 בדצמבר 2025
       
       </div>
       <div class="metadata-item"><img src="assets/images/qrcode.png" alt="QR Code" style="max-width: 100px; margin-top: 1rem;"></div>
@@ -129,7 +88,7 @@
   
   <script>    
     let allContainersHidden = true;
-    for (let i = 1; i <= 2; i++) {
+    for (let i = 1; i <= 1; i++) {
       if (document.getElementById(`container-${i}`).style.display !== 'none') {
         allContainersHidden = false;
         break;
