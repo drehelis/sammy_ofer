@@ -34,6 +34,29 @@ class WebScrape:
         self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
         self.soup = None
 
+    @staticmethod
+    def parse_date_string(date_str):
+        date_formats = [
+            ("%d/%m/%y %H:%M", False),    # 05/04/25 18:30
+            ("%d/%m/%Y %H:%M", False),    # 05/04/2025 18:30
+            ("%d.%m.%y %H:%M", False),    # 05.04.25 18:30
+            ("%d.%m.%Y %H:%M", False),    # 05.04.2025 18:30
+            ("%d-%m-%y %H:%M", False),    # 05-04-25 18:30
+            ("%d-%m-%Y %H:%M", False),    # 05-04-2025 18:30
+            ("%Y-%m-%d %H:%M", False),    # 2025-04-05 18:30
+            ("%d/%m %H:%M", True),        # 05/04 18:30 - needs current year
+        ]
+        
+        for fmt, needs_year in date_formats:
+            try:
+                dt = datetime.datetime.strptime(date_str, fmt)
+                if needs_year:
+                    dt = dt.replace(year=datetime.datetime.today().year)
+                return dt
+            except ValueError:
+                continue
+        return None
+
     def scrape(self):
         try:
             response = requests.get(self.url, headers=random_ua(), timeout=60)
@@ -86,6 +109,7 @@ class WebScrape:
 
         arr_obj = []
         game_id = None
+
         for key, value in scraped.items():
             league, home_team, str_time, guest_team, *extra = value
 
@@ -97,29 +121,9 @@ class WebScrape:
                 logger.error(f"Skipping bad entry: {value}")
                 continue
 
-            date_formats = [
-                "%d/%m/%y %H:%M",  # 05/04/25 18:30
-                "%d/%m/%Y %H:%M",  # 05/04/2025 18:30
-                "%d.%m.%y %H:%M",  # 05.04.25 18:30
-                "%d.%m.%Y %H:%M",  # 05.04.2025 18:30
-                "%d-%m-%y %H:%M",  # 05-04-25 18:30
-                "%d-%m-%Y %H:%M",  # 05-04-2025 18:30
-                "%d/%m %H:%M",  # 05/04 18:30
-                "%Y-%m-%d %H:%M",  # 2025-04-05 18:30
-            ]
-
-            for fmt in date_formats:
-                try:
-                    scraped_date_time = datetime.datetime.strptime(
-                        tidy_str_time, fmt
-                    ).replace(year=datetime.datetime.today().year)
-                    break
-                except ValueError as err:
-                    logger.error(f"Failed to parse date: {err}")
-                    continue  # skip if date is in bad format after all
-            else:
-                # If no date format worked, skip this entry
-                logger.error(f"No valid date format found for entry: {value}")
+            scraped_date_time = self.parse_date_string(tidy_str_time)
+            if not scraped_date_time:
+                logger.error(f"No valid date format found for '{tidy_str_time}' in entry: {value}")
                 continue
 
             GenerateTeamsPNG(home_team, guest_team).fetch_logo()
