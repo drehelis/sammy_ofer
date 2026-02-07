@@ -4,11 +4,19 @@ from datetime import datetime
 from apscheduler.jobstores.base import JobLookupError
 from apscheduler.jobstores.memory import MemoryJobStore
 from apscheduler.schedulers.background import BackgroundScheduler
+from apscheduler.triggers.cron import CronTrigger
 from apscheduler.triggers.date import DateTrigger
 
 import db
 from logger import logging
-from send_notification import check_games_today, create_message, send
+from send_notification import (
+    build_missing_prediction_alert,
+    check_games_today,
+    create_message,
+    find_single_game_missing_prediction,
+    send,
+    send_admin_alert,
+)
 
 job_stores = {"SammyScheduler": MemoryJobStore()}
 
@@ -37,6 +45,10 @@ def run_job(game_id=None):
     asyncio.run(execute_cron_job(game_id))
 
 
+def run_missing_prediction_check():
+    asyncio.run(execute_missing_prediction_check())
+
+
 async def execute_cron_job(game_id=None):
     all_db_entries = db.get_all_db_entries()
     generated_data = check_games_today(all_db_entries)
@@ -57,6 +69,19 @@ async def execute_cron_job(game_id=None):
     message = create_message(detected_games_today)
     await send(message)
     logging.info("Cron job completed successfully")
+
+
+async def execute_missing_prediction_check():
+    all_db_entries = db.get_all_db_entries()
+    missing_game = find_single_game_missing_prediction(all_db_entries)
+
+    if not missing_game:
+        logging.info("No missing prediction alert needed")
+        return
+
+    message = build_missing_prediction_alert(missing_game)
+    await send_admin_alert(message)
+    logging.info("Missing prediction check completed")
 
 
 def scheduler_update(job_id, new_sched_time):
@@ -126,5 +151,14 @@ def scheduler_onstart():
             jobstore="SammyScheduler",
             args=[job_id],
         )
+
+    scheduler.add_job(
+        run_missing_prediction_check,
+        id="missing_prediction_check",
+        trigger=CronTrigger(hour=7, minute=0, timezone="Asia/Jerusalem"),
+        name="Daily missing prediction check",
+        replace_existing=True,
+        jobstore="SammyScheduler",
+    )
 
     scheduler.start()

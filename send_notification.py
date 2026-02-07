@@ -24,6 +24,7 @@ assert "TELEGRAM_CHANNEL_ID" in os.environ and "TELEGRAM_TOKEN" in os.environ, (
 
 TELEGRAM_CHANNEL_ID = os.environ.get("TELEGRAM_CHANNEL_ID")
 TELEGRAM_TOKEN = os.environ.get("TELEGRAM_TOKEN")
+TELEGRAM_ADMIN_ID = os.environ.get("TELEGRAM_ADMIN_ID")
 
 absolute_path = Path(__file__).resolve().parent
 
@@ -76,6 +77,28 @@ def create_message(obj_data):
         )
 
 
+def find_single_game_missing_prediction(all_db_entries):
+    games_today = list(check_games_today(all_db_entries))
+    if len(games_today) != 1:
+        return None
+
+    game = games_today[0]
+    specs_word = (game.get("specs_word") or "").strip()
+    try:
+        specs_number = int(game.get("specs_number") or 0)
+    except (TypeError, ValueError):
+        specs_number = 0
+
+    if specs_number <= 0 or specs_word in ("לא ידוע", "ללא"):
+        return game
+
+    return None
+
+
+def build_missing_prediction_alert(game):
+    return "Today's game needs your input"
+
+
 async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
     async with Bot(token) as bot:
         for iterator in msg:
@@ -117,3 +140,18 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
                     ).timestamp(),
                 )
                 logger.info("Telegram poll sent!")
+
+
+async def send_admin_alert(message, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_ADMIN_ID):
+    if not chat_id:
+        logger.warning("TELEGRAM_ADMIN_ID is not set, skipping admin alert")
+        return False
+
+    async with Bot(token) as bot:
+        await bot.send_message(
+            chat_id,
+            message,
+            disable_notification=True,
+        )
+        logger.info("Admin alert sent")
+        return True

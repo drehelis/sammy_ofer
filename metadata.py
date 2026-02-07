@@ -95,6 +95,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/football-club-ashdod/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4548.png",
     },
+    "מ.ס אשדוד": {
+        "name": "Football Club Ashdod",
+        "url": "https://www.football.co.il/football-club-ashdod/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4548.png",
+    },
     "הפועל ירושלים": {
         "name": "Hapoel Jerusalem",
         "url": "https://www.football.co.il/hapoel-jerusalem/",
@@ -124,6 +129,21 @@ TEAMS_METADATA = {
         "name": "Maccabi Petah Tikva",
         "url": "https://www.football.co.il/maccabi-petah-tikva/",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/15006.png",
+    },
+    'מ.ס. כפר קאסם': {
+        "name": "Football Club Kafr Qasim",
+        "url": "https://www.football.co.il/football-club-kafr-qasim/",
+        "logo": "https://www.football.org.il/ImageServer/GetImage.ashx?type=2&id=493122",
+    },
+    'מ.ס כפר קאסם': {
+        "name": "Football Club Kafr Qasim",
+        "url": "https://www.football.co.il/football-club-kafr-qasim/",
+        "logo": "https://www.football.org.il/ImageServer/GetImage.ashx?type=2&id=493122",
+    },
+    'כפר קאסם': {
+        "name": "Football Club Kafr Qasim",
+        "url": "https://www.football.co.il/football-club-kafr-qasim/",
+        "logo": "https://www.football.org.il/ImageServer/GetImage.ashx?type=2&id=493122",
     },
     "אושר כהן": {
         "name": "Osher Cohen",
