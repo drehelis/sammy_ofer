@@ -59,11 +59,15 @@ docker run -d --name sammy_ofer \
 ```
 
 ## Debug
-```
+```bash
+# Install dependencies
 uv pip install -r requirements.txt --system
+
+# Initialize the database
 python init_db.py
 
-flask run --debug --port=5001
+# Run development server with auto-reload
+flask --app main run --debug --port=5001
 ```
 
 Manually run cron job

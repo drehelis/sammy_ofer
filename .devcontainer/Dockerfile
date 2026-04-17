@@ -10,7 +10,7 @@ ARG USER_GID=1000
 RUN groupadd --gid $USER_GID ${GROUP_NAME} && useradd --uid $USER_UID --gid $USER_GID -m ${USER_NAME} -s /bin/bash
 
 RUN apt update \
-    && apt install -y locales at git \
+    && apt install -y locales at git wget procps \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

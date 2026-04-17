@@ -233,6 +233,7 @@ body::before {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 /* ============================================
@@ -336,6 +337,7 @@ body::before {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .toggle-btn {
@@ -453,8 +455,8 @@ body::before {
     padding: var(--gap-sm) var(--gap-md);
     display: flex;
     align-items: center;
-    gap: var(--gap-md);
-    flex-wrap: nowrap;
+    gap: var(--gap-sm);
+    flex-wrap: wrap;
 }
 
 .game-card .league-badge {
@@ -466,7 +468,8 @@ body::before {
 }
 
 .game-card .teams-container {
-    padding: var(--gap-xs) var(--gap-sm);
+    padding: 0;
+    min-height: 32px;
     margin-bottom: 0;
     gap: var(--gap-xs);
     flex-shrink: 0;
@@ -573,9 +576,23 @@ body::before {
     font-size: 0.75rem;
     font-weight: 700;
 }
-
 .game-card .game-notes {
-    display: none;
+    display: flex;
+    flex-basis: 100%;
+    width: 100%;
+    order: 10;
+    padding: var(--gap-sm);
+    background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    color: var(--text-dark);
+    gap: var(--gap-sm);
+    box-shadow: var(--shadow-sm);
+}
+
+.game-card .game-notes i {
+    color: var(--golden-yellow);
+    font-size: 0.9rem;
 }
 
 /* League badge in header for past games */
@@ -593,7 +610,8 @@ body::before {
 /* Desktop view - Larger teams and icons */
 @media (min-width: 768px) {
     .game-card .teams-container {
-        padding: var(--gap-md);
+        padding: 0;
+        min-height: 160px;
         gap: var(--gap-lg);
         min-width: 300px;
     }
@@ -634,7 +652,8 @@ body::before {
 
     /* Smaller teams container */
     .game-card .teams-container {
-        /* padding: var(--gap-md); */
+        padding: 0;
+        min-height: 80px;
         gap: var(--gap-md);
     }
 
@@ -780,7 +799,8 @@ body::before {
     align-items: center;
     gap: var(--gap-lg);
     margin-bottom: var(--gap-lg);
-    padding: var(--gap-xl);
+    padding: 0;
+    min-height: 200px;
     background: var(--light-gray);
     border-radius: var(--radius-lg);
     position: relative;
@@ -930,6 +950,7 @@ body::before {
     background: var(--gradient-primary);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .info-content {
@@ -978,7 +999,6 @@ body::before {
     padding: var(--gap-lg);
     background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
     border-radius: var(--radius-md);
-    border-left: 4px solid var(--golden-yellow);
     font-size: 0.9375rem;
     color: var(--text-dark);
 }
