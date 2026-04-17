@@ -45,6 +45,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/bnei-reineh",
         "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/30249.png",
     },
+    "בני ריינה": {
+        "name": "Bnei Reineh",
+        "url": "https://www.football.co.il/bnei-reineh",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/30249.png",
+    },
     "מכבי נתניה": {
         "name": "Maccabi Netanya",
         "url": "https://www.football.co.il/maccabi-netanya",
