@@ -44,7 +44,6 @@ def gen_static_page(db_data):
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
-    # Generate reminder page
     reminder_template = environment.get_template("reminder.jinja2")
     reminder_content = reminder_template.render(upcoming=upcoming, datetime=datetime)
     
