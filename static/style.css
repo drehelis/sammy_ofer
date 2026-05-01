@@ -167,6 +167,46 @@ body::before {
     font-size: 1.2em;
 }
 
+.title-icon-link {
+    color: white;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.5em;
+    height: 1.5em;
+    padding: var(--gap-xs);
+    margin-left: -var(--gap-xs); /* Offset padding to keep alignment */
+    text-decoration: none;
+    transition: all var(--speed-fast) var(--ease-smooth);
+    -webkit-tap-highlight-color: transparent;
+}
+
+.title-icon-link:active {
+    transform: scale(0.9);
+}
+
+.title-icon-link .main-icon {
+    transition: all var(--speed-fast) var(--ease-smooth);
+}
+
+.title-icon-link .hover-icon {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all var(--speed-fast) var(--ease-smooth);
+}
+
+.title-icon-link:hover .main-icon {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+.title-icon-link:hover .hover-icon {
+    opacity: 1;
+    transform: scale(1.1);
+}
+
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-8px); }

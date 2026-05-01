@@ -122,7 +122,7 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
 
             keyboard = [
                 [
-                    InlineKeyboardButton("שמירה ביומן", url="https://yeshmishak.top/rem.html")
+                    InlineKeyboardButton("הוספת משחק ליומן", url="https://yeshmishak.top/rem.html")
                 ]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
