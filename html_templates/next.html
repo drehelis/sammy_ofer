@@ -138,15 +138,17 @@
                 </button>
             </div>
         </div>
+    </div>
 
-        <!-- Notes -->
-        {% if game.notes %}
-        <div class="game-notes">
+    <!-- Notes -->
+    {% if game.notes %}
+    <div class="game-notes-wrapper" style="padding: 0 var(--gap-md) var(--gap-sm) var(--gap-md);">
+        <div class="game-notes" style="min-width: 355px;">
             <i class="fas fa-sticky-note"></i>
             <span>{{ game.notes }}</span>
         </div>
-        {% endif %}
     </div>
+    {% endif %}
 </div>
 {% endmacro %}
 
