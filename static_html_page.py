@@ -25,31 +25,37 @@ def gen_static_page(db_data):
         loader=FileSystemLoader(absolute_path / "assets/templates/")
     )
     environment.filters["babel_format_full_heb"] = jf.babel_format_full_heb
+    
     template = environment.get_template("static_page.jinja2")
-
     content = template.render(upcoming=upcoming, datetime=datetime)
+    reminder_template = environment.get_template("reminder.jinja2")
+    reminder_content = reminder_template.render(upcoming=upcoming, datetime=datetime)
+
+    changed = False
+    try:
+        with open(absolute_path / STATIC_HTML_FILENAME, mode="r", encoding="utf-8") as f:
+            if f.read() != content:
+                changed = True
+    except FileNotFoundError:
+        changed = True
 
     try:
-        with open(
-            absolute_path / STATIC_HTML_FILENAME, mode="r", encoding="utf-8"
-        ) as f:
-            existing_content = f.read()
+        with open(absolute_path / REMINDER_HTML_FILENAME, mode="r", encoding="utf-8") as f:
+            if f.read() != reminder_content:
+                changed = True
     except FileNotFoundError:
-        existing_content = None
+        changed = True
 
-    if existing_content == content:
+    if not changed:
         return
 
     with open(absolute_path / STATIC_HTML_FILENAME, mode="w", encoding="utf-8") as f:
         f.write(content)
-        logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
+        logger.info(f"Generated {STATIC_HTML_FILENAME}")
 
-    reminder_template = environment.get_template("reminder.jinja2")
-    reminder_content = reminder_template.render(upcoming=upcoming, datetime=datetime)
-    
     with open(absolute_path / REMINDER_HTML_FILENAME, mode="w", encoding="utf-8") as f:
         f.write(reminder_content)
-        logger.info(f"Generated {REMINDER_HTML_FILENAME} from template")
+        logger.info(f"Generated {REMINDER_HTML_FILENAME}")
 
     if os.getenv("SKIP_COMMIT"):
         logger.info("SKIP_COMMIT is set, skipping git commit")
@@ -80,7 +86,7 @@ def git_commit():
 
     repo.index.add([STATIC_HTML_FILENAME, REMINDER_HTML_FILENAME])
     if not repo.index.diff("HEAD"):
-        logger.info("Static pages are up to date")
+        logger.info("Static pages are up to date in repo")
         return
 
     logger.info("Static pages pushed to repo")
