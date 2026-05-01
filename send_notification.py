@@ -7,7 +7,7 @@ from random import choice
 from zoneinfo import ZoneInfo
 
 from dotenv import load_dotenv
-from telegram import Bot, constants
+from telegram import Bot, constants, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.helpers import escape_markdown
 
 import web_scrape
@@ -120,11 +120,19 @@ async def send(msg, token=TELEGRAM_TOKEN, chat_id=TELEGRAM_CHANNEL_ID):
 
             web_scrape.GenerateTeamsPNG(home_team, guest_team).banner()
 
+            keyboard = [
+                [
+                    InlineKeyboardButton("שמירה ביומן", url="https://yeshmishak.top/rem.html")
+                ]
+            ]
+            reply_markup = InlineKeyboardMarkup(keyboard)
+
             await bot.send_photo(
                 chat_id,
                 photo=absolute_path / "banner.png",
                 caption="".join(send_message),
                 parse_mode=constants.ParseMode.MARKDOWN_V2,
+                reply_markup=reply_markup
             )
             logger.info("Telegram message sent!")
 

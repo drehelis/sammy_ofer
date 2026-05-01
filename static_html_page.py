@@ -12,6 +12,7 @@ from logger import logger
 REPO_URL = f"https://{os.getenv('GH_PAT')}@github.com/drehelis/sammy_ofer"
 TMP_REPO_DIR = "/tmp/sammy_ofer"
 STATIC_HTML_FILENAME = "static.html"
+REMINDER_HTML_FILENAME = "rem.html"
 GH_PAGES_BRANCH = "static_page"
 
 absolute_path = Path(__file__).resolve().parent
@@ -43,6 +44,14 @@ def gen_static_page(db_data):
         f.write(content)
         logger.info(f"Generated {STATIC_HTML_FILENAME} from template")
 
+    # Generate reminder page
+    reminder_template = environment.get_template("reminder.jinja2")
+    reminder_content = reminder_template.render(upcoming=upcoming, datetime=datetime)
+    
+    with open(absolute_path / REMINDER_HTML_FILENAME, mode="w", encoding="utf-8") as f:
+        f.write(reminder_content)
+        logger.info(f"Generated {REMINDER_HTML_FILENAME} from template")
+
     if os.getenv("SKIP_COMMIT"):
         logger.info("SKIP_COMMIT is set, skipping git commit")
         return
@@ -65,14 +74,16 @@ def git_commit():
     except exc.GitCommandError:
         repo.git.checkout(b=GH_PAGES_BRANCH)
 
-    src = absolute_path / STATIC_HTML_FILENAME
-    copy(src, f"{TMP_REPO_DIR}/{STATIC_HTML_FILENAME}")
+    src_static = absolute_path / STATIC_HTML_FILENAME
+    src_reminder = absolute_path / REMINDER_HTML_FILENAME
+    copy(src_static, f"{TMP_REPO_DIR}/{STATIC_HTML_FILENAME}")
+    copy(src_reminder, f"{TMP_REPO_DIR}/{REMINDER_HTML_FILENAME}")
 
-    repo.index.add([STATIC_HTML_FILENAME])
+    repo.index.add([STATIC_HTML_FILENAME, REMINDER_HTML_FILENAME])
     if not repo.index.diff("HEAD"):
-        logger.info(f"{STATIC_HTML_FILENAME} is up to date")
+        logger.info("Static pages are up to date")
         return
 
-    logger.info(f"{STATIC_HTML_FILENAME} pushed to repo")
+    logger.info("Static pages pushed to repo")
     repo.index.commit(str(datetime.datetime.now()))
     repo.git.push()
