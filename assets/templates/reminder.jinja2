@@ -88,11 +88,11 @@
 
   <script>
     (function() {
-        const gameDate = "{{ datetime.datetime.strptime(game.scraped_date_time, "%Y-%m-%dT%H:%M:%S").date() }}";
+        const gameDate = {{ datetime.datetime.strptime(game.scraped_date_time, "%Y-%m-%dT%H:%M:%S").date().isoformat() | tojson }};
         if (todayDate === gameDate) {
             document.getElementById('container-{{loop.index}}').style.display = 'flex';
             
-            const start_dt = new Date("{{ game.scraped_date_time }}");
+            const start_dt = new Date({{ game.scraped_date_time | tojson }});
             const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
             
             const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
@@ -103,7 +103,7 @@
             const outlook_start = formatOutlook(start_dt);
             const outlook_end = formatOutlook(end_dt);
             
-            const title = "אירוע בסמי עופר: {{ game.home_team }} - {{ game.guest_team }}";
+            const title = {{ ("אירוע בסמי עופר: " ~ game.home_team ~ " - " ~ game.guest_team) | tojson }};
             const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
             const location = "אצטדיון סמי עופר, חיפה";
             
