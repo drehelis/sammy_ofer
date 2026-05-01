@@ -455,8 +455,8 @@ body::before {
     padding: var(--gap-sm) var(--gap-md);
     display: flex;
     align-items: center;
-    gap: var(--gap-sm);
-    flex-wrap: wrap;
+    gap: var(--gap-md);
+    flex-wrap: nowrap;
 }
 
 .game-card .league-badge {
@@ -468,8 +468,7 @@ body::before {
 }
 
 .game-card .teams-container {
-    padding: 0;
-    min-height: 32px;
+    padding: var(--gap-xs) var(--gap-sm);
     margin-bottom: 0;
     gap: var(--gap-xs);
     flex-shrink: 0;
@@ -610,8 +609,7 @@ body::before {
 /* Desktop view - Larger teams and icons */
 @media (min-width: 768px) {
     .game-card .teams-container {
-        padding: 0;
-        min-height: 160px;
+        padding: var(--gap-md);
         gap: var(--gap-lg);
         min-width: 300px;
     }
@@ -652,8 +650,7 @@ body::before {
 
     /* Smaller teams container */
     .game-card .teams-container {
-        padding: 0;
-        min-height: 80px;
+        /* padding: var(--gap-md); */
         gap: var(--gap-md);
     }
 
