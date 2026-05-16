@@ -114,10 +114,9 @@
             document.getElementById('outlook-live-link-{{loop.index}}').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
             
             const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
-            const blob = new Blob([ics_content], { type: 'text/calendar;charset=utf-8' });
-            const url = window.URL.createObjectURL(blob);
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
             const icsLink = document.getElementById('ics-link-{{loop.index}}');
-            icsLink.href = url;
+            icsLink.href = dataUrl;
             icsLink.setAttribute('download', 'reminder.ics');
         }
     })();
