@@ -64,7 +64,7 @@ def _get_or_init_repo() -> Repo:
         logger.debug(f"Using existing repo at {TMP_REPO_DIR}")
         repo.remotes.origin.pull(GH_PAGES_BRANCH)
     except (exc.NoSuchPathError, exc.InvalidGitRepositoryError):
-        logger.info(f"Cloning repo from {REPO_URL} to {TMP_REPO_DIR}")
+        logger.info(f"Cloning repo to {TMP_REPO_DIR}")
         repo = Repo.clone_from(REPO_URL, TMP_REPO_DIR)
 
     repo.config_writer().set_value("user", "name", "sammy-ofer-bot").release()
