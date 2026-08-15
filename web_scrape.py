@@ -73,21 +73,17 @@ class WebScrape:
 
         games_list = []
         class_regex = re.compile(
-            "elementor-element elementor-element-[a-z0-9]{7} elementor-widget elementor-widget-text-editor"
+            r"elementor-element-[a-z0-9]{7}.*elementor-widget-text-editor"
         )
 
         if self.soup:
             result = self.soup.find_all("div", {"class": class_regex})
             for div in result:
-                inner_divs = div.find_all("div")
-                for inner_div in inner_divs:
-                    paragraph = inner_div.find_all("p")
-                    for p in paragraph:
-                        text = p.get_text(separator=" ")  # treat </br> as space
-                        text = text.strip(
-                            "\t\r\n"
-                        )  # strip tabs, newlines, spaces from the edges
-                        games_list.append(text)
+                container = div.find("div", class_="elementor-widget-container") or div
+                text = container.get_text(separator=" ").strip("\t\r\n ")
+                text = " ".join(text.split())
+                if text:
+                    games_list.append(text)
 
         if len(games_list) < 2:
             msg = "List returned empty, no games today?"
@@ -144,6 +140,19 @@ class WebScrape:
             try:
                 dbrecord = SimpleNamespace(**db.get_game_details(game_id))
                 if extra:
+                    home_team_metadata = TEAMS_METADATA.get(
+                        home_team, TEAMS_METADATA.get("Unavailable")
+                    )
+                    guest_team_metadata = TEAMS_METADATA.get(
+                        guest_team, TEAMS_METADATA.get("Unavailable")
+                    )
+                    dbrecord.league = league
+                    dbrecord.home_team = home_team
+                    dbrecord.home_team_en = home_team_metadata.get("name")
+                    dbrecord.home_team_url = home_team_metadata.get("url")
+                    dbrecord.guest_team = guest_team
+                    dbrecord.guest_team_en = guest_team_metadata.get("name")
+                    dbrecord.guest_team_url = guest_team_metadata.get("url")
                     dbrecord.specs_word = specs_word
                     dbrecord.sched_time = sched_time
                     dbrecord.specs_number = specs_number

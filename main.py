@@ -91,14 +91,20 @@ def action():
 @app.route("/update", methods=["POST"])
 def update():
     form = dict(request.form)
+    old_game_id = form.get("game_id")
     data = game_data_from_form(form)
     _, updated_entry = web.decorate_game_data(data)
+    new_game_id = updated_entry["game_id"]
+
+    if old_game_id and old_game_id != new_game_id:
+        db.delete_db_record(old_game_id)
+        scheduler.scheduler_delete(old_game_id)
 
     scheduler_date = datetime.fromisoformat(updated_entry["scraped_date_time"]).date()
     scheduler_time = datetime.strptime(request.form["sched_time"], "%H:%M").time()
     scheduler_dt = datetime.combine(scheduler_date, scheduler_time)
     update_sched = scheduler.scheduler_update(
-        updated_entry["game_id"],
+        new_game_id,
         scheduler_dt,
     )
 

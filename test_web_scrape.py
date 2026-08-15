@@ -7,14 +7,20 @@ from web_scrape import WebScrape
 
 @pytest.fixture
 def mock_response():
-    """Create a mock response for requests.get"""
+    """Create a mock response for requests.get reflecting Elementor widgets"""
     mock = MagicMock()
     mock.text = """
     <div class="elementor-element elementor-element-1234567 elementor-widget elementor-widget-text-editor">
-        <div><p>ליגת העל</p></div>
-        <div><p>מכבי חיפה</p></div>
-        <div><p>20-03-2024 20:30</p></div>
-        <div><p>הפועל חיפה</p></div>
+        <div class="elementor-widget-container"><p>ליגת העל</p></div>
+    </div>
+    <div class="elementor-element elementor-element-2345678 elementor-widget elementor-widget-text-editor">
+        <div class="elementor-widget-container"><p>מכבי חיפה</p></div>
+    </div>
+    <div class="elementor-element elementor-element-3456789 elementor-widget elementor-widget-text-editor is-mac">
+        <div class="elementor-widget-container"><p>20-03-2024</p><p>20:30</p></div>
+    </div>
+    <div class="elementor-element elementor-element-4567890 elementor-widget elementor-widget-text-editor">
+        <div class="elementor-widget-container"><p>הפועל חיפה</p></div>
     </div>
     """
     mock.raise_for_status.return_value = None
