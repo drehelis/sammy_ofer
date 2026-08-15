@@ -349,10 +349,6 @@
         <div id="result_send" class="result-message"></div>
 
         {% elif myval['action'] == 'update' %}
-        <div class="form-header update">
-            <i class="fas fa-edit"></i>
-            <h2>עדכן משחק</h2>
-        </div>
         <form action="/update" method="post" id="updateForm" class="modern-form">
             <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
             <input type="hidden" name="home_team" value="{{ myval['homeTeam'] }}">

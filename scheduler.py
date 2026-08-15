@@ -20,7 +20,10 @@ from send_notification import (
 
 job_stores = {"SammyScheduler": MemoryJobStore()}
 
-scheduler = BackgroundScheduler(jobstores=job_stores)
+scheduler = BackgroundScheduler(
+    jobstores=job_stores,
+    timezone="Asia/Jerusalem",
+)
 
 
 def list_jobs():

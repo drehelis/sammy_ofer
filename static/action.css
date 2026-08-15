@@ -43,7 +43,7 @@
    ACTION CONTAINER
    ============================================ */
 .action-container {
-    padding: var(--spacing-lg);
+    padding: var(--spacing-lg) var(--spacing-lg) var(--spacing-md);
     background: var(--bg-primary);
 }
 
@@ -527,6 +527,12 @@
     border-radius: var(--radius-md);
     text-align: center;
     font-weight: 600;
+}
+
+.result-message:empty {
+    display: none;
+    margin: 0;
+    padding: 0;
 }
 
 .result-message.success {
