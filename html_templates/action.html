@@ -355,35 +355,52 @@
         </div>
         <form action="/update" method="post" id="updateForm" class="modern-form">
             <input type="hidden" name="game_id" value="{{ myval['gameId'] }}">
-            <input type="hidden" name="league" value="{{ myval['league'] }}">
-            <input type="hidden" name="game_date" value="{{ myval['gameDate'] }}">
-            <input type="hidden" name="game_time" value="{{ myval['gameTime'] }}">
             <input type="hidden" name="home_team" value="{{ myval['homeTeam'] }}">
             <input type="hidden" name="guest_team" value="{{ myval['guestTeam'] }}">
 
-            <div class="info-box">
-                <div class="info-item">
+            <div class="form-row">
+                <div class="form-field">
+                    <label for="game_date">
+                        <i class="fas fa-calendar-day"></i>
+                        תאריך משחק
+                    </label>
+                    <input type="date" id="game_date" name="game_date" value="{{ myval['gameDate'] }}" required>
+                </div>
+                <div class="form-field">
+                    <label for="game_time">
+                        <i class="fas fa-clock"></i>
+                        שעת משחק
+                    </label>
+                    <input type="time" id="game_time" name="game_time" value="{{ myval['gameTime'] }}" required>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="league">
                     <i class="fas fa-trophy"></i>
-                    <span>{{ myval['league'] }}</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-calendar"></i>
-                    <span>{{ myval['gameDate'] }}</span>
-                </div>
-                <div class="info-item">
-                    <i class="fas fa-clock"></i>
-                    <span>{{ myval['gameTime'] }}</span>
-                </div>
+                    ליגה
+                </label>
+                <input type="text" id="league" name="league" value="{{ myval['league'] }}" placeholder="שם הליגה" required>
             </div>
 
             <div class="teams-display">
                 <div class="team-display">
+                    {% set home_en = myval.get('homeTeamEn') or (teams_metadata.get(myval['homeTeam'], {}).get('name') if teams_metadata else '') %}
+                    {% if home_en %}
+                    <img src="assets/teams/{{ home_en }}.png" alt="{{ myval['homeTeam'] }}" class="team-logo">
+                    {% else %}
                     <i class="fas fa-home"></i>
+                    {% endif %}
                     <span>{{ myval['homeTeam'] }}</span>
                 </div>
                 <div class="vs">VS</div>
                 <div class="team-display">
+                    {% set guest_en = myval.get('guestTeamEn') or (teams_metadata.get(myval['guestTeam'], {}).get('name') if teams_metadata else '') %}
+                    {% if guest_en %}
+                    <img src="assets/teams/{{ guest_en }}.png" alt="{{ myval['guestTeam'] }}" class="team-logo">
+                    {% else %}
                     <i class="fas fa-plane-departure"></i>
+                    {% endif %}
                     <span>{{ myval['guestTeam'] }}</span>
                 </div>
             </div>

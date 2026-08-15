@@ -160,6 +160,11 @@ TEAMS_METADATA = {
         "url": "https://www.facebook.com/groups/pereshaifa/",
         "logo": "",
     },
+    "עריית חיפה": {
+        "name": "Haifa Muni",
+        "url": "https://www.haifa.muni.il/",
+        "logo": "",
+    },
 }
 
 EMOJI_HEARTS = [

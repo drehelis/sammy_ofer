@@ -688,10 +688,26 @@ body::before {
         margin-bottom: var(--gap-sm);
     }
 
+    .game-card .game-card-header {
+        padding: var(--gap-xs) var(--gap-sm);
+        gap: var(--gap-xs);
+    }
+
+    .game-card .game-number {
+        min-width: 24px;
+        padding: 2px var(--gap-xs);
+        font-size: 0.8rem;
+    }
+
+    .game-card .game-card-body {
+        padding: var(--gap-xs) var(--gap-sm);
+        gap: var(--gap-xs);
+    }
+
     /* Smaller teams container */
     .game-card .teams-container {
-        /* padding: var(--gap-md); */
-        gap: var(--gap-md);
+        padding: var(--gap-xs) 2px;
+        gap: var(--gap-xs);
     }
 
     .game-card .team-logo {
@@ -749,8 +765,7 @@ body::before {
 }
 
 .game-card.highlight {
-    border-color: var(--golden-yellow);
-    box-shadow: 0 8px 32px rgba(255, 184, 0, 0.3);
+    box-shadow: var(--shadow-lg);
 }
 
 .game-card-header {

@@ -11,6 +11,7 @@ BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DB_PATH = os.path.join(BASE_DIR, "sammy_ofer.db")
 
 FIELDS_TO_COMPARE = [
+    "league",
     "scraped_date_time",
     "home_team",
     "home_team_en",
