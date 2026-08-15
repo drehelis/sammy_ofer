@@ -51,8 +51,6 @@ def next_game():
     if isinstance(games, str):
         return Markup(scrape)
 
-    web.create_calendar_event(games)
-
     all_games = db.get_all_db_entries()
 
     return render_template("next.html", mygames=all_games, datetime=datetime)

@@ -33,6 +33,7 @@ class WebScrape:
     def __init__(self):
         self.url = "https://www.haifa-stadium.co.il/לוח_המשחקים_באצטדיון"
         self.soup = None
+        self.absolute_path = Path(__file__).resolve().parent
 
     @staticmethod
     def parse_date_string(date_str):
@@ -209,9 +210,17 @@ class WebScrape:
 
             arr_obj.append(dbrecord)
 
-        db.store_scraped_games_in_db(arr_obj)
+        has_changes = db.store_scraped_games_in_db(arr_obj)
 
-        gen_static_page(db.get_all_db_entries())
+        static_files_exist = (
+            Path(self.absolute_path / "static.html").is_file()
+            and Path(self.absolute_path / "rem.html").is_file()
+        )
+
+        if has_changes or not static_files_exist:
+            logger.info("Game changes detected, updating static pages and calendar")
+            gen_static_page(db.get_all_db_entries())
+            self.create_calendar_event(db.get_all_db_entries())
 
         return db.get_all_db_entries(), db.get_game_details(game_id)
 

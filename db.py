@@ -139,11 +139,13 @@ def check_for_field_update(games):
 
 
 def store_scraped_games_in_db(games):
+    has_changes = False
     with db_transaction() as (conn, cursor):
         for game_data in games:
             update_required = check_for_field_update(game_data)
 
             if update_required:
+                has_changes = True
                 logger.info("Updating existing game record")
                 cursor.execute(
                     """
@@ -201,6 +203,7 @@ def store_scraped_games_in_db(games):
                     ),
                 )
             elif update_required is None:
+                has_changes = True
                 cursor.execute(
                     """
                 INSERT INTO games
@@ -238,6 +241,7 @@ def store_scraped_games_in_db(games):
                         datetime.now().isoformat(),
                     ),
                 )
+    return has_changes
 
 
 def get_all_db_entries():
