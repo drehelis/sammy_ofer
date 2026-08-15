@@ -150,6 +150,11 @@ TEAMS_METADATA = {
         "url": "https://www.football.co.il/football-club-kafr-qasim/",
         "logo": "https://www.football.org.il/ImageServer/GetImage.ashx?type=2&id=493122",
     },
+    'הפועל ר"ג': {
+        "name": "Hapoel Ramat Gan",
+        "url": "https://www.football.co.il/hapoel-ramat-gan/",
+        "logo": "https://static.football.co.il/wp-content/themes/kingclub-theme/images/teams/4551.png",
+    },
     "אושר כהן": {
         "name": "Osher Cohen",
         "url": "https://youtube.com/user/OfficialOsherCohen",
