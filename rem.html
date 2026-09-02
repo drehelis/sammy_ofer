@@ -580,6 +580,336 @@
         }
     })();
   </script>
+  <div id="container-9" class="container" style="display: none;">
+    <div class="btn-group">
+      <a id="ics-link-9" href="#" class="btn">
+        <i class="fas fa-calendar-alt"></i>
+        <span>הוסף ל- Apple / Desktop</span>
+      </a>
+      <a id="outlook-biz-link-9" href="#" target="_blank" class="btn">
+        <i class="fab fa-microsoft"></i>
+        <span>הוסף ל- Outlook Office 365</span>
+      </a>
+      <a id="outlook-live-link-9" href="#" target="_blank" class="btn">
+        <i class="fas fa-envelope"></i>
+        <span>הוסף ל- Outlook / Hotmail</span>
+      </a>
+      <a id="google-link-9" href="#" target="_blank" class="btn">
+        <i class="fab fa-google"></i>
+        <span>הוסף ל- Google Calendar</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      
+<div class="container-dumb">
+  <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+    <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+  </a>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    (function() {
+        const gameDate = "2026-11-28";
+        if (todayDate === gameDate) {
+            document.getElementById('container-9').style.display = 'flex';
+            
+            const start_dt = new Date("2026-11-28T18:00:00");
+            const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
+            
+            const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
+            const ics_start = formatICS(start_dt);
+            const ics_end = formatICS(end_dt);
+            
+            const formatOutlook = (dt) => dt.toISOString();
+            const outlook_start = formatOutlook(start_dt);
+            const outlook_end = formatOutlook(end_dt);
+            
+            const title = "\u05d0\u05d9\u05e8\u05d5\u05e2 \u05d1\u05e1\u05de\u05d9 \u05e2\u05d5\u05e4\u05e8: \u05d4\u05e4\u05d5\u05e2\u05dc \u05d7\u05d9\u05e4\u05d4 - \u05e2\u05d9\u05e8\u05d5\u05e0\u05d9 \u05d3\u05d5\u05e8\u05d5\u05ea \u05d8\u05d1\u05e8\u05d9\u05d4";
+            const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
+            const location = "אצטדיון סמי עופר, חיפה";
+            
+            const commonParams = `&subject=${encodeURIComponent(title)}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&startdt=${outlook_start}&enddt=${outlook_end}`;
+            
+            document.getElementById('google-link-9').href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${ics_start}/${ics_end}`;
+            document.getElementById('outlook-biz-link-9').href = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            document.getElementById('outlook-live-link-9').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            
+            const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
+            const icsLink = document.getElementById('ics-link-9');
+            icsLink.href = dataUrl;
+            icsLink.setAttribute('download', 'reminder.ics');
+        }
+    })();
+  </script>
+  <div id="container-10" class="container" style="display: none;">
+    <div class="btn-group">
+      <a id="ics-link-10" href="#" class="btn">
+        <i class="fas fa-calendar-alt"></i>
+        <span>הוסף ל- Apple / Desktop</span>
+      </a>
+      <a id="outlook-biz-link-10" href="#" target="_blank" class="btn">
+        <i class="fab fa-microsoft"></i>
+        <span>הוסף ל- Outlook Office 365</span>
+      </a>
+      <a id="outlook-live-link-10" href="#" target="_blank" class="btn">
+        <i class="fas fa-envelope"></i>
+        <span>הוסף ל- Outlook / Hotmail</span>
+      </a>
+      <a id="google-link-10" href="#" target="_blank" class="btn">
+        <i class="fab fa-google"></i>
+        <span>הוסף ל- Google Calendar</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      
+<div class="container-dumb">
+  <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+    <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+  </a>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    (function() {
+        const gameDate = "2026-12-02";
+        if (todayDate === gameDate) {
+            document.getElementById('container-10').style.display = 'flex';
+            
+            const start_dt = new Date("2026-12-02T20:30:00");
+            const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
+            
+            const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
+            const ics_start = formatICS(start_dt);
+            const ics_end = formatICS(end_dt);
+            
+            const formatOutlook = (dt) => dt.toISOString();
+            const outlook_start = formatOutlook(start_dt);
+            const outlook_end = formatOutlook(end_dt);
+            
+            const title = "\u05d0\u05d9\u05e8\u05d5\u05e2 \u05d1\u05e1\u05de\u05d9 \u05e2\u05d5\u05e4\u05e8: \u05de\u05db\u05d1\u05d9 \u05d7\u05d9\u05e4\u05d4 - \u05d1\u05d9\u05ea\"\u05e8 \u05d9\u05e8\u05d5\u05e9\u05dc\u05d9\u05dd";
+            const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
+            const location = "אצטדיון סמי עופר, חיפה";
+            
+            const commonParams = `&subject=${encodeURIComponent(title)}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&startdt=${outlook_start}&enddt=${outlook_end}`;
+            
+            document.getElementById('google-link-10').href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${ics_start}/${ics_end}`;
+            document.getElementById('outlook-biz-link-10').href = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            document.getElementById('outlook-live-link-10').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            
+            const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
+            const icsLink = document.getElementById('ics-link-10');
+            icsLink.href = dataUrl;
+            icsLink.setAttribute('download', 'reminder.ics');
+        }
+    })();
+  </script>
+  <div id="container-11" class="container" style="display: none;">
+    <div class="btn-group">
+      <a id="ics-link-11" href="#" class="btn">
+        <i class="fas fa-calendar-alt"></i>
+        <span>הוסף ל- Apple / Desktop</span>
+      </a>
+      <a id="outlook-biz-link-11" href="#" target="_blank" class="btn">
+        <i class="fab fa-microsoft"></i>
+        <span>הוסף ל- Outlook Office 365</span>
+      </a>
+      <a id="outlook-live-link-11" href="#" target="_blank" class="btn">
+        <i class="fas fa-envelope"></i>
+        <span>הוסף ל- Outlook / Hotmail</span>
+      </a>
+      <a id="google-link-11" href="#" target="_blank" class="btn">
+        <i class="fab fa-google"></i>
+        <span>הוסף ל- Google Calendar</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      
+<div class="container-dumb">
+  <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+    <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+  </a>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    (function() {
+        const gameDate = "2026-12-05";
+        if (todayDate === gameDate) {
+            document.getElementById('container-11').style.display = 'flex';
+            
+            const start_dt = new Date("2026-12-05T19:30:00");
+            const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
+            
+            const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
+            const ics_start = formatICS(start_dt);
+            const ics_end = formatICS(end_dt);
+            
+            const formatOutlook = (dt) => dt.toISOString();
+            const outlook_start = formatOutlook(start_dt);
+            const outlook_end = formatOutlook(end_dt);
+            
+            const title = "\u05d0\u05d9\u05e8\u05d5\u05e2 \u05d1\u05e1\u05de\u05d9 \u05e2\u05d5\u05e4\u05e8: \u05d4\u05e4\u05d5\u05e2\u05dc \u05d7\u05d9\u05e4\u05d4 - \u05de\u05db\u05d1\u05d9 \u05d7\u05d9\u05e4\u05d4";
+            const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
+            const location = "אצטדיון סמי עופר, חיפה";
+            
+            const commonParams = `&subject=${encodeURIComponent(title)}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&startdt=${outlook_start}&enddt=${outlook_end}`;
+            
+            document.getElementById('google-link-11').href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${ics_start}/${ics_end}`;
+            document.getElementById('outlook-biz-link-11').href = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            document.getElementById('outlook-live-link-11').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            
+            const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
+            const icsLink = document.getElementById('ics-link-11');
+            icsLink.href = dataUrl;
+            icsLink.setAttribute('download', 'reminder.ics');
+        }
+    })();
+  </script>
+  <div id="container-12" class="container" style="display: none;">
+    <div class="btn-group">
+      <a id="ics-link-12" href="#" class="btn">
+        <i class="fas fa-calendar-alt"></i>
+        <span>הוסף ל- Apple / Desktop</span>
+      </a>
+      <a id="outlook-biz-link-12" href="#" target="_blank" class="btn">
+        <i class="fab fa-microsoft"></i>
+        <span>הוסף ל- Outlook Office 365</span>
+      </a>
+      <a id="outlook-live-link-12" href="#" target="_blank" class="btn">
+        <i class="fas fa-envelope"></i>
+        <span>הוסף ל- Outlook / Hotmail</span>
+      </a>
+      <a id="google-link-12" href="#" target="_blank" class="btn">
+        <i class="fab fa-google"></i>
+        <span>הוסף ל- Google Calendar</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      
+<div class="container-dumb">
+  <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+    <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+  </a>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    (function() {
+        const gameDate = "2026-12-14";
+        if (todayDate === gameDate) {
+            document.getElementById('container-12').style.display = 'flex';
+            
+            const start_dt = new Date("2026-12-14T20:00:00");
+            const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
+            
+            const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
+            const ics_start = formatICS(start_dt);
+            const ics_end = formatICS(end_dt);
+            
+            const formatOutlook = (dt) => dt.toISOString();
+            const outlook_start = formatOutlook(start_dt);
+            const outlook_end = formatOutlook(end_dt);
+            
+            const title = "\u05d0\u05d9\u05e8\u05d5\u05e2 \u05d1\u05e1\u05de\u05d9 \u05e2\u05d5\u05e4\u05e8: \u05d4\u05e4\u05d5\u05e2\u05dc \u05d7\u05d9\u05e4\u05d4 - \u05d4\u05e4\u05d5\u05e2\u05dc \u05d1\"\u05e9";
+            const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
+            const location = "אצטדיון סמי עופר, חיפה";
+            
+            const commonParams = `&subject=${encodeURIComponent(title)}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&startdt=${outlook_start}&enddt=${outlook_end}`;
+            
+            document.getElementById('google-link-12').href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${ics_start}/${ics_end}`;
+            document.getElementById('outlook-biz-link-12').href = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            document.getElementById('outlook-live-link-12').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            
+            const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
+            const icsLink = document.getElementById('ics-link-12');
+            icsLink.href = dataUrl;
+            icsLink.setAttribute('download', 'reminder.ics');
+        }
+    })();
+  </script>
+  <div id="container-13" class="container" style="display: none;">
+    <div class="btn-group">
+      <a id="ics-link-13" href="#" class="btn">
+        <i class="fas fa-calendar-alt"></i>
+        <span>הוסף ל- Apple / Desktop</span>
+      </a>
+      <a id="outlook-biz-link-13" href="#" target="_blank" class="btn">
+        <i class="fab fa-microsoft"></i>
+        <span>הוסף ל- Outlook Office 365</span>
+      </a>
+      <a id="outlook-live-link-13" href="#" target="_blank" class="btn">
+        <i class="fas fa-envelope"></i>
+        <span>הוסף ל- Outlook / Hotmail</span>
+      </a>
+      <a id="google-link-13" href="#" target="_blank" class="btn">
+        <i class="fab fa-google"></i>
+        <span>הוסף ל- Google Calendar</span>
+      </a>
+    </div>
+
+    <div style="margin-top: 2rem;">
+      
+<div class="container-dumb">
+  <a href="https://t.me/sammy_ofer_notification_channel" style="border: none; text-decoration: none;">
+    <img src="https://img.shields.io/endpoint?color=neon&style=plastic&url=https%3A%2F%2Ftg.sumanjay.workers.dev%2Fsammy_ofer_notification_channel&label=Sammy%20Ofer%20Notification%20Channel" alt="Sammy Ofer Notification Channel">
+  </a>
+</div>
+
+    </div>
+  </div>
+
+  <script>
+    (function() {
+        const gameDate = "2026-12-21";
+        if (todayDate === gameDate) {
+            document.getElementById('container-13').style.display = 'flex';
+            
+            const start_dt = new Date("2026-12-21T20:30:00");
+            const end_dt = new Date(start_dt.getTime() + (2 * 60 * 60 * 1000)); // 2 hours later
+            
+            const formatICS = (dt) => dt.toISOString().replace(/-|:|\.\d+/g, "");
+            const ics_start = formatICS(start_dt);
+            const ics_end = formatICS(end_dt);
+            
+            const formatOutlook = (dt) => dt.toISOString();
+            const outlook_start = formatOutlook(start_dt);
+            const outlook_end = formatOutlook(end_dt);
+            
+            const title = "\u05d0\u05d9\u05e8\u05d5\u05e2 \u05d1\u05e1\u05de\u05d9 \u05e2\u05d5\u05e4\u05e8: \u05de\u05db\u05d1\u05d9 \u05d7\u05d9\u05e4\u05d4 - \u05de\u05db\u05d1\u05d9 \u05ea\"\u05d0";
+            const details = "התראות על משחקי הליגה המתקיימים באצטדיון סמי עופר\nhttps://t.me/sammy_ofer_notification_channel";
+            const location = "אצטדיון סמי עופר, חיפה";
+            
+            const commonParams = `&subject=${encodeURIComponent(title)}&body=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&startdt=${outlook_start}&enddt=${outlook_end}`;
+            
+            document.getElementById('google-link-13').href = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(title)}&details=${encodeURIComponent(details)}&location=${encodeURIComponent(location)}&dates=${ics_start}/${ics_end}`;
+            document.getElementById('outlook-biz-link-13').href = `https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            document.getElementById('outlook-live-link-13').href = `https://outlook.live.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent${commonParams}`;
+            
+            const ics_content = `BEGIN:VCALENDAR\nVERSION:2.0\nPRODID:-//Sammy Ofer Bot//HE\nBEGIN:VEVENT\nSUMMARY:${title}\nDTSTART:${ics_start}\nDTEND:${ics_end}\nDESCRIPTION:${details.replace(/\n/g, "\\n")}\nLOCATION:${location}\nEND:VEVENT\nEND:VCALENDAR`;
+            const dataUrl = 'data:text/calendar;charset=utf-8;base64,' + btoa(unescape(encodeURIComponent(ics_content)));
+            const icsLink = document.getElementById('ics-link-13');
+            icsLink.href = dataUrl;
+            icsLink.setAttribute('download', 'reminder.ics');
+        }
+    })();
+  </script>
   
 
   <div id="default-container" class="container" style="display: none;">
@@ -597,7 +927,7 @@
 
   <script>
     let anyGameShown = false;
-    for (let i = 1; i <= 8; i++) {
+    for (let i = 1; i <= 13; i++) {
       if (document.getElementById(`container-${i}`).style.display !== 'none') {
         anyGameShown = true;
         break;
